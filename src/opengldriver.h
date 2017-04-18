@@ -6,6 +6,7 @@ public:
 	OpenGLDriver();
 	~OpenGLDriver();
 	void initializeDriver();
+	
 protected:
 	
 };
