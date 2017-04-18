@@ -1,0 +1,33 @@
+<html>
+	<div class="emscripten_border">
+		<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+	</div>
+	
+	<script>
+		var Module = {
+		print: (function() {
+		var element = document.getElementById('canvas');
+		return function(text) {
+		element.innerHTML += text.replace('\n', '<br>', 'g') + '<br>';
+		};
+		})(),
+		canvas: document.getElementById('canvas')
+		  };
+        var xhr = new XMLHttpRequest();
+		xhr.open('GET', 'main.wasm', true);
+		xhr.responseType = 'arraybuffer';
+		xhr.onload = function() {
+		Module.wasmBinary = xhr.response;
+
+		var script = document.createElement('script');
+		script.src = "main.js";
+		document.body.appendChild(script);
+
+		};
+		xhr.send(null);
+		
+		
+	</script>
+	<script src="main.js"></script>
+	
+</html>
