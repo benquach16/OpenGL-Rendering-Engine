@@ -1,8 +1,6 @@
 #include "renderer.h"
 #include <iostream>
 
-
-
 Renderer::Renderer()
 {
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -11,8 +9,6 @@ Renderer::Renderer()
 	#ifdef TEST_SDL_LOCK_OPTS
 	EM_ASM("SDL.defaults.copyOnLock = false; SDL.defaults.discardOnLock = true; SDL.defaults.opaqueFrontBuffer = false;");
 	#endif
-
-
 }
 
 Renderer::~Renderer()
