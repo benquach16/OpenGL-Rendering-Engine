@@ -1,5 +1,5 @@
 #pragma once
-#include <gl/gl.h>
+#include <GL/gl.h>
 class OpenGLDriver
 {
 public:

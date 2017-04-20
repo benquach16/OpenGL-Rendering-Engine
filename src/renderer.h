@@ -14,6 +14,6 @@ public:
 	void setup();
 	void run();
 protected:
-
+	SDL_Window *window;
 	SDL_Surface *screen;
 };

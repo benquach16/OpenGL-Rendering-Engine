@@ -3,6 +3,7 @@
 
 OpenGLDriver::OpenGLDriver()
 {
+	
 }
 
 OpenGLDriver::~OpenGLDriver()
