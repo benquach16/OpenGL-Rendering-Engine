@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
-
+#include "opengldriver.h"
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -15,6 +15,8 @@ public:
 	void setup();
 	void run();
 protected:
-	SDL_Window *window;
-	SDL_Surface *screen;
+	int m_width;
+	int m_height;
+	SDL_Window *m_window;
+	OpenGLDriver m_driver;
 };
