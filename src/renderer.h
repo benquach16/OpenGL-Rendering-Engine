@@ -1,8 +1,9 @@
 #pragma once
 
+#include "opengldriver.h"
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
-#include "opengldriver.h"
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif

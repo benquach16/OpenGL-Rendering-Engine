@@ -12,5 +12,5 @@ opengldriver: src/opengldriver.h src/opengldriver.cpp
 	em++ src/opengldriver.cpp $(FLAGS) -o bin/opengldriver.o
 
 local: src/main.cpp
-	g++ src/renderer.cpp src/opengldriver.cpp -lSDL2 src/main.cpp
+	g++ src/renderer.cpp src/opengldriver.cpp -lSDL2 -lGL -lGLEW src/main.cpp
 
