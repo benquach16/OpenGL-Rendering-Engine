@@ -16,8 +16,7 @@ public:
 	void setup();
 	void run();
 protected:
-	int m_width;
-	int m_height;
+	ScreenInfo m_screenInfo;
 	SDL_Window *m_window;
 	OpenGLDriver m_driver;
 };

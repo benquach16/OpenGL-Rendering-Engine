@@ -11,11 +11,22 @@ OpenGLDriver::~OpenGLDriver()
 {
 }
 
-void OpenGLDriver::initializeDriver()
+void OpenGLDriver::resize(ScreenInfo info)
 {
-	glGenFramebuffers(1, &m_albedo);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_albedo);
-	glClearColor(0.1,0.1,0.7,1.0);
-	glClear( GL_COLOR_BUFFER_BIT );
-	glClearDepth(1.0f);	
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_screenInfo.m_width, m_screenInfo.m_height, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_depth, 0);
+
+	
+
+	
 }
+
+void OpenGLDriver::run()
+{
+	//render scene here
+	glutSolidSphere(256, 16,16);
+}
+
