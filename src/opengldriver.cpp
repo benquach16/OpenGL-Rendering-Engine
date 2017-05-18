@@ -19,9 +19,11 @@ void OpenGLDriver::resize(ScreenInfo info)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_depth, 0);
 
-	
+		
+}
 
-	
+void OpenGLDriver::initializeDriver()
+{
 }
 
 void OpenGLDriver::run()
