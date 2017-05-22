@@ -29,6 +29,16 @@ void OpenGLDriver::initializeDriver()
 void OpenGLDriver::run()
 {
 	//render scene here
-	glutSolidSphere(256, 16,16);
+	//temp triangle
+	GLfloat verts[] = {
+		-0.5f, -0.5f, 0.0f,
+		0.5f, -0.5f, 0.0f,
+		0.0f,  0.5f, 0.0f
+	};  
+	GLuint vertices;
+	glGenBuffers(1, &vertices);
+	glBindBuffers(GL_ARRAY_BUFFERS, &vertices);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+	
 }
 

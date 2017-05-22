@@ -34,7 +34,7 @@ Renderer::~Renderer()
 void Renderer::run()
 {
 	//run opengl scene
-	
+	m_driver.run();
 	SDL_GL_SwapWindow( m_window );
 }
 
