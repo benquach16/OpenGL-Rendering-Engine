@@ -4,7 +4,11 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include "util.h"
+#include <fstream>
 
+
+//screen info struct
 struct ScreenInfo
 {
 	int m_width;
@@ -20,7 +24,7 @@ public:
 
 	void resize(ScreenInfo info);
 	void initializeDriver();
-	void initializeBuffers();
+	void loadShaders();
 	void run();
 	
 protected:
@@ -29,6 +33,11 @@ protected:
 	GLuint m_gbuffer;
 	GLuint m_depth;
 	GLuint m_albedo;
+
+	//temporary
+	//should make a class for shader programs
+	GLuint m_vert;
+	GLuint m_frag;
 
 	ScreenInfo m_screenInfo;
 };

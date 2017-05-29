@@ -22,8 +22,18 @@ void OpenGLDriver::resize(ScreenInfo info)
 		
 }
 
+
 void OpenGLDriver::initializeDriver()
 {
+}
+
+void OpenGLDriver::loadShaders()
+{
+	m_vert = glCreateShader(GL_VERTEX_SHADER);
+	m_frag = glCreateShader(GL_FRAGMENT_SHADER);
+	std::string vert = FileLoader::loadFile("shaders/vs_general.glsl");
+
+	
 }
 
 void OpenGLDriver::run()
@@ -37,8 +47,12 @@ void OpenGLDriver::run()
 	};  
 	GLuint vertices;
 	glGenBuffers(1, &vertices);
-	glBindBuffers(GL_ARRAY_BUFFERS, &vertices);
+	glBindBuffer(GL_ARRAY_BUFFER, vertices);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+
+	GLuint vertarray;
+	glGenVertexArrays(1, &vertarray);
+	glBindVertexArray(vertarray);
 	
 }
 
