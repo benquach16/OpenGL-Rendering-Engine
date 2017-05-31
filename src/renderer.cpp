@@ -18,11 +18,15 @@ Renderer::Renderer()
 	EM_ASM("SDL.defaults.copyOnLock = false; SDL.defaults.discardOnLock = true; SDL.defaults.opaqueFrontBuffer = false;");
 	#endif
 	auto context = SDL_GL_CreateContext(m_window);
+
+
 	if(!context)
 		std::cerr << "failed to create opengl context" << std::endl;
+	SDL_GL_SetSwapInterval(1);
 
-	m_driver.resize(m_screenInfo);
 	m_driver.initializeDriver();
+	m_driver.resize(m_screenInfo);
+
 }
 
 Renderer::~Renderer()
@@ -34,8 +38,15 @@ Renderer::~Renderer()
 void Renderer::run()
 {
 	//run opengl scene
+	while(1)
+	{
+		
+	glClear(GL_COLOR_BUFFER_BIT);
 	m_driver.run();
 	SDL_GL_SwapWindow( m_window );
+	}
+
+	
 }
 
 

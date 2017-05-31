@@ -14,6 +14,6 @@ renderer: src/renderer.h src/renderer.cpp
 opengldriver: src/opengldriver.h src/opengldriver.cpp
 	em++ src/opengldriver.cpp $(FLAGS) -o bin/opengldriver.o
 
-local: src/main.cpp
-	g++ src/renderer.cpp src/opengldriver.cpp -lSDL2 -lGL -lGLEW src/main.cpp
+local: src/main.cpp renderer opengldriver util
+	g++ -lSDL2 -lGL -lGLEW src/util.cpp src/renderer.cpp src/opengldriver.cpp src/main.cpp
 
