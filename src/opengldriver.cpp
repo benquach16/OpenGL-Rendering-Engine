@@ -1,5 +1,6 @@
 #include "opengldriver.h"
 
+using namespace std;
 
 OpenGLDriver::OpenGLDriver()
 {
@@ -28,6 +29,7 @@ void OpenGLDriver::initializeDriver()
 	glClearColor(0.0, 0.1, 0.6, 0.0);
 	glewExperimental = GL_TRUE;
 	glewInit();
+	loadShaders();
 }
 
 void OpenGLDriver::loadShaders()
@@ -36,6 +38,33 @@ void OpenGLDriver::loadShaders()
 	m_frag = glCreateShader(GL_FRAGMENT_SHADER);
 	std::string vert = FileLoader::loadFile("shaders/vs_general.glsl");
 	std::string frag = FileLoader::loadFile("shaders/fs_general.glsl");
+
+	const char *ptr = vert.c_str();
+	glShaderSource(m_vert, 1, &ptr, 0);
+	glCompileShader(m_vert);
+
+
+	int err = 0;
+	GLint result = GL_FALSE;
+
+	glGetShaderiv(m_vert, GL_COMPILE_STATUS, &result);
+	glGetShaderiv(m_vert, GL_INFO_LOG_LENGTH, &err);
+	if(err > 0)
+	{
+		cerr << "error with compiling vertex shader" << endl;
+	}
+
+	ptr = frag.c_str();
+	glShaderSource(m_frag, 1, &ptr, 0);
+	glCompileShader(m_frag);
+
+	glGetShaderiv(m_frag, GL_COMPILE_STATUS, &result);
+	glGetShaderiv(m_frag, GL_INFO_LOG_LENGTH, &err);
+
+	if(err > 0)
+	{
+		cerr << "error with compiling pixel shader" << endl;
+	}
 
 	
 	
