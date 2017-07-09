@@ -32,12 +32,14 @@ void OpenGLDriver::initializeDriver()
 	loadShaders();
 }
 
+string SHADERDIR="shaders/";
+
 void OpenGLDriver::loadShaders()
 {
 	m_vert = glCreateShader(GL_VERTEX_SHADER);
 	m_frag = glCreateShader(GL_FRAGMENT_SHADER);
-	std::string vert = FileLoader::loadFile("shaders/vs_general.glsl");
-	std::string frag = FileLoader::loadFile("shaders/fs_general.glsl");
+	std::string vert = FileLoader::loadFile(SHADERDIR+"vs_general.glsl");
+	std::string frag = FileLoader::loadFile(SHADERDIR+"fs_general.glsl");
 
 	const char *ptr = vert.c_str();
 	glShaderSource(m_vert, 1, &ptr, 0);
