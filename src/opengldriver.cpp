@@ -75,13 +75,13 @@ void OpenGLDriver::loadShaderProgram()
 	glLinkProgram(m_program);
 
 	GLuint result = GL_FALSE;
-	glUseProgram(m_program);
+
 	
 }
 
 void OpenGLDriver::run()
 {
-
+	glUseProgram(m_program);
 	GLuint vertarray;
 	glGenVertexArrays(1, &vertarray);
 	glBindVertexArray(vertarray);

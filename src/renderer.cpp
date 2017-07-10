@@ -39,11 +39,10 @@ Renderer::~Renderer()
 void Renderer::run()
 {
 	//run opengl scene
-		
+
 	glClear(GL_COLOR_BUFFER_BIT);
 	m_driver.run();
 	SDL_GL_SwapWindow( m_window );
-
 
 	
 }

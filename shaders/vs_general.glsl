@@ -1,4 +1,4 @@
-vec3 vertex_position;
+attribute vec3 vertex_position;
 
 void main()
 {
