@@ -5,6 +5,7 @@
 #include <GL/glut.h>
 
 #include "util.h"
+#include "glprogram.h"
 #include <fstream>
 
 

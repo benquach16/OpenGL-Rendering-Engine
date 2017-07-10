@@ -30,6 +30,8 @@ void OpenGLDriver::initializeDriver()
 	glewExperimental = GL_TRUE;
 	glewInit();
 	loadShaders();
+	//refactor this
+	loadShaderProgram();
 }
 
 
@@ -67,9 +69,14 @@ int OpenGLDriver::loadShader(std::string path, GLuint shaderType)
 
 void OpenGLDriver::loadShaderProgram()
 {
-	GLuint program = glCreateProgram();
-	glAttachShader(program, m_vert);
-	glAttachShader(program, m_frag);
+	m_program = glCreateProgram();
+	glAttachShader(m_program, m_vert);
+	glAttachShader(m_program, m_frag);
+	glLinkProgram(m_program);
+
+	GLuint result = GL_FALSE;
+	glUseProgram(m_program);
+	
 }
 
 void OpenGLDriver::run()

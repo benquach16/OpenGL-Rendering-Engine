@@ -1,7 +1,7 @@
 
 
 FLAGS=-g -s WASM=1 -s USE_SDL=2
-all: src/main.cpp renderer opengldriver util
+all: src/main.cpp renderer opengldriver util glprogram
 	cp src/index.html bin/index.html
 	em++ bin/renderer.o bin/opengldriver.o bin/util.o src/main.cpp $(FLAGS) -o bin/main.js --preload-file shaders/
 
