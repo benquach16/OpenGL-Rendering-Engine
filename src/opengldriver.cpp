@@ -65,6 +65,13 @@ int OpenGLDriver::loadShader(std::string path, GLuint shaderType)
 	return id;
 }
 
+void OpenGLDriver::loadShaderProgram()
+{
+	GLuint program = glCreateProgram();
+	glAttachShader(program, m_vert);
+	glAttachShader(program, m_frag);
+}
+
 void OpenGLDriver::run()
 {
 

@@ -28,6 +28,7 @@ public:
 
 	//returns shader id
 	int loadShader(std::string path, GLuint shaderType);
+	void loadShaderProgram();
 	void run();
 	
 protected:

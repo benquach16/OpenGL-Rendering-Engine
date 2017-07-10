@@ -14,8 +14,8 @@ renderer: src/renderer.h src/renderer.cpp
 opengldriver: src/opengldriver.h src/opengldriver.cpp
 	em++ src/opengldriver.cpp $(FLAGS) -o bin/opengldriver.o
 
-packageshaders: shaders/
-	em++ --preload-file shaders/
+glprogram: src/glprogram.cpp src/glprogram.h
+	em++ src/glprogram.cpp $(FLAGS) -o bin/glprogram.o
 
 local: src/main.cpp renderer opengldriver util
 	g++ -lSDL2 -lGL -lGLEW src/util.cpp src/renderer.cpp src/opengldriver.cpp src/main.cpp
