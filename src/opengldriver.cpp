@@ -18,7 +18,7 @@ void OpenGLDriver::resize(ScreenInfo info)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_screenInfo.m_width, m_screenInfo.m_height, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_depth, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_depth, 0);
 
 		
 }
@@ -56,7 +56,7 @@ int OpenGLDriver::loadShader(std::string path, GLuint shaderType)
 		//error!
 		int error = 0;
 		int logsize = 0;
-		cerr << "error with comping shader " + path << endl;
+		cerr << "error with compiling shader " + path << endl;
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &logsize);
 		//since we don't want to new anything
 		string errorLog(logsize, ' ');
@@ -69,6 +69,7 @@ int OpenGLDriver::loadShader(std::string path, GLuint shaderType)
 
 void OpenGLDriver::loadShaderProgram()
 {
+	GLProgram shaderProgram;
 	m_program = glCreateProgram();
 	glAttachShader(m_program, m_vert);
 	glAttachShader(m_program, m_frag);
