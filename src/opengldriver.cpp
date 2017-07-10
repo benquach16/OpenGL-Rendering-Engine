@@ -32,44 +32,37 @@ void OpenGLDriver::initializeDriver()
 	loadShaders();
 }
 
-string SHADERDIR="shaders/";
 
 void OpenGLDriver::loadShaders()
 {
-	m_vert = glCreateShader(GL_VERTEX_SHADER);
-	m_frag = glCreateShader(GL_FRAGMENT_SHADER);
-	std::string vert = FileLoader::loadFile(SHADERDIR+"vs_general.glsl");
-	std::string frag = FileLoader::loadFile(SHADERDIR+"fs_general.glsl");
+	m_vert = loadShader("shaders/vs_general.glsl", GL_VERTEX_SHADER);
+	m_frag = loadShader("shaders/fs_general.glsl", GL_FRAGMENT_SHADER);
+}
 
-	const char *ptr = vert.c_str();
-	glShaderSource(m_vert, 1, &ptr, 0);
-	glCompileShader(m_vert);
+int OpenGLDriver::loadShader(std::string path, GLuint shaderType)
+{
+	int id = glCreateShader(shaderType);
+	std::string contents = FileLoader::loadFile(path);
+	const char *ptr = contents.c_str();
+	glShaderSource(id, 1, &ptr, 0);
+	glCompileShader(id);
 
-
-	int err = 0;
 	GLint result = GL_FALSE;
-
-	glGetShaderiv(m_vert, GL_COMPILE_STATUS, &result);
-	glGetShaderiv(m_vert, GL_INFO_LOG_LENGTH, &err);
-	if(err > 0)
+	glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+	if(result == GL_FALSE)
 	{
-		cerr << "error with compiling vertex shader" << endl;
+		//error!
+		int error = 0;
+		int logsize = 0;
+		cerr << "error with comping shader " + path << endl;
+		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &logsize);
+		//since we don't want to new anything
+		string errorLog(logsize, ' ');
+		glGetShaderInfoLog(id, logsize, &logsize, &errorLog[0]);
+		cerr << errorLog.c_str() << endl;
+													   
 	}
-
-	ptr = frag.c_str();
-	glShaderSource(m_frag, 1, &ptr, 0);
-	glCompileShader(m_frag);
-
-	glGetShaderiv(m_frag, GL_COMPILE_STATUS, &result);
-	glGetShaderiv(m_frag, GL_INFO_LOG_LENGTH, &err);
-
-	if(err > 0)
-	{
-		cerr << "error with compiling pixel shader" << endl;
-	}
-
-	
-	
+	return id;
 }
 
 void OpenGLDriver::run()
