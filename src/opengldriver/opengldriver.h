@@ -4,7 +4,7 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-#include "util.h"
+#include "../util/util.h"
 #include "glprogram.h"
 #include <fstream>
 

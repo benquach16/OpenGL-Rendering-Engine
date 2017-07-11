@@ -1,6 +1,6 @@
 #pragma once
 
-#include "opengldriver.h"
+#include "opengldriver/opengldriver.h"
 #include <SDL2/SDL.h>
 #include <GL/gl.h>
 

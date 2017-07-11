@@ -9,7 +9,7 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-#include "util.h"
+#include "../util/util.h"
 
 //please don't expose gl things
 
