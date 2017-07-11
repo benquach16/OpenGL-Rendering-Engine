@@ -33,6 +33,9 @@ public:
 	void run();
 	
 protected:
+
+	std::vector<GLProgram> m_programs;
+	int m_currentProgram;
 	//temporary
 	//should make a frame buffer object
 	GLuint m_gbuffer;

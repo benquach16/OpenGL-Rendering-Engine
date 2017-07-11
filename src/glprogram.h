@@ -34,8 +34,6 @@ public:
 	void activateProgram();
 protected:
 	std::vector<int> m_shaderIds;
-	std::vector<GLProgram> m_programs;
-	int m_currentProgram;
 	int m_program;
 	
 };
