@@ -28,9 +28,11 @@ public:
 
 	void create();
 	void reset();
+	
 	int attachShader(std::string path, SHADER shaderType);
 	//beware of hotswapping programs, can have low performance
 	//try ubershaders?
+	void done();
 	void activateProgram();
 protected:
 	std::vector<int> m_shaderIds;

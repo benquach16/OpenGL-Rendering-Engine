@@ -10,6 +10,10 @@ OpenGLDriver::OpenGLDriver()
 
 OpenGLDriver::~OpenGLDriver()
 {
+	for(int i = 0; i < m_programs.size(); ++i)
+	{
+		delete m_programs[i];
+	}
 }
 
 void OpenGLDriver::resize(ScreenInfo info)
@@ -29,7 +33,6 @@ void OpenGLDriver::initializeDriver()
 	glClearColor(0.0, 0.1, 0.6, 0.0);
 	glewExperimental = GL_TRUE;
 	glewInit();
-	loadShaders();
 	//refactor this
 	loadShaderProgram();
 }
@@ -69,20 +72,17 @@ int OpenGLDriver::loadShader(std::string path, GLuint shaderType)
 
 void OpenGLDriver::loadShaderProgram()
 {
-	GLProgram shaderProgram;
-	m_program = glCreateProgram();
-	glAttachShader(m_program, m_vert);
-	glAttachShader(m_program, m_frag);
-	glLinkProgram(m_program);
-
-	GLuint result = GL_FALSE;
-
-	
+	auto program = new GLProgram();
+	program->attachShader("shaders/vs_general.glsl", GLProgram::SHADER::VERTEX);
+	program->attachShader("shaders/fs_general.glsl", GLProgram::SHADER::FRAGMENT);
+	program->done();
+	m_programs.push_back(program);
+	m_currentProgram = 0;
 }
 
 void OpenGLDriver::run()
 {
-	glUseProgram(m_program);
+	m_programs[m_currentProgram]->activateProgram();
 	GLuint vertarray;
 	glGenVertexArrays(1, &vertarray);
 	glBindVertexArray(vertarray);
