@@ -25,10 +25,6 @@ public:
 
 	void resize(ScreenInfo info);
 	void initializeDriver();
-	void loadShaders();
-
-	//returns shader id
-	int loadShader(std::string path, GLuint shaderType);
 	void loadShaderProgram();
 	void run();
 	

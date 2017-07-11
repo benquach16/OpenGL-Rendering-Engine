@@ -37,39 +37,6 @@ void OpenGLDriver::initializeDriver()
 	loadShaderProgram();
 }
 
-
-void OpenGLDriver::loadShaders()
-{
-	m_vert = loadShader("shaders/vs_general.glsl", GL_VERTEX_SHADER);
-	m_frag = loadShader("shaders/fs_general.glsl", GL_FRAGMENT_SHADER);
-}
-
-int OpenGLDriver::loadShader(std::string path, GLuint shaderType)
-{
-	int id = glCreateShader(shaderType);
-	std::string contents = FileLoader::loadFile(path);
-	const char *ptr = contents.c_str();
-	glShaderSource(id, 1, &ptr, 0);
-	glCompileShader(id);
-
-	GLint result = GL_FALSE;
-	glGetShaderiv(id, GL_COMPILE_STATUS, &result);
-	if(result == GL_FALSE)
-	{
-		//error!
-		int error = 0;
-		int logsize = 0;
-		cerr << "error with compiling shader " + path << endl;
-		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &logsize);
-		//since we don't want to new anything
-		string errorLog(logsize, ' ');
-		glGetShaderInfoLog(id, logsize, &logsize, &errorLog[0]);
-		cerr << errorLog.c_str() << endl;
-													   
-	}
-	return id;
-}
-
 void OpenGLDriver::loadShaderProgram()
 {
 	auto program = new GLProgram();
