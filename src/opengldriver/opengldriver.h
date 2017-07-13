@@ -38,11 +38,5 @@ protected:
 	GLuint m_depth;
 	GLuint m_albedo;
 
-	//temporary
-	//should make a class for shader programs
-	GLuint m_vert;
-	GLuint m_frag;
-	GLuint m_program;
-
 	ScreenInfo m_screenInfo;
 };

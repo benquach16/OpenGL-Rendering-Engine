@@ -18,13 +18,13 @@ OpenGLDriver::~OpenGLDriver()
 
 void OpenGLDriver::resize(ScreenInfo info)
 {
-
+	glGenFramebuffers(1, &m_gbuffer);
+	glBindFramebuffers(GL_FRAMEBUFFER, m_gbuffer);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_screenInfo.m_width, m_screenInfo.m_height, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_depth, 0);
-
-		
+	
 }
 
 
