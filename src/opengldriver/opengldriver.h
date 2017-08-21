@@ -24,6 +24,7 @@ public:
 	~OpenGLDriver();
 
 	void resize(ScreenInfo info);
+	void renderQuad();
 	void initializeDriver();
 	void loadShaderProgram();
 	void run();

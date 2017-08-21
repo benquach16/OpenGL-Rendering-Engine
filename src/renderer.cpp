@@ -18,8 +18,6 @@ Renderer::Renderer()
 	EM_ASM("SDL.defaults.copyOnLock = false; SDL.defaults.discardOnLock = true; SDL.defaults.opaqueFrontBuffer = false;");
 	#endif
 	auto context = SDL_GL_CreateContext(m_window);
-
-
 	if(!context)
 		std::cerr << "failed to create opengl context" << std::endl;
 	SDL_GL_SetSwapInterval(1);
@@ -41,7 +39,7 @@ void Renderer::run()
 	//run opengl scene
 
 	glClear(GL_COLOR_BUFFER_BIT);
-	m_driver.run();
+	m_driver.renderQuad();
 	SDL_GL_SwapWindow( m_window );
 
 	
