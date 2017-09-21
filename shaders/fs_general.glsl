@@ -1,3 +1,7 @@
+precision mediump float;
+
+varying vec2 g_Normal;
+
 
 void main()
 {
