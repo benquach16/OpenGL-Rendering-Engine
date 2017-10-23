@@ -37,12 +37,12 @@ Renderer::~Renderer()
 void Renderer::run()
 {
 	//run opengl scene
-
-	glClear(GL_COLOR_BUFFER_BIT);
-	m_driver.renderQuad();
-	SDL_GL_SwapWindow( m_window );
-
-	
+	while(true)
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+		m_driver.renderQuad();
+		SDL_GL_SwapWindow( m_window );
+	}	
 }
 
 
