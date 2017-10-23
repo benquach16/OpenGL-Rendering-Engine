@@ -1,7 +1,7 @@
 FLAGS_WEB=-g -s WASM=1 -s USE_SDL=2
 FLAGS_GCC=-g -lSDL2 -lGL -lGLEW -c
 
-all: dir src/main.cpp renderer opengldriver util glprogram
+all: src/main.cpp renderer opengldriver util glprogram glpipeline
 	cp src/index.html bin/index.html
 	em++ bin/web/renderer.o bin/web/glprogram.o bin/web/opengldriver.o bin/web/util.o src/main.cpp $(FLAGS_WEB) -o bin/main.js --preload-file shaders/
 
@@ -33,6 +33,6 @@ glpipeline: src/opengldriver/glpipeline.cpp src/opengldriver/glpipeline.h
 	em++ src/opengldriver/glpipeline.cpp $(FLAGS_WEB) -o bin/web/glpipeline.o
 	g++ src/opengldriver/glpipeline.cpp $(FLAGS_GCC) -o bin/linux/glpipeline.o
 
-local: src/main.cpp renderer opengldriver util
-	g++ -lSDL2 -lGL -lGLEW src/util/util.cpp src/renderer.cpp src/opengldriver/opengldriver.cpp src/opengldriver/glprogram.cpp src/main.cpp
+local: src/main.cpp renderer opengldriver util glprogram 
+	g++ -g -lSDL2 -lGL -lGLEW bin/linux/util.o bin/linux/renderer.o bin/linux/opengldriver.o bin/linux/glprogram.o src/main.cpp
 
