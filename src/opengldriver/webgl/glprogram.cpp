@@ -16,7 +16,6 @@ void GLProgram::create()
 {
 	reset();
 	m_program = glCreateProgram();
-
 }
 
 void GLProgram::reset()
@@ -39,7 +38,9 @@ int GLProgram::attachShader(std::string path, SHADER shaderType)
 	{
 		cerr << "shader program not initialized when trying to create shader " << path << endl;
 	}
+	m_type = shaderType;
 	int id = glCreateShader(shaderType==SHADER::VERTEX?GL_VERTEX_SHADER:GL_FRAGMENT_SHADER);
+	
 	std::string contents = FileLoader::loadFile(path);
 	const char *ptr = contents.c_str();
 	glShaderSource(id, 1, &ptr, 0);

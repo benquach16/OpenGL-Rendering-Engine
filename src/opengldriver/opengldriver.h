@@ -5,7 +5,7 @@
 #include <GL/glut.h>
 
 #include "../util/util.h"
-#include "glprogram.h"
+#include "opengl3/glpipeline.h"
 #include <fstream>
 
 
@@ -30,7 +30,7 @@ public:
 	void run();
 	
 protected:
-
+	std::vector<GLPipeline> m_programpipelines;
 	std::vector<GLProgram*> m_programs;
 	int m_currentProgram;
 	//temporary

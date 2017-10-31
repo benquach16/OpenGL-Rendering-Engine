@@ -34,8 +34,10 @@ public:
 	//try ubershaders?
 	void done();
 	void activateProgram();
+	SHADER getProgramType();
 protected:
 	std::vector<int> m_shaderIds;
 	int m_program;
+	SHADER m_type;
 	
 };
