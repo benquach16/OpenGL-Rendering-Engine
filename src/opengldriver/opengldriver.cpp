@@ -80,13 +80,11 @@ void OpenGLDriver::initializeDriver()
 void OpenGLDriver::loadShaderProgram()
 {
 
-	GLPipeline program;
-	program.attachShader("shaders/vs_general.glsl", GLPipeline::SHADER_TYPES::VERTEX);
-	auto program = new GLProgram();
-	program->attachShader("shaders/vs_general.glsl", GLProgram::SHADER::VERTEX);
-	program->attachShader("shaders/fs_general.glsl", GLProgram::SHADER::FRAGMENT);
-	program->done();
-	m_programs.push_back(program);
+	GLPipeline pipeline;
+	
+	pipeline.addShader("shaders/vs_general.glsl", GLProgram::SHADER_TYPES::VERTEX);
+	pipeline.addShader("shaders/fs_general.glsl", GLProgram::SHADER_TYPES::FRAGMENT);
+	m_programs.push_back(pipeline);
 	m_currentProgram = 0;
 }
 
@@ -100,7 +98,7 @@ void OpenGLDriver::renderQuad()
 	glBindTexture(GL_TEXTURE_2D, m_albedo);
 
 	
-	m_programs[m_currentProgram]->activateProgram();
+	//m_programs[m_currentProgram]->activateProgram();
 	GLuint vertarray;
 	glGenVertexArrays(1, &vertarray);
 	glBindVertexArray(vertarray);
