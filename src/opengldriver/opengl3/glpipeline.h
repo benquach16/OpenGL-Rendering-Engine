@@ -6,17 +6,16 @@
 #include <GL/glut.h>
 #include <vector>
 #include "../../util/util.h"
+#include "../opengl/glprogram.h"
 
 class GLPipeline {
+	friend class GLProgram;
 public:
-	enum SHADER_TYPES {
-		VERTEX,
-		GEOMETRY,
-		FRAGMENT
-	};
 	GLPipeline();
-	void attachShader(const std::string &path, GLuint shaderType);
+	void addShader(const GLProgram &program);
+	void addShader(std::string path, GLProgram::SHADER_TYPES type);
 private:
+	GLuint getShaderBit(GLProgram::SHADER_TYPES type);
 	GLuint m_pipeline;
-	std::vector<GLuint> m_programs;
+	std::vector<GLProgram> m_programs;
 };

@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <map>
 
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -11,33 +12,32 @@
 
 #include "../util/util.h"
 
-//please don't expose gl things
-
 //this class is a wrapper around the opengl program reference, it should
 //be able to be copied and point to the same program
 class GLProgram
 {
 public:
-	enum SHADER
+	enum SHADER_TYPES
 	{
 		VERTEX,
+		TESSELATION,
+		GEOMETRY,
 		FRAGMENT
 	};
-	GLProgram();
+	GLProgram(std::string path, SHADER_TYPES shaderType);
+	GLProgram& operator=(const GLProgram &rhs);
 	~GLProgram();
 
 	void create();
 	void reset();
-	
-	int attachShader(std::string path, SHADER shaderType);
-	//beware of hotswapping programs, can have low performance
-	//try ubershaders?
+	void setUniform(std::string uniform, int val);
 	void done();
-	void activateProgram();
-	SHADER getProgramType();
+	SHADER_TYPES getProgramType();
 protected:
-	std::vector<int> m_shaderIds;
-	int m_program;
-	SHADER m_type;
+	std::vector<GLuint> m_shaderIds;
+	GLuint m_program;
+	SHADER_TYPES m_shaderType;
+	std::string m_path;
+	std::map<std::string, int> m_uniforms;
 	
 };

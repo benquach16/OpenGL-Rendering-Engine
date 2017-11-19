@@ -20,10 +20,7 @@ OpenGLDriver::OpenGLDriver()
 
 OpenGLDriver::~OpenGLDriver()
 {
-	for(int i = 0; i < m_programs.size(); ++i)
-	{
-		delete m_programs[i];
-	}
+
 }
 
 void OpenGLDriver::resize(ScreenInfo info)
@@ -82,6 +79,9 @@ void OpenGLDriver::initializeDriver()
 //bootstrap code
 void OpenGLDriver::loadShaderProgram()
 {
+
+	GLPipeline program;
+	program.attachShader("shaders/vs_general.glsl", GLPipeline::SHADER_TYPES::VERTEX);
 	auto program = new GLProgram();
 	program->attachShader("shaders/vs_general.glsl", GLProgram::SHADER::VERTEX);
 	program->attachShader("shaders/fs_general.glsl", GLProgram::SHADER::FRAGMENT);

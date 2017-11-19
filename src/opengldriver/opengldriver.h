@@ -30,9 +30,9 @@ public:
 	void run();
 	
 protected:
-	std::vector<GLPipeline> m_programpipelines;
-	std::vector<GLProgram*> m_programs;
-	int m_currentProgram;
+	std::vector<GLPipeline> m_programPipelines;
+	int m_currentPipeline;
+	
 	//temporary
 	//should make a frame buffer object
 	GLuint m_gbuffer;
