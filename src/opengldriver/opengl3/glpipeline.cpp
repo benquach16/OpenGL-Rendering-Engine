@@ -16,10 +16,8 @@ void GLPipeline::addShader(const GLProgram &program)
 
 void GLPipeline::addShader(std::string path, GLProgram::SHADER_TYPES type)
 {
-	std::string contents = FileLoader::loadFile(path);
-	const char *ptr = contents.c_str();
-   
-	glUseProgramStages(m_pipeline, getShaderBit(type), 
+	GLProgram program(path, type);
+	addShader(program);
 }
 
 GLuint GLPipeline::getShaderBit(GLProgram::SHADER_TYPES type)

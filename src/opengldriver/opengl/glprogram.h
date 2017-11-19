@@ -10,7 +10,7 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-#include "../util/util.h"
+#include "../../util/util.h"
 
 //this class is a wrapper around the opengl program reference, it should
 //be able to be copied and point to the same program
