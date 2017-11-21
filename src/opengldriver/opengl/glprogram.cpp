@@ -15,7 +15,7 @@ GLProgram& GLProgram::operator=(const GLProgram &rhs)
 		this->m_program = rhs.m_program;
 	}
 	this->m_uniforms = rhs.m_uniforms;
-	this->m_shaderType = rhs.shaderType;
+	this->m_shaderType = rhs.m_shaderType;
 	return *this;
 }
 
@@ -47,19 +47,3 @@ void GLProgram::reset()
 		m_program = 0;
 	}
 }
-
-int GLProgram::attachShader(std::string path)
-{	
-	std::string contents = FileLoader::loadFile(path);
-	const char *ptr = contents.c_str();
-
-	auto id = glCreateShaderProgramv(GL_VERTEX_SHADER, 1, &ptr);
-	if(!program)
-	{
-		//error!
-		
-	}
-	m_shaderIds.push_back(id);
-	return id;
-}
-

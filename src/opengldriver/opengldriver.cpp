@@ -84,8 +84,8 @@ void OpenGLDriver::loadShaderProgram()
 	
 	pipeline.addShader("shaders/vs_general.glsl", GLProgram::SHADER_TYPES::VERTEX);
 	pipeline.addShader("shaders/fs_general.glsl", GLProgram::SHADER_TYPES::FRAGMENT);
-	m_programs.push_back(pipeline);
-	m_currentProgram = 0;
+	m_programPipelines.push_back(pipeline);
+	m_currentPipeline = 0;
 }
 
 void OpenGLDriver::renderQuad()

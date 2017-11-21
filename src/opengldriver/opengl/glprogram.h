@@ -16,6 +16,7 @@
 //be able to be copied and point to the same program
 class GLProgram
 {
+	friend class GLPipeline;
 public:
 	enum SHADER_TYPES
 	{

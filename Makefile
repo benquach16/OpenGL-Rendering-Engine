@@ -25,8 +25,8 @@ renderer: src/renderer.h src/renderer.cpp
 opengldriver: src/opengldriver/opengldriver.h src/opengldriver/opengldriver.cpp
 	g++ src/opengldriver/opengldriver.cpp $(FLAGS_GCC) -o bin/linux/opengldriver.o
 
-glprogram: src/opengldriver/glprogram.cpp src/opengldriver/glprogram.h
-	g++ src/opengldriver/glprogram.cpp $(FLAGS_GCC) -o bin/linux/glprogram.o
+glprogram: src/opengldriver/opengl/glprogram.cpp src/opengldriver/opengl/glprogram.h
+	g++ src/opengldriver/opengl/glprogram.cpp $(FLAGS_GCC) -o bin/linux/glprogram.o
 
 glpipeline: src/opengldriver/opengl3/glpipeline.cpp src/opengldriver/opengl3/glpipeline.h
 	g++ src/opengldriver/opengl3/glpipeline.cpp $(FLAGS_GCC) -o bin/linux/glpipeline.o

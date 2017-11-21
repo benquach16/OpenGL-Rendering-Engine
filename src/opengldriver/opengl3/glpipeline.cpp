@@ -7,9 +7,6 @@ GLPipeline::GLPipeline()
 
 void GLPipeline::addShader(const GLProgram &program)
 {
-	std::string contents = FileLoader::loadFile(path);
-	const char *ptr = contents.c_str();
-
 	glUseProgramStages(m_pipeline, getShaderBit(program.m_shaderType), program.m_program);
 	m_programs.push_back(program);
 }
