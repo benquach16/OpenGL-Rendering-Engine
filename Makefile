@@ -2,7 +2,7 @@ FLAGS_WEB=-g -s WASM=1 -s USE_SDL=2
 FLAGS_GCC=-g -lSDL2 -lGL -lGLEW -c
 
 linux: src/main.cpp renderer opengldriver util glprogram glpipeline
-	g++ -g -lSDL2 -lGL -lGLEW bin/linux/util.o bin/linux/renderer.o bin/linux/opengldriver.o bin/linux/glprogram.o src/main.cpp
+	g++ -g -lSDL2 -lGL -lGLEW bin/linux/util.o bin/linux/renderer.o bin/linux/opengldriver.o bin/linux/glprogram.o bin/linux/glpipeline.o src/main.cpp
 
 web: src/main.cpp renderer opengldriver util glprogram glpipeline
 	cp src/index.html bin/index.html
