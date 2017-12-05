@@ -6,10 +6,11 @@ GLfloat quad[] = {
 	-1.0f, -1.0f, 0.0f,
 	1.0f, -1.0f, 0.0f,
 	-1.0f, 1.0f, 0.0f,
-
+/*
 	-1.0f, 1.0f, 0.0f,
 	1.0f, -1.0f, 0.0f,
 	1.0f, 1.0f, 0.0f
+*/
 };
 
 OpenGLDriver::OpenGLDriver()
@@ -85,6 +86,7 @@ void OpenGLDriver::loadShaderProgram()
 	pipeline.addShader("shaders/vs_general.glsl", GLProgram::SHADER_TYPES::VERTEX);
 	pipeline.addShader("shaders/fs_general.glsl", GLProgram::SHADER_TYPES::FRAGMENT);
 	m_programPipelines.push_back(pipeline);
+	pipeline.bindPipeline();
 	m_currentPipeline = 0;
 }
 

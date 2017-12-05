@@ -35,6 +35,7 @@ public:
 	void done();
 	SHADER_TYPES getProgramType();
 protected:
+	static GLuint getShaderBit(SHADER_TYPES type);
 	std::vector<GLuint> m_shaderIds;
 	GLuint m_program;
 	SHADER_TYPES m_shaderType;

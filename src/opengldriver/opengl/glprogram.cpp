@@ -29,12 +29,16 @@ void GLProgram::create()
 	reset();
 	std::string contents = FileLoader::loadFile(m_path);
 	const char *ptr = contents.c_str();
-
-	auto id = glCreateShaderProgramv(GL_VERTEX_SHADER, 1, &ptr);
+	auto id = glCreateShaderProgramv(getShaderBit(m_shaderType), 1, &ptr);
 	if(!id)
 	{
 		//error!
-		
+		cerr << "error creating shaderprogram" << endl;
+	}
+	auto err = glGetError();
+	if(err != GL_NO_ERROR)
+	{
+		cerr << "error creating shaderprogram " << err << endl;
 	}
 	m_program = id;
 }
@@ -46,4 +50,18 @@ void GLProgram::reset()
 		glDeleteProgram(m_program);
 		m_program = 0;
 	}
+}
+
+GLuint GLProgram::getShaderBit(GLProgram::SHADER_TYPES type)
+{ 
+	switch (type)
+	{
+	case GLProgram::SHADER_TYPES::VERTEX:
+		return GL_VERTEX_SHADER;
+	case GLProgram::SHADER_TYPES::GEOMETRY:
+		return GL_GEOMETRY_SHADER;
+	case GLProgram::SHADER_TYPES::FRAGMENT:
+		return GL_FRAGMENT_SHADER;
+	}
+	return -1;
 }

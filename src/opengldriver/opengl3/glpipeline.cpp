@@ -1,4 +1,7 @@
+#include <iostream>
 #include "glpipeline.h"
+
+using namespace std;
 
 GLPipeline::GLPipeline()
 {
@@ -8,6 +11,11 @@ GLPipeline::GLPipeline()
 void GLPipeline::addShader(const GLProgram &program)
 {
 	glUseProgramStages(m_pipeline, getShaderBit(program.m_shaderType), program.m_program);
+	auto err = glGetError();
+	if(err != GL_NO_ERROR)
+	{
+		cerr << "error using shader pipeline: " << err << " on program " << program.m_path << endl;
+	}
 	m_programs.push_back(program);
 }
 
@@ -15,6 +23,11 @@ void GLPipeline::addShader(std::string path, GLProgram::SHADER_TYPES type)
 {
 	GLProgram program(path, type);
 	addShader(program);
+}
+
+void GLPipeline::bindPipeline()
+{
+	glBindProgramPipeline(m_pipeline);
 }
 
 GLuint GLPipeline::getShaderBit(GLProgram::SHADER_TYPES type)

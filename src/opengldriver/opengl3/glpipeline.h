@@ -14,6 +14,7 @@ public:
 	GLPipeline();
 	void addShader(const GLProgram &program);
 	void addShader(std::string path, GLProgram::SHADER_TYPES type);
+	void bindPipeline();
 private:
 	GLuint getShaderBit(GLProgram::SHADER_TYPES type);
 	GLuint m_pipeline;
