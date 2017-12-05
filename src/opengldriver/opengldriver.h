@@ -35,6 +35,8 @@ protected:
 	
 	//temporary
 	//should make a frame buffer object
+	GLuint m_buffers[3];
+	
 	GLuint m_gbuffer;
 	GLuint m_depth;
 	GLuint m_albedo;

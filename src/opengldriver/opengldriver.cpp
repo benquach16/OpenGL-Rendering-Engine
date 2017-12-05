@@ -27,26 +27,16 @@ OpenGLDriver::~OpenGLDriver()
 void OpenGLDriver::resize(ScreenInfo info)
 {
 
+	glGenTextures(1, &m_depth);
+	glBindTexture(GL_TEXTURE_2D, m_depth);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info.m_width, info.m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glGenTextures(1, &m_albedo);
+	glBindTexture(GL_TEXTURE_2D, m_albedo);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info.m_width, info.m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	
 	glGenFramebuffers(1, &m_gbuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
-
-	
-	glGenFramebuffers(1, &m_depth);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_depth);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_screenInfo.m_width, m_screenInfo.m_height, 0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_depth, 0);
-
-	glGenFramebuffers(1, &m_albedo);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_albedo);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_screenInfo.m_width, m_screenInfo.m_height, 0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_albedo, 0);
-
-	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
-	glDrawBuffers(2, attachments);
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
