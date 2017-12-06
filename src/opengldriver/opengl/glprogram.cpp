@@ -52,6 +52,23 @@ void GLProgram::reset()
 	}
 }
 
+void GLProgram::setUniform(const std::string &uniform, int val)
+{
+	if(!m_program)
+	{
+		cerr << "attempted to set uniform on uninitialized program" << endl;
+		return;
+	}
+	m_uniforms[uniform] = val;
+	auto location = glGetUniformLocation(m_program, uniform.c_str());
+	auto err = glGetError();
+	if(err != GL_NO_ERROR)
+	{
+		cerr << "GLProgram: uniform error " << err << endl;
+	}
+	glProgramUniform1i(m_program, location, val);
+}
+
 GLuint GLProgram::getShaderBit(GLProgram::SHADER_TYPES type)
 { 
 	switch (type)

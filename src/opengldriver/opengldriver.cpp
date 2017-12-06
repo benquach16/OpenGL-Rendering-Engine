@@ -70,7 +70,6 @@ void OpenGLDriver::initializeDriver()
 //bootstrap code
 void OpenGLDriver::loadShaderProgram()
 {
-
 	GLPipeline pipeline;
 	
 	pipeline.addShader("shaders/vs_general.glsl", GLProgram::SHADER_TYPES::VERTEX);

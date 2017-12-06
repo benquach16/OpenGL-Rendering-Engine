@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <map>
+#include <unordered_map>
 
 #include <GL/glew.h>
 #include <GL/gl.h>
@@ -31,8 +31,7 @@ public:
 
 	void create();
 	void reset();
-	void setUniform(std::string uniform, int val);
-	void done();
+	void setUniform(const std::string &uniform, int val);
 	SHADER_TYPES getProgramType();
 protected:
 	static GLuint getShaderBit(SHADER_TYPES type);
@@ -40,6 +39,6 @@ protected:
 	GLuint m_program;
 	SHADER_TYPES m_shaderType;
 	std::string m_path;
-	std::map<std::string, int> m_uniforms;
+	std::unordered_map<std::string, int> m_uniforms;
 	
 };
