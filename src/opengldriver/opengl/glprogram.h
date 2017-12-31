@@ -35,6 +35,8 @@ public:
 	SHADER_TYPES getProgramType();
 protected:
 	static GLuint getShaderBit(SHADER_TYPES type);
+	//reimplementation of glCreateShaderProgramv
+	int createShaderProgram(GLenum type, const char **str);
 	std::vector<GLuint> m_shaderIds;
 	GLuint m_program;
 	SHADER_TYPES m_shaderType;

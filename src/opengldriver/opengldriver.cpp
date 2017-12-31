@@ -84,10 +84,10 @@ void OpenGLDriver::loadShaderProgram()
 {
 	GLPipeline pipeline;
 	
-	pipeline.addShader("shaders/vs_general.glsl", GLProgram::SHADER_TYPES::VERTEX);
-	pipeline.addShader("shaders/fs_framebuffer.glsl", GLProgram::SHADER_TYPES::FRAGMENT);
+	pipeline.addShader("shaders/framebuffer.vert", GLProgram::SHADER_TYPES::VERTEX);
+	pipeline.addShader("shaders/framebuffer.frag", GLProgram::SHADER_TYPES::FRAGMENT);
 	m_programPipelines.push_back(pipeline);
-	//pipeline.setUniform(GLProgram::SHADER_TYPES::FRAGMENT, "depth", m_depth);
+	pipeline.setUniform(GLProgram::SHADER_TYPES::FRAGMENT, "depth", m_depth);
 	pipeline.bindPipeline();
 	m_currentPipeline = 0;
 }
@@ -119,8 +119,6 @@ void OpenGLDriver::renderQuad()
 
 	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
 
-	
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDisableVertexAttribArray(0);
 	

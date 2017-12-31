@@ -11,7 +11,7 @@ GLPipeline::GLPipeline()
 GLPipeline::~GLPipeline()
 {
 	for(auto i : m_programs)
-	{
+	{	
 		delete i.second;
 	}
 }
@@ -20,9 +20,11 @@ void GLPipeline::addShader(const GLProgram *program)
 {
 	glUseProgramStages(m_pipeline, getShaderBit(program->m_shaderType), program->m_program);
 	auto err = glGetError();
-	if(err != GL_NO_ERROR)
+	while(err != GL_NO_ERROR)
 	{
-		cerr << "error using shader pipeline: " << err << " on program " << program->m_path << endl;
+		cerr << "Error adding shader to program pipeline: " << err << " on shader program " << program->m_path << endl;
+		err = glGetError();
+		
 	}
 	//m_programs.push_back(program);
 }
