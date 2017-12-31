@@ -2,16 +2,25 @@
 
 using namespace std;
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i)) 
+//0: vertex pos
+//1: texcoord
 GLfloat quad[] = {
+    //upper left vert
 	-1.0f, -1.0f, 0.0f,
-
-	
+	0.0f, 0.0f,
 	1.0f, -1.0f, 0.0f,
+	1.0f, 0.0f,
 	-1.0f, 1.0f, 0.0f,
+	0.0f, 1.0f,
 
+	//bottom right vert
+	1.0f, 1.0f, 0.0f,
+	1.0f, 1.0f,
 	-1.0f, 1.0f, 0.0f,
+	0.0f, 1.0f,
 	1.0f, -1.0f, 0.0f,
-	1.0f, 1.0f, 0.0f
+	1.0f, 0.0f
 };
 
 
@@ -78,7 +87,7 @@ void OpenGLDriver::loadShaderProgram()
 	pipeline.addShader("shaders/vs_general.glsl", GLProgram::SHADER_TYPES::VERTEX);
 	pipeline.addShader("shaders/fs_framebuffer.glsl", GLProgram::SHADER_TYPES::FRAGMENT);
 	m_programPipelines.push_back(pipeline);
-	pipeline.setUniform(GLProgram::SHADER_TYPES::FRAGMENT, "depth", m_depth);
+	//pipeline.setUniform(GLProgram::SHADER_TYPES::FRAGMENT, "depth", m_depth);
 	pipeline.bindPipeline();
 	m_currentPipeline = 0;
 }
@@ -100,10 +109,18 @@ void OpenGLDriver::renderQuad()
 	GLuint vertices;
 	glGenBuffers(1, &vertices);
 	glBindBuffer(GL_ARRAY_BUFFER, vertices);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
 	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*5, BUFFER_OFFSET(0));
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float)*5, BUFFER_OFFSET(12));
+	
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
+
+	
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDisableVertexAttribArray(0);
 	
