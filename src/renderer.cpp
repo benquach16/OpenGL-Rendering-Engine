@@ -17,6 +17,9 @@ Renderer::Renderer()
 	#ifdef TEST_SDL_LOCK_OPTS
 	EM_ASM("SDL.defaults.copyOnLock = false; SDL.defaults.discardOnLock = true; SDL.defaults.opaqueFrontBuffer = false;");
 	#endif
+
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 	auto context = SDL_GL_CreateContext(m_window);
 	if(!context)
 		std::cerr << "failed to create opengl context" << std::endl;
