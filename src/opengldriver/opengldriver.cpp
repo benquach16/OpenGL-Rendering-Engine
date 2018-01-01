@@ -92,6 +92,15 @@ void OpenGLDriver::loadShaderProgram()
 	m_currentPipeline = 0;
 }
 
+void OpenGLDriver::render()
+{
+}
+
+void OpenGLDriver::renderScene()
+{
+	
+}
+
 void OpenGLDriver::renderQuad()
 {
 
