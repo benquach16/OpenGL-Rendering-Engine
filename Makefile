@@ -1,35 +1,31 @@
-FLAGS_WEB=-g -s WASM=1 -s USE_SDL=2
-FLAGS_GCC=-g -lSDL2 -lGL -lGLEW -c
+TARGET_EXEC ?= a.out
 
-linux: src/main.cpp renderer opengldriver util glprogram glpipeline
-	g++ -g -lSDL2 -lGL -lGLEW bin/linux/util.o bin/linux/renderer.o bin/linux/opengldriver.o bin/linux/glprogram.o bin/linux/glpipeline.o src/main.cpp
+BUILD_DIR ?= ./bin/linux
+SRC_DIRS ?= ./src
 
-web: src/main.cpp renderer opengldriver util glprogram glpipeline
-	cp src/index.html bin/index.html
-	em++ bin/web/renderer.o bin/web/glprogram.o bin/web/opengldriver.o bin/web/util.o src/main.cpp $(FLAGS_WEB) -o bin/main.js --preload-file shaders/
+SRCS := $(shell find $(SRC_DIRS) -name *.cpp)
+OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
+DEPS := $(OBJS:.o=.d)
 
-dir:
-	mkdir bin
-	mkdir bin/web
-	mkdir bin/linux
+INC_DIRS := $(shell find $(SRC_DIRS) -type d)
+INC_FLAGS := $(addprefix -I,$(INC_DIRS))
+
+CPPFLAGS ?= $(INC_FLAGS) -MMD -MP -lSDL2 -lGL -lGLEW -g
+
+$(TARGET_EXEC): $(OBJS)
+	$(CXX) $(CPPFLAGS) $(OBJS) -o $@ $(LDFLAGS) 
+
+# c++ source
+$(BUILD_DIR)/%.cpp.o: %.cpp
+	$(MKDIR_P) $(dir $@)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+
+.PHONY: clean
 
 clean:
-	rm -rf bin
+	$(RM) -r $(BUILD_DIR)
 
-util: src/util/util.h src/util/util.cpp
-	g++ src/util/util.cpp $(FLAGS_GCC) -o bin/linux/util.o
+-include $(DEPS)
 
-renderer: src/renderer.h src/renderer.cpp
-	g++ src/renderer.cpp $(FLAGS_GCC) -o bin/linux/renderer.o
-
-opengldriver: src/opengldriver/opengldriver.h src/opengldriver/opengldriver.cpp
-	g++ src/opengldriver/opengldriver.cpp $(FLAGS_GCC) -o bin/linux/opengldriver.o
-
-glprogram: src/opengldriver/opengl/glprogram.cpp src/opengldriver/opengl/glprogram.h
-	g++ src/opengldriver/opengl/glprogram.cpp $(FLAGS_GCC) -o bin/linux/glprogram.o
-
-glpipeline: src/opengldriver/opengl3/glpipeline.cpp src/opengldriver/opengl3/glpipeline.h
-	g++ src/opengldriver/opengl3/glpipeline.cpp $(FLAGS_GCC) -o bin/linux/glpipeline.o
-
-
-
+MKDIR_P ?= mkdir -p

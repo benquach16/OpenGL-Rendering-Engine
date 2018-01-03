@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "renderer.h"
+#include "renderer/renderer.h"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>

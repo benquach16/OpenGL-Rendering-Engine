@@ -13,9 +13,9 @@
 struct Vertex
 {
 	float x, y, z;
-	float nx, ny, nx;
+	float nx, ny, nz;
 	float tx, ty;
-}
+};
 
 class Mesh
 {
@@ -29,5 +29,5 @@ public:
 private:
 	std::vector<Vertex> m_vertices;
 	std::vector<int> m_indices;
-    
+	
 };
