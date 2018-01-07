@@ -4,7 +4,6 @@
 
 using namespace std;
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i)) 
 
 Mesh::Mesh()
 {
@@ -16,25 +15,26 @@ void Mesh::load(const char* str)
 {
 	objl::Loader loader;
 	loader.LoadFile(str);
-	
+	for(int i = 0; i < loader.LoadedMeshes[0].Vertices.size(); ++i)
+	{
+		auto vert = loader.LoadedMeshes[0].Vertices[i];
+		float x, y, z;
+		float nx, ny, nz;
+		float tx, ty;
+
+		x = vert.Position.X;
+		y = vert.Position.Y;
+		z = vert.Position.Z;
+
+		nx = vert.Normal.X;
+		ny = vert.Normal.Y;
+		nz = vert.Normal.Z;
+
+		
+	}
 }
 
-void Mesh::load(std::vector<Vertex> vertices)
-{
-	
-}
 
 void Mesh::render()
 {
-	//vertex_position
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(0));
-
-	//normals
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(12));
-
-	//tex_coords
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), BUFFER_OFFSET(24));	
 }

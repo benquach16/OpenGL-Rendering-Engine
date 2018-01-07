@@ -5,7 +5,9 @@
 #include <GL/glut.h>
 
 #include "../util/util.h"
+#include "opengl/glprogram.h"
 #include "opengl3/glpipeline.h"
+#include "rendermanager.h"
 #include <fstream>
 
 
