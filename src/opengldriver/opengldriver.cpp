@@ -92,13 +92,21 @@ void OpenGLDriver::loadShaderProgram()
 	m_currentPipeline = 0;
 }
 
+void OpenGLDriver::submit(VertexBuffer* buf)
+{
+	m_rendermanager.push(buf);
+}
+
 void OpenGLDriver::render()
 {
+	renderScene();
+	//renderQuad();
 }
 
 void OpenGLDriver::renderScene()
 {
 	
+	m_rendermanager.render();
 }
 
 void OpenGLDriver::renderQuad()

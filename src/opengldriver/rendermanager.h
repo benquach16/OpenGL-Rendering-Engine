@@ -24,9 +24,9 @@ public:
 	//and batch similar meshes
 	//we also need to make sure that if we're rendering transparents, we sort them front to back
 	void sort();
-
+	void push(VertexBuffer* buf) { m_queue.push(buf); }
 private:
-	std::queue<VertexBuffer> m_queue;
+	std::queue<VertexBuffer*> m_queue;
 	
 	
 };

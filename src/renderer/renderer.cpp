@@ -28,7 +28,13 @@ Renderer::Renderer()
 	m_driver.initializeDriver();
 
 	m_driver.resize(m_screenInfo);
-
+	
+}
+void Renderer::setup()
+{
+	//setup render scene
+	mesh = new Mesh;
+	mesh->load("assets/monkey.obj");
 }
 
 Renderer::~Renderer()
@@ -39,11 +45,13 @@ Renderer::~Renderer()
 
 void Renderer::run()
 {
+	setup();
 	//run opengl scene
 	while(true)
 	{
+		m_driver.submit(mesh->getBuffer());
 		glClear(GL_COLOR_BUFFER_BIT);
-		m_driver.renderQuad();
+		m_driver.render();
 		SDL_GL_SwapWindow( m_window );
 	}	
 }

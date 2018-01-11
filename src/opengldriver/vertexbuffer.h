@@ -11,6 +11,6 @@ struct VertexLayout {
 
 struct VertexBuffer {	
 	std::vector<VertexLayout> m_vertices;
-	std::vector<int> m_indices;
+	std::vector<unsigned int> m_indices;
 	
 };

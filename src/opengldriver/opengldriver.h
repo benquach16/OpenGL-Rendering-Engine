@@ -8,6 +8,7 @@
 #include "opengl/glprogram.h"
 #include "opengl3/glpipeline.h"
 #include "rendermanager.h"
+#include "vertexbuffer.h"
 #include <fstream>
 
 
@@ -28,13 +29,14 @@ public:
 	void resize(ScreenInfo info);
 	//generic render that renders everything
 	void render();
-	void renderScene();
-	void renderQuad();
+
 	void initializeDriver();
 	void loadShaderProgram();
 	void run();
-	
+	void submit(VertexBuffer* buf);
 protected:
+	void renderScene();
+	void renderQuad();
 	std::vector<GLPipeline> m_programPipelines;
 	int m_currentPipeline;
 	
@@ -47,4 +49,6 @@ protected:
 	GLuint m_albedo;
 
 	ScreenInfo m_screenInfo;
+
+	RenderManager m_rendermanager;
 };
