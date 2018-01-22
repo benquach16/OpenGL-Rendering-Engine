@@ -17,6 +17,9 @@ Renderer::Renderer()
 	#ifdef TEST_SDL_LOCK_OPTS
 	EM_ASM("SDL.defaults.copyOnLock = false; SDL.defaults.discardOnLock = true; SDL.defaults.opaqueFrontBuffer = false;");
 	#endif
+
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 	auto context = SDL_GL_CreateContext(m_window);
 	if(!context)
 		std::cerr << "failed to create opengl context" << std::endl;
@@ -25,7 +28,13 @@ Renderer::Renderer()
 	m_driver.initializeDriver();
 
 	m_driver.resize(m_screenInfo);
-
+	
+}
+void Renderer::setup()
+{
+	//setup render scene
+	mesh = new Mesh;
+	mesh->load("assets/monkey.obj");
 }
 
 Renderer::~Renderer()
@@ -36,11 +45,13 @@ Renderer::~Renderer()
 
 void Renderer::run()
 {
+	setup();
 	//run opengl scene
 	while(true)
 	{
+		m_driver.submit(mesh->getBuffer());
 		glClear(GL_COLOR_BUFFER_BIT);
-		m_driver.renderQuad();
+		m_driver.render();
 		SDL_GL_SwapWindow( m_window );
 	}	
 }

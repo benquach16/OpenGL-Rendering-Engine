@@ -2,15 +2,28 @@
 
 using namespace std;
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i)) 
+//0: vertex pos
+//1: texcoord
 GLfloat quad[] = {
+    //upper left vert
 	-1.0f, -1.0f, 0.0f,
+	0.0f, 0.0f,
 	1.0f, -1.0f, 0.0f,
+	1.0f, 0.0f,
 	-1.0f, 1.0f, 0.0f,
+	0.0f, 1.0f,
 
+	//bottom right vert
+	1.0f, 1.0f, 0.0f,
+	1.0f, 1.0f,
 	-1.0f, 1.0f, 0.0f,
+	0.0f, 1.0f,
 	1.0f, -1.0f, 0.0f,
-	1.0f, 1.0f, 0.0f
+	1.0f, 0.0f
 };
+
+
 
 OpenGLDriver::OpenGLDriver()
 {
@@ -20,35 +33,22 @@ OpenGLDriver::OpenGLDriver()
 
 OpenGLDriver::~OpenGLDriver()
 {
-	for(int i = 0; i < m_programs.size(); ++i)
-	{
-		delete m_programs[i];
-	}
+
 }
 
 void OpenGLDriver::resize(ScreenInfo info)
 {
 
+	glGenTextures(1, &m_depth);
+	glBindTexture(GL_TEXTURE_2D, m_depth);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info.m_width, info.m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glGenTextures(1, &m_albedo);
+	glBindTexture(GL_TEXTURE_2D, m_albedo);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info.m_width, info.m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	
 	glGenFramebuffers(1, &m_gbuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
-
-	
-	glGenFramebuffers(1, &m_depth);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_depth);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_screenInfo.m_width, m_screenInfo.m_height, 0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_depth, 0);
-
-	glGenFramebuffers(1, &m_albedo);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_albedo);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_screenInfo.m_width, m_screenInfo.m_height, 0, GL_RGB, GL_FLOAT, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_albedo, 0);
-
-	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
-	glDrawBuffers(2, attachments);
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
@@ -82,12 +82,31 @@ void OpenGLDriver::initializeDriver()
 //bootstrap code
 void OpenGLDriver::loadShaderProgram()
 {
-	auto program = new GLProgram();
-	program->attachShader("shaders/vs_general.glsl", GLProgram::SHADER::VERTEX);
-	program->attachShader("shaders/fs_general.glsl", GLProgram::SHADER::FRAGMENT);
-	program->done();
-	m_programs.push_back(program);
-	m_currentProgram = 0;
+	GLPipeline pipeline;
+	
+	pipeline.addShader("shaders/framebuffer.vert", GLProgram::SHADER_TYPES::VERTEX);
+	pipeline.addShader("shaders/framebuffer.frag", GLProgram::SHADER_TYPES::FRAGMENT);
+	m_programPipelines.push_back(pipeline);
+	pipeline.setUniform(GLProgram::SHADER_TYPES::FRAGMENT, "depth", m_depth);
+	pipeline.bindPipeline();
+	m_currentPipeline = 0;
+}
+
+void OpenGLDriver::submit(VertexBuffer* buf)
+{
+	m_rendermanager.push(buf);
+}
+
+void OpenGLDriver::render()
+{
+	renderScene();
+	//renderQuad();
+}
+
+void OpenGLDriver::renderScene()
+{
+	
+	m_rendermanager.render();
 }
 
 void OpenGLDriver::renderQuad()
@@ -100,17 +119,23 @@ void OpenGLDriver::renderQuad()
 	glBindTexture(GL_TEXTURE_2D, m_albedo);
 
 	
-	m_programs[m_currentProgram]->activateProgram();
+	//m_programs[m_currentProgram]->activateProgram();
 	GLuint vertarray;
 	glGenVertexArrays(1, &vertarray);
 	glBindVertexArray(vertarray);
 	GLuint vertices;
 	glGenBuffers(1, &vertices);
 	glBindBuffer(GL_ARRAY_BUFFER, vertices);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
 	
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*5, BUFFER_OFFSET(0));
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float)*5, BUFFER_OFFSET(12));
+	
+
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
+
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDisableVertexAttribArray(0);
 	

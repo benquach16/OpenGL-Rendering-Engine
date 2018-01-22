@@ -5,7 +5,10 @@
 #include <GL/glut.h>
 
 #include "../util/util.h"
+#include "opengl/glprogram.h"
 #include "opengl3/glpipeline.h"
+#include "rendermanager.h"
+#include "vertexbuffer.h"
 #include <fstream>
 
 
@@ -24,20 +27,28 @@ public:
 	~OpenGLDriver();
 
 	void resize(ScreenInfo info);
-	void renderQuad();
+	//generic render that renders everything
+	void render();
+
 	void initializeDriver();
 	void loadShaderProgram();
 	void run();
-	
+	void submit(VertexBuffer* buf);
 protected:
-	std::vector<GLPipeline> m_programpipelines;
-	std::vector<GLProgram*> m_programs;
-	int m_currentProgram;
+	void renderScene();
+	void renderQuad();
+	std::vector<GLPipeline> m_programPipelines;
+	int m_currentPipeline;
+	
 	//temporary
 	//should make a frame buffer object
+	GLuint m_buffers[3];
+	
 	GLuint m_gbuffer;
 	GLuint m_depth;
 	GLuint m_albedo;
 
 	ScreenInfo m_screenInfo;
+
+	RenderManager m_rendermanager;
 };

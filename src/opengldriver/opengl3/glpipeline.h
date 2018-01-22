@@ -5,18 +5,22 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 #include <vector>
+#include <unordered_map>
 #include "../../util/util.h"
+#include "../opengl/glprogram.h"
 
 class GLPipeline {
+	friend class GLProgram;
 public:
-	enum SHADER_TYPES {
-		VERTEX,
-		GEOMETRY,
-		FRAGMENT
-	};
 	GLPipeline();
-	void attachShader(const std::string &path, GLuint shaderType);
+	~GLPipeline();
+	void addShader(std::string path, GLProgram::SHADER_TYPES type);
+	void bindPipeline();
+	void setUniform(GLProgram::SHADER_TYPES type, const std::string &uniform, int val);
 private:
+	void addShader(const GLProgram *program);
+	GLuint getShaderBit(GLProgram::SHADER_TYPES type);
 	GLuint m_pipeline;
-	std::vector<GLuint> m_programs;
+	//std::vector<GLProgram> m_programs;
+	std::unordered_map<GLProgram::SHADER_TYPES, GLProgram*> m_programs;
 };
