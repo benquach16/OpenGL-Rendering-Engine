@@ -25,6 +25,23 @@ public:
 		GEOMETRY,
 		FRAGMENT
 	};
+
+	enum ATTRIBUTE_TYPE
+	{
+		INT,
+		FLOAT,
+		MAT3,
+		MAT4,
+		VEC2,
+		VEC3,
+		VEC4
+	};
+
+	enum UNIFORM_TYPE
+	{
+		TEX
+	};
+	
 	GLProgram(std::string path, SHADER_TYPES shaderType);
 	GLProgram& operator=(const GLProgram &rhs);
 	~GLProgram();
@@ -35,6 +52,8 @@ public:
 	SHADER_TYPES getProgramType();
 protected:
 	static GLuint getShaderBit(SHADER_TYPES type);
+	void getShaderInputs();
+	
 	//reimplementation of glCreateShaderProgramv
 	int createShaderProgram(GLenum type, const char **str);
 	std::vector<GLuint> m_shaderIds;
@@ -42,5 +61,5 @@ protected:
 	SHADER_TYPES m_shaderType;
 	std::string m_path;
 	std::unordered_map<std::string, int> m_uniforms;
-	
+	std::vector<std::string> m_attributes;
 };

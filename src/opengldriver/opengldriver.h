@@ -37,7 +37,7 @@ public:
 protected:
 	void renderScene();
 	void renderQuad();
-	std::vector<GLPipeline> m_programPipelines;
+	std::vector<GLPipeline*> m_programPipelines;
 	int m_currentPipeline;
 	
 	//temporary

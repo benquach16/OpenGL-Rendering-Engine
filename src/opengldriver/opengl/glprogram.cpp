@@ -45,6 +45,7 @@ void GLProgram::create()
 		err = glGetError();
 	}
 	m_program = id;
+	getShaderInputs();
 }
 
 void GLProgram::reset()
@@ -129,3 +130,46 @@ GLuint GLProgram::getShaderBit(GLProgram::SHADER_TYPES type)
 	}
 	return -1;
 }
+
+void GLProgram::getShaderInputs()
+{
+
+	//get shader inputs
+	GLint numActiveAttribs = 0;
+	GLint numActiveUniforms = 0;
+	glGetProgramInterfaceiv(m_program, GL_PROGRAM_INPUT, GL_ACTIVE_RESOURCES, &numActiveAttribs);
+	glGetProgramInterfaceiv(m_program, GL_UNIFORM, GL_ACTIVE_RESOURCES, &numActiveUniforms);
+
+
+	std::vector<GLchar> nameData(256);
+	std::vector<GLenum> properties;
+	properties.push_back(GL_NAME_LENGTH);
+	properties.push_back(GL_TYPE);
+	properties.push_back(GL_ARRAY_SIZE);
+	std::vector<GLint> values(properties.size());
+	
+	for(int i = 0; i < numActiveAttribs; ++i)
+	{
+		glGetProgramResourceiv(m_program, GL_PROGRAM_INPUT, i, properties.size(),
+							   &properties[0], values.size(), NULL, &values[0]);
+
+		nameData.resize(values[0]); //The length of the name.
+		glGetProgramResourceName(m_program, GL_PROGRAM_INPUT, i, nameData.size(), NULL, &nameData[0]);
+		std::string name((char*)&nameData[0], nameData.size() - 1);
+		cout << m_path << " found input " << name << endl;
+		
+	}
+
+	for(int i = 0; i < numActiveUniforms; ++i)
+	{
+		glGetProgramResourceiv(m_program, GL_UNIFORM, i, properties.size(),
+							   &properties[0], values.size(), NULL, &values[0]);
+
+		nameData.resize(values[0]); //The length of the name.
+		glGetProgramResourceName(m_program, GL_UNIFORM, i, nameData.size(), NULL, &nameData[0]);
+		std::string name((char*)&nameData[0], nameData.size() - 1);
+		cout << m_path << " found uniform " << name << endl;		
+	}
+}
+
+

@@ -5,15 +5,23 @@ using namespace std;
 
 GLPipeline::GLPipeline()
 {
-	glGenProgramPipelines(1, &m_pipeline);
+	create();
 }
 
 GLPipeline::~GLPipeline()
 {
-	for(auto i : m_programs)
-	{	
-		delete i.second;
-	}
+	//important - delete all programs
+	reset();
+}
+
+void GLPipeline::create()
+{
+	glGenProgramPipelines(1, &m_pipeline);
+}
+
+void GLPipeline::reset()
+{
+	glDeleteProgramPipelines(1, &m_pipeline);
 }
 
 void GLPipeline::addShader(const GLProgram *program)
@@ -31,6 +39,13 @@ void GLPipeline::addShader(const GLProgram *program)
 
 void GLPipeline::addShader(std::string path, GLProgram::SHADER_TYPES type)
 {
+	if(m_programs.find(type) != m_programs.end())
+	{
+		//found a shader of this type already
+		//for now just don't do anything
+		return;
+	}
+	
 	auto program = new GLProgram(path, type);
 	m_programs[type] = program;
 	addShader(program);
