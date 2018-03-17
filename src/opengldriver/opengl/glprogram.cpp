@@ -64,7 +64,7 @@ void GLProgram::setUniform(const std::string &uniform, int val)
 		cerr << "attempted to set uniform on uninitialized program" << endl;
 		return;
 	}
-	m_uniforms[uniform] = val;
+	//m_uniforms[uniform] = val;
 	auto location = glGetUniformLocation(m_program, uniform.c_str());
 	auto err = glGetError();
 	if(err != GL_NO_ERROR)

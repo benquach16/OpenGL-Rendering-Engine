@@ -4,6 +4,8 @@ in vec3 vertex_position;
 in vec3 normal;
 in vec2 tex_coord;
 
+layout(location = 0) out vec3 vColor;
+
 vec3 light_pos = vec3(-1.0, 1.0, 0.0);
 
 void main()
@@ -12,5 +14,5 @@ void main()
 	vec3 L = light_pos - vertex_position;
 	float LN = dot(L, normal);
 	color = color * LN;
-	gl_FragColor=color;
+	vColor=color.xyz;
 }

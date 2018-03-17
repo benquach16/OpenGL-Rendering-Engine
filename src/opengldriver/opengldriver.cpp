@@ -46,7 +46,10 @@ void OpenGLDriver::resize(ScreenInfo info)
 
 	glGenTextures(1, &m_depth);
 	glBindTexture(GL_TEXTURE_2D, m_depth);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info.m_width, info.m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, info.m_width, info.m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	
 	glGenTextures(1, &m_albedo);
 	glBindTexture(GL_TEXTURE_2D, m_albedo);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info.m_width, info.m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
@@ -71,8 +74,10 @@ void OpenGLDriver::resize(ScreenInfo info)
 		}
 		cerr << "framebuffer error" << endl;
 	}
-
-
+	else
+	{
+		cerr << "framebuffer success" << endl;
+	}
 }
 
 
@@ -104,27 +109,40 @@ void OpenGLDriver::loadShaderProgram()
 
 void OpenGLDriver::submit(VertexBuffer* buf)
 {
-
+	//cerr << "pushing vertex buffer" << endl;
 	m_rendermanager.push(buf);
 }
 
 void OpenGLDriver::render()
 {
-	//renderScene();
+	renderScene();
 	renderQuad();
 }
 
 void OpenGLDriver::renderScene()
 {
 	m_programPipelines[1]->bindPipeline();
+
+	glViewport(0, 0, 800, 600);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	m_rendermanager.render();
 }
 
 void OpenGLDriver::renderQuad()
 {
-	m_programPipelines[0]->bindPipeline();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, 800, 600);
+	m_programPipelines[0]->bindPipeline();
+	m_programPipelines[0]->setUniform(GLProgram::SHADER_TYPES::FRAGMENT, "depth", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_depth);
+		
+	auto err = glGetError();
+	if(err != GL_NO_ERROR)
+	{
+		cerr << "OpenGLDriver: render issue " << err << endl;
+	}
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
