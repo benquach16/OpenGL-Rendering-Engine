@@ -7,4 +7,6 @@ class Camera
 {
 public:
 	
+private:
+	Mat4 m_transformation;
 };

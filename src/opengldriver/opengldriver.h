@@ -23,6 +23,14 @@ ScreenInfo() : m_width(2), m_height(2){}
 class OpenGLDriver
 {
 public:
+	enum RENDER_BUFFERS
+	{
+		DEPTH,
+		NORMAL,
+		ALBEDO,
+		COUNT
+	};
+	
 	OpenGLDriver();
 	~OpenGLDriver();
 

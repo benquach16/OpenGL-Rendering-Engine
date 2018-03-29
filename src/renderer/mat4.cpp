@@ -3,11 +3,12 @@
 Mat4::Mat4()
 {
 	clear();
+	setIdentity();
 }
 
-Mat4& Mat4::translate(Vector3 vector)
+Mat4& Mat4::translate(const Vector3 &vector)
 {
-	
+	return *this;
 }
 
 void Mat4::clear()
@@ -19,13 +20,15 @@ void Mat4::clear()
 	}	
 }
 
-Mat4 Mat4::operator*(const Mat4 &rhs)
-{	
+Mat4& Mat4::operator*(const Mat4 &rhs)
+{
+	
 	return *this;
 }
 
-Mat4 Mat4::operator*=(const Mat4 &rhs)
+Mat4& Mat4::operator*=(const Mat4 &rhs)
 {
+	
 	return *this;
 }
 
@@ -48,9 +51,23 @@ float& Mat4::get(int i, int j)
 	return mat[get1Dfrom2D(i,j)];
 }
 
-int Mat4::get1Dfrom2D(int i, int j)
+Mat4& Mat4::buildPerspectiveMatrix(float aspectRatio, float fov, float near, float far)
 {
-	return i+j*n;
+	clear();
+	float h = tan(fov*0.5);
+	float w = h / aspectRatio;
+
+	mat[0] = w;
+	mat[5] = h;
+	mat[10] = far/(far-near);
+	mat[14] = (-near*far)/(far-near);
+	
+	return *this;
 }
 
+int Mat4::get1Dfrom2D(int i, int j)
+{
+	//row major
+	return i+j*n;
+}
 

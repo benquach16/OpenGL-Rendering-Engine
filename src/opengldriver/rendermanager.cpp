@@ -1,6 +1,11 @@
 #include "rendermanager.h"
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i)) 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
+RenderManager::RenderManager() 
+{
+	
+}
 
 void RenderManager::render()
 {	

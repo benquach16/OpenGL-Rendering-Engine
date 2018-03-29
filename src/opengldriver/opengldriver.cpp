@@ -95,13 +95,13 @@ void OpenGLDriver::initializeDriver()
 void OpenGLDriver::loadShaderProgram()
 {
 	auto quad = new GLPipeline;
-	quad->addShader("shaders/framebuffer.vert", GLProgram::SHADER_TYPES::VERTEX);
-	quad->addShader("shaders/framebuffer.frag", GLProgram::SHADER_TYPES::FRAGMENT);
+	quad->addShader("shaders/framebuffer.vert", GLProgram::SHADER_TYPE::VERTEX);
+	quad->addShader("shaders/framebuffer.frag", GLProgram::SHADER_TYPE::FRAGMENT);
 	m_programPipelines.push_back(quad);
 
 	auto scene = new GLPipeline;
-	scene->addShader("shaders/phong.vert", GLProgram::SHADER_TYPES::VERTEX);
-	scene->addShader("shaders/phong.frag", GLProgram::SHADER_TYPES::FRAGMENT);
+	scene->addShader("shaders/phong.vert", GLProgram::SHADER_TYPE::VERTEX);
+	scene->addShader("shaders/phong.frag", GLProgram::SHADER_TYPE::FRAGMENT);
 	m_programPipelines.push_back(scene);
 
 	m_currentPipeline = 0;
@@ -134,7 +134,7 @@ void OpenGLDriver::renderQuad()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, 800, 600);
 	m_programPipelines[0]->bindPipeline();
-	m_programPipelines[0]->setUniform(GLProgram::SHADER_TYPES::FRAGMENT, "depth", 0);
+	m_programPipelines[0]->setUniform(GLProgram::SHADER_TYPE::FRAGMENT, "depth", 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_depth);
 		

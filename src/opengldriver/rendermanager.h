@@ -7,6 +7,7 @@
 #include <vector>
 #include <queue>
 #include "vertexbuffer.h"
+#include "renderstate.h"
 
 class RenderManager
 {
@@ -17,8 +18,10 @@ public:
 		STATIC,
 		DYNAMIC
 	};
+	RenderManager();
 	void render();
-
+	void renderDeferred();
+	void renderForward();
 	//this function is intended to batch and sort draw calls so that we can maxmimize gpu cache usage
 	//we need to group meshes by textures
 	//and batch similar meshes
@@ -27,6 +30,6 @@ public:
 	void push(VertexBuffer* buf) { m_queue.push(buf); }
 private:
 	std::queue<VertexBuffer*> m_queue;
-	
-	
+	std::vector<RenderState> m_renderStates;
+	unsigned m_currentRenderstate;
 };

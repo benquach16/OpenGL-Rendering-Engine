@@ -2,7 +2,7 @@
 
 using namespace std;
 
-GLProgram::GLProgram(std::string path, SHADER_TYPES shaderType) : m_program(0), m_shaderType(shaderType), m_path(path)
+GLProgram::GLProgram(std::string path, SHADER_TYPE shaderType) : m_program(0), m_shaderType(shaderType), m_path(path)
 {
 	create();
 }
@@ -64,7 +64,14 @@ void GLProgram::setUniform(const std::string &uniform, int val)
 		cerr << "attempted to set uniform on uninitialized program" << endl;
 		return;
 	}
-	//m_uniforms[uniform] = val;
+	auto it = m_uniforms.find(uniform);
+	if(it == m_uniforms.end())
+	{
+		cerr << "attempted to set unknown uniform " << uniform << endl;
+		return;
+	}
+	
+	
 	auto location = glGetUniformLocation(m_program, uniform.c_str());
 	auto err = glGetError();
 	if(err != GL_NO_ERROR)
@@ -73,6 +80,7 @@ void GLProgram::setUniform(const std::string &uniform, int val)
 	}
 	glProgramUniform1i(m_program, location, val);
 }
+
 
 
 //create our own glCreateShaderProgram function because we want our own logging
@@ -117,18 +125,40 @@ int GLProgram::createShaderProgram(GLenum type, const char **str)
 	}
 }
 
-GLuint GLProgram::getShaderBit(GLProgram::SHADER_TYPES type)
+GLuint GLProgram::getShaderBit(GLProgram::SHADER_TYPE type)
 { 
 	switch (type)
 	{
-	case GLProgram::SHADER_TYPES::VERTEX:
+	case GLProgram::SHADER_TYPE::VERTEX:
 		return GL_VERTEX_SHADER;
-	case GLProgram::SHADER_TYPES::GEOMETRY:
+	case GLProgram::SHADER_TYPE::GEOMETRY:
 		return GL_GEOMETRY_SHADER;
-	case GLProgram::SHADER_TYPES::FRAGMENT:
+	case GLProgram::SHADER_TYPE::FRAGMENT:
 		return GL_FRAGMENT_SHADER;
 	}
 	return -1;
+}
+
+GLProgram::ATTRIBUTE_UNIFORM_TYPE GLProgram::getAttributeFromGL(GLint type)
+{
+	switch(type)
+	{
+	case GL_INT:
+		return INT;
+	case GL_FLOAT:
+		return FLOAT;
+	case GL_FLOAT_VEC2:
+		return VEC2;
+	case GL_FLOAT_VEC3:
+		return VEC3;
+	case GL_FLOAT_VEC4:
+		return VEC4;
+	case GL_FLOAT_MAT3:
+		return MAT3;
+	case GL_FLOAT_MAT4:
+		return MAT4;
+	}
+	return INT;
 }
 
 void GLProgram::getShaderInputs()
@@ -147,7 +177,7 @@ void GLProgram::getShaderInputs()
 	properties.push_back(GL_TYPE);
 	properties.push_back(GL_ARRAY_SIZE);
 	std::vector<GLint> values(properties.size());
-	
+	cout << m_path << " has " << numActiveAttribs << " attributes and " << numActiveUniforms << " uniforms." << endl;
 	for(int i = 0; i < numActiveAttribs; ++i)
 	{
 		glGetProgramResourceiv(m_program, GL_PROGRAM_INPUT, i, properties.size(),
@@ -157,6 +187,7 @@ void GLProgram::getShaderInputs()
 		glGetProgramResourceName(m_program, GL_PROGRAM_INPUT, i, nameData.size(), NULL, &nameData[0]);
 		std::string name((char*)&nameData[0], nameData.size() - 1);
 		cout << m_path << " found input " << name << endl;
+		auto type = values[1];
 		
 	}
 
@@ -168,7 +199,8 @@ void GLProgram::getShaderInputs()
 		nameData.resize(values[0]); //The length of the name.
 		glGetProgramResourceName(m_program, GL_UNIFORM, i, nameData.size(), NULL, &nameData[0]);
 		std::string name((char*)&nameData[0], nameData.size() - 1);
-		cout << m_path << " found uniform " << name << endl;		
+		cout << m_path << " found uniform " << name << endl;
+		auto type = values[1];
 	}
 }
 
