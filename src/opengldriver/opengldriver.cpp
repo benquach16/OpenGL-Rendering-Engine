@@ -27,7 +27,7 @@ GLfloat quad[] = {
 
 OpenGLDriver::OpenGLDriver()
 {
-
+	glEnable(GL_CULL_FACE);  
 	
 }
 
@@ -116,21 +116,30 @@ void OpenGLDriver::submit(VertexBuffer* buf)
 void OpenGLDriver::render()
 {
 	renderScene();
-	renderQuad();
+	//renderQuad();
 }
 
 void OpenGLDriver::renderScene()
 {
 	m_programPipelines[1]->bindPipeline();
 
+	//mat = view * mat;
+	glm::mat4 view = glm::lookAt(
+		glm::vec3(2.5f, 2.5f, 5.0f),
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.f);
+	Projection =Projection * view;
+	//m_programPipelines[1]->setUniform(GLProgram::SHADER_TYPE::VERTEX, "MVP", Projection);
 	glViewport(0, 0, 800, 600);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	m_rendermanager.render();
 }
 
 void OpenGLDriver::renderQuad()
 {
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, 800, 600);
 	m_programPipelines[0]->bindPipeline();

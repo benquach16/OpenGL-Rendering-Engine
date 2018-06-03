@@ -4,6 +4,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+#include <glm/glm.hpp>
 #include <vector>
 #include <unordered_map>
 #include <memory>
@@ -18,7 +19,8 @@ public:
 	void addShader(std::string path, GLProgram::SHADER_TYPE type);
 	void bindPipeline();
 	void setUniform(GLProgram::SHADER_TYPE type, const std::string &uniform, int val);
-
+	void setUniform(GLProgram::SHADER_TYPE type, const std::string &uniform, Mat4 mat);
+	void setUniform(GLProgram::SHADER_TYPE type, const std::string &uniform, glm::mat4 val);	
 	void create();
 	void reset();
 private:

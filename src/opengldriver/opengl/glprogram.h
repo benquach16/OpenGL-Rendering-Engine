@@ -10,7 +10,11 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "../../util/util.h"
+#include "../../renderer/mat4.h"
 
 //this class is a wrapper around the opengl program reference, it should
 //be able to be copied and point to the same program
@@ -50,6 +54,7 @@ public:
 	void reset();
 	void setUniform(const std::string &uniform, int val);
 	void setUniform(const std::string &uniform, Mat4 val);
+	void setUniform(const std::string &uniform, glm::mat4 val);
 	SHADER_TYPE getProgramType();
 protected:
 	static GLuint         getShaderBit(SHADER_TYPE type);

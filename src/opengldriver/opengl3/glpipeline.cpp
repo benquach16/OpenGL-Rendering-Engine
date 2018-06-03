@@ -62,7 +62,22 @@ void GLPipeline::setUniform(GLProgram::SHADER_TYPE type, const std::string &unif
 	{
 		m_programs[type]->setUniform(uniform, val);
 	}
+}
 
+void GLPipeline::setUniform(GLProgram::SHADER_TYPE type, const std::string &uniform, Mat4 val)
+{
+	if(m_programs[type])
+	{
+		m_programs[type]->setUniform(uniform, val);
+	}
+}
+
+void GLPipeline::setUniform(GLProgram::SHADER_TYPE type, const std::string &uniform, glm::mat4 val)
+{
+	if(m_programs[type])
+	{
+		m_programs[type]->setUniform(uniform, val);
+	}	
 }
 
 GLuint GLPipeline::getShaderBit(GLProgram::SHADER_TYPE type)
