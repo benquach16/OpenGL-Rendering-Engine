@@ -1,10 +1,13 @@
 #version 330 core
 uniform sampler2D depth;
-in vec2 tex_coord;
+
+in vec2 v_texCoord;
 
 void main()
 {
-	vec4 color = texture(depth, tex_coord);
-	gl_FragColor = vec4(tex_coord.x, tex_coord.y , 1.0, 1.0);
-	//gl_FragColor=color;
+	vec4 color = texture(depth, v_texCoord);
+	//gl_FragColor = vec4(v_texCoord.x, v_texCoord.y , 1.0, 1.0);
+	//gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+	gl_FragColor = color;
+	
 }

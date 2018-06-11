@@ -2,7 +2,7 @@
 
 using namespace std;
 
-GLProgram::GLProgram(std::string path, SHADER_TYPES shaderType) : m_program(0), m_shaderType(shaderType), m_path(path)
+GLProgram::GLProgram(std::string path, SHADER_TYPE shaderType) : m_program(0), m_shaderType(shaderType), m_path(path)
 {
 	create();
 }
@@ -45,6 +45,7 @@ void GLProgram::create()
 		err = glGetError();
 	}
 	m_program = id;
+	getShaderInputs();
 }
 
 void GLProgram::reset()
@@ -63,16 +64,83 @@ void GLProgram::setUniform(const std::string &uniform, int val)
 		cerr << "attempted to set uniform on uninitialized program" << endl;
 		return;
 	}
-	m_uniforms[uniform] = val;
+	auto it = m_uniforms.find(uniform);
+	if(it == m_uniforms.end())
+	{
+		cerr << "attempted to set unknown uniform " << uniform << endl;
+		return;
+	}
+	if(it->second != ATTRIBUTE_UNIFORM_TYPE::INT)
+	{
+		cerr << "attempted to set incorrect uniform type, got INT" << endl;
+		return;
+	}
+	
 	auto location = glGetUniformLocation(m_program, uniform.c_str());
 	auto err = glGetError();
 	if(err != GL_NO_ERROR)
 	{
 		cerr << "GLProgram: uniform error " << err << endl;
 	}
-	glProgramUniform1i(m_program, location, val);
+	glProgramUniform1i(m_program, location, GLint(val));
 }
 
+
+void GLProgram::setUniform(const std::string &uniform, Mat4 val)
+{
+	if(!m_program)
+	{
+		cerr << "attempted to set uniform on uninitialized program" << endl;
+		return;
+	}
+	auto it = m_uniforms.find(uniform);
+	if(it == m_uniforms.end())
+	{
+		cerr << "attempted to set unknown uniform " << uniform << endl;
+		return;
+	}	
+	if(it->second != ATTRIBUTE_UNIFORM_TYPE::MAT4)
+	{
+		cerr << "attempted to set incorrect uniform type, got MAT4" << endl;
+		return;
+	}	
+	auto location = glGetUniformLocation(m_program, uniform.c_str());
+	auto err = glGetError();
+	if(err != GL_NO_ERROR)
+	{
+		cerr << "GLProgram: uniform error " << err << endl;
+	}
+	
+	glProgramUniformMatrix4fv(m_program, location, 1, false, val.data());
+}
+
+void GLProgram::setUniform(const std::string &uniform, glm::mat4 &val)
+{
+	if(!m_program)
+	{
+		cerr << "attempted to set uniform on uninitialized program" << endl;
+		return;
+	}
+	auto it = m_uniforms.find(uniform);
+	if(it == m_uniforms.end())
+	{
+		cerr << "attempted to set unknown uniform " << uniform << endl;
+		return;
+	}	
+	if(it->second != ATTRIBUTE_UNIFORM_TYPE::MAT4)
+	{
+		cerr << "attempted to set incorrect uniform type, got MAT4" << endl;
+		return;
+	}	
+	auto location = glGetUniformLocation(m_program, uniform.c_str());
+	auto err = glGetError();
+	if(err != GL_NO_ERROR)
+	{
+		cerr << "GLProgram: uniform error " << err << endl;
+	}
+	
+	glProgramUniformMatrix4fv(m_program, location, 1, false, glm::value_ptr(val));
+}
 
 //create our own glCreateShaderProgram function because we want our own logging
 int GLProgram::createShaderProgram(GLenum type, const char **str)
@@ -116,16 +184,84 @@ int GLProgram::createShaderProgram(GLenum type, const char **str)
 	}
 }
 
-GLuint GLProgram::getShaderBit(GLProgram::SHADER_TYPES type)
+GLuint GLProgram::getShaderBit(GLProgram::SHADER_TYPE type)
 { 
 	switch (type)
 	{
-	case GLProgram::SHADER_TYPES::VERTEX:
+	case GLProgram::SHADER_TYPE::VERTEX:
 		return GL_VERTEX_SHADER;
-	case GLProgram::SHADER_TYPES::GEOMETRY:
+	case GLProgram::SHADER_TYPE::GEOMETRY:
 		return GL_GEOMETRY_SHADER;
-	case GLProgram::SHADER_TYPES::FRAGMENT:
+	case GLProgram::SHADER_TYPE::FRAGMENT:
 		return GL_FRAGMENT_SHADER;
 	}
 	return -1;
 }
+
+GLProgram::ATTRIBUTE_UNIFORM_TYPE GLProgram::getAttributeFromGL(GLint type)
+{
+	switch(type)
+	{
+	case GL_INT:
+		return INT;
+	case GL_FLOAT:
+		return FLOAT;
+	case GL_FLOAT_VEC2:
+		return VEC2;
+	case GL_FLOAT_VEC3:
+		return VEC3;
+	case GL_FLOAT_VEC4:
+		return VEC4;
+	case GL_FLOAT_MAT3:
+		return MAT3;
+	case GL_FLOAT_MAT4:
+		return MAT4;
+	}
+	return INT;
+}
+
+void GLProgram::getShaderInputs()
+{
+
+	//get shader inputs
+	GLint numActiveAttribs = 0;
+	GLint numActiveUniforms = 0;
+	glGetProgramInterfaceiv(m_program, GL_PROGRAM_INPUT, GL_ACTIVE_RESOURCES, &numActiveAttribs);
+	glGetProgramInterfaceiv(m_program, GL_UNIFORM, GL_ACTIVE_RESOURCES, &numActiveUniforms);
+
+
+	std::vector<GLchar> nameData(256);
+	std::vector<GLenum> properties;
+	properties.push_back(GL_NAME_LENGTH);
+	properties.push_back(GL_TYPE);
+	properties.push_back(GL_ARRAY_SIZE);
+	std::vector<GLint> values(properties.size());
+	cout << m_path << " has " << numActiveAttribs << " attributes and " << numActiveUniforms << " uniforms." << endl;
+	for(int i = 0; i < numActiveAttribs; ++i)
+	{
+		glGetProgramResourceiv(m_program, GL_PROGRAM_INPUT, i, properties.size(),
+							   &properties[0], values.size(), NULL, &values[0]);
+
+		nameData.resize(values[0]); //The length of the name.
+		glGetProgramResourceName(m_program, GL_PROGRAM_INPUT, i, nameData.size(), NULL, &nameData[0]);
+		std::string name((char*)&nameData[0], nameData.size() - 1);
+		cout << m_path << " found input " << name << endl;
+		auto type = values[1];
+		m_attributes[name] = getAttributeFromGL(type);		
+	}
+
+	for(int i = 0; i < numActiveUniforms; ++i)
+	{
+		glGetProgramResourceiv(m_program, GL_UNIFORM, i, properties.size(),
+							   &properties[0], values.size(), NULL, &values[0]);
+
+		nameData.resize(values[0]); //The length of the name.
+		glGetProgramResourceName(m_program, GL_UNIFORM, i, nameData.size(), NULL, &nameData[0]);
+		std::string name((char*)&nameData[0], nameData.size() - 1);
+		cout << m_path << " found uniform " << name << endl;
+		auto type = values[1];
+		m_uniforms[name] = getAttributeFromGL(type);
+	}
+}
+
+

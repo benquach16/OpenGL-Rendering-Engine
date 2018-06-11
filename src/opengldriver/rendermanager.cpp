@@ -1,11 +1,14 @@
 #include "rendermanager.h"
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i)) 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
+RenderManager::RenderManager() 
+{
+	
+}
 
 void RenderManager::render()
-{
-
-	
+{	
 	while(!m_queue.empty())
 	{
 		
@@ -28,10 +31,9 @@ void RenderManager::render()
 		GLuint vertices;
 		glGenBuffers(1, &vertices);
 		glBindBuffer(GL_ARRAY_BUFFER, vertices);
-
+		GLuint indices;
 		if(index_size)
 		{
-			GLuint indices;
 			glGenBuffers(1, &indices);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indices);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, object->m_indices.size() * sizeof(unsigned int), &object->m_indices[0], GL_STATIC_DRAW);
@@ -54,6 +56,7 @@ void RenderManager::render()
 		{
 			//generate identity index buffer if no indices found
 			glDrawArrays(GL_TRIANGLES, 0, vertex_size);
+			glDeleteBuffers(1, &vertices);
 		}
 		else
 		{
@@ -64,10 +67,13 @@ void RenderManager::render()
 			GL_UNSIGNED_INT,   // type
 			(void*)0           // element array buffer offset
 			);
+			glDeleteBuffers(1, &indices);
+			glDeleteBuffers(1, &vertices);
 		}
 
 
-		glDisableVertexAttribArray(0);	
+		glDisableVertexAttribArray(0);
+
 	}
 
 }

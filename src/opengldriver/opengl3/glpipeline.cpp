@@ -5,15 +5,23 @@ using namespace std;
 
 GLPipeline::GLPipeline()
 {
-	glGenProgramPipelines(1, &m_pipeline);
+	create();
 }
 
 GLPipeline::~GLPipeline()
 {
-	for(auto i : m_programs)
-	{	
-		delete i.second;
-	}
+	//important - delete all programs
+	reset();
+}
+
+void GLPipeline::create()
+{
+	glGenProgramPipelines(1, &m_pipeline);
+}
+
+void GLPipeline::reset()
+{
+	glDeleteProgramPipelines(1, &m_pipeline);
 }
 
 void GLPipeline::addShader(const GLProgram *program)
@@ -29,8 +37,15 @@ void GLPipeline::addShader(const GLProgram *program)
 	//m_programs.push_back(program);
 }
 
-void GLPipeline::addShader(std::string path, GLProgram::SHADER_TYPES type)
+void GLPipeline::addShader(std::string path, GLProgram::SHADER_TYPE type)
 {
+	if(m_programs.find(type) != m_programs.end())
+	{
+		//found a shader of this type already
+		//for now just don't do anything
+		return;
+	}
+	
 	auto program = new GLProgram(path, type);
 	m_programs[type] = program;
 	addShader(program);
@@ -41,24 +56,39 @@ void GLPipeline::bindPipeline()
 	glBindProgramPipeline(m_pipeline);
 }
 
-void GLPipeline::setUniform(GLProgram::SHADER_TYPES type, const std::string &uniform, int val)
+void GLPipeline::setUniform(GLProgram::SHADER_TYPE type, const std::string &uniform, int val)
 {
 	if(m_programs[type])
 	{
 		m_programs[type]->setUniform(uniform, val);
 	}
-
 }
 
-GLuint GLPipeline::getShaderBit(GLProgram::SHADER_TYPES type)
+void GLPipeline::setUniform(GLProgram::SHADER_TYPE type, const std::string &uniform, Mat4 val)
+{
+	if(m_programs[type])
+	{
+		m_programs[type]->setUniform(uniform, val);
+	}
+}
+
+void GLPipeline::setUniform(GLProgram::SHADER_TYPE type, const std::string &uniform, glm::mat4 val)
+{
+	if(m_programs[type])
+	{
+		m_programs[type]->setUniform(uniform, val);
+	}	
+}
+
+GLuint GLPipeline::getShaderBit(GLProgram::SHADER_TYPE type)
 { 
 	switch (type)
 	{
-	case GLProgram::SHADER_TYPES::VERTEX:
+	case GLProgram::SHADER_TYPE::VERTEX:
 		return GL_VERTEX_SHADER_BIT;
-	case GLProgram::SHADER_TYPES::GEOMETRY:
+	case GLProgram::SHADER_TYPE::GEOMETRY:
 		return GL_GEOMETRY_SHADER_BIT;
-	case GLProgram::SHADER_TYPES::FRAGMENT:
+	case GLProgram::SHADER_TYPE::FRAGMENT:
 		return GL_FRAGMENT_SHADER_BIT;
 	}
 	return -1;

@@ -1,8 +1,13 @@
 #pragma once
+
 #include <GL/glew.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GL/glut.h>
+#define assert(ignore) ((void)0)
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "../util/util.h"
 #include "opengl/glprogram.h"
@@ -23,6 +28,14 @@ ScreenInfo() : m_width(2), m_height(2){}
 class OpenGLDriver
 {
 public:
+	enum RENDER_BUFFERS
+	{
+		DEPTH,
+		NORMAL,
+		ALBEDO,
+		COUNT
+	};
+	
 	OpenGLDriver();
 	~OpenGLDriver();
 
@@ -37,7 +50,7 @@ public:
 protected:
 	void renderScene();
 	void renderQuad();
-	std::vector<GLPipeline> m_programPipelines;
+	std::vector<GLPipeline*> m_programPipelines;
 	int m_currentPipeline;
 	
 	//temporary
