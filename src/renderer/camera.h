@@ -8,9 +8,10 @@
 class Camera
 {
 public:
-
+	Camera();
+	
 private:
 	glm::mat4 m_transform;
 	glm::vec3 m_origin;
-	Mat4 m_transformation;
+	//Mat4 m_transformation;
 };

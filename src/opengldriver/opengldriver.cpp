@@ -54,12 +54,15 @@ void OpenGLDriver::resize(ScreenInfo info)
 	glGenTextures(1, &m_albedo);
 	glBindTexture(GL_TEXTURE_2D, m_albedo);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info.m_width, info.m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_depth, 0);
-
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_albedo, 0);
+	
 	// Set the list of draw buffers.
-	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+	GLenum DrawBuffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
+	glDrawBuffers(2, DrawBuffers); // "1" is the size of DrawBuffers
 	
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
@@ -117,7 +120,7 @@ void OpenGLDriver::submit(VertexBuffer* buf)
 void OpenGLDriver::render()
 {
 	renderScene();
-	//renderQuad();
+	renderQuad();
 }
 
 void OpenGLDriver::renderScene()
@@ -133,8 +136,9 @@ void OpenGLDriver::renderScene()
 	Projection = Projection * view;
 	m_programPipelines[1]->setUniform(GLProgram::SHADER_TYPE::VERTEX, "MVP", Projection);
 	glViewport(0, 0, 800, 600);
-	//glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
+		glEnable(GL_DEPTH_TEST);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	m_rendermanager.render();
 }
 
@@ -147,15 +151,15 @@ void OpenGLDriver::renderQuad()
 	m_programPipelines[0]->setUniform(GLProgram::SHADER_TYPE::FRAGMENT, "depth", 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_depth);
-		
+
 	auto err = glGetError();
 	if(err != GL_NO_ERROR)
 	{
 		cerr << "OpenGLDriver: render issue " << err << endl;
 	}
 	
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// todo : defer this so we dont alloc memory every frame
 	GLuint vertarray;
 	glGenVertexArrays(1, &vertarray);
 	glBindVertexArray(vertarray);
@@ -169,7 +173,6 @@ void OpenGLDriver::renderQuad()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float)*5, BUFFER_OFFSET(12));
 	
-
 	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
