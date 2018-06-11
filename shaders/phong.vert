@@ -12,7 +12,7 @@ out vec2 vTexCoord;
 
 void main()
 {
-	vec4 pos = 0.4*vec4(vertex_position, 1.0);
+	vec4 pos = MVP*vec4(vertex_position, 1.0);
 	vVertexPosition = vertex_position;
 	vNormal = normalize(normal);
 	vTexCoord = tex_coord;

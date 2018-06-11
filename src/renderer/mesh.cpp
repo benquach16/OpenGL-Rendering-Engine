@@ -25,6 +25,7 @@ void Mesh::load(const char* str)
 	objl::Loader loader;
 	loader.LoadFile(str);
 	std::cerr << "loaded file :" << str << " with " << loader.LoadedMeshes.size() << " meshes" << std::endl;
+	
 	for(int i = 0; i < loader.LoadedMeshes[0].Vertices.size(); ++i)
 	{
 		auto vert = loader.LoadedMeshes[0].Vertices[i];		
@@ -45,7 +46,7 @@ void Mesh::load(const char* str)
 	m_vertexbuffer->m_indices = loader.LoadedMeshes[0].Indices;
 	
 
-	/*
+/*	
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
@@ -94,7 +95,7 @@ void Mesh::load(const char* str)
 			index_offset += fv;
 		}
 	}
-	*/
+*/	
 }
 
 

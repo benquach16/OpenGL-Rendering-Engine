@@ -27,7 +27,7 @@ GLfloat quad[] = {
 
 OpenGLDriver::OpenGLDriver()
 {
-	glEnable(GL_CULL_FACE);  
+	//glEnable(GL_CULL_FACE);  
 	
 }
 
@@ -43,7 +43,8 @@ void OpenGLDriver::resize(ScreenInfo info)
 {
 	glGenFramebuffers(1, &m_gbuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
-
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 	glGenTextures(1, &m_depth);
 	glBindTexture(GL_TEXTURE_2D, m_depth);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, info.m_width, info.m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
@@ -125,12 +126,12 @@ void OpenGLDriver::renderScene()
 
 	//mat = view * mat;
 	glm::mat4 view = glm::lookAt(
-		glm::vec3(2.5f, 2.5f, 5.0f),
+		glm::vec3(0.5f, 1.5f, 1.5f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f));
-	glm::mat4 Projection = glm::perspective(glm::radians(45.0f), 4.0f / 3.0f, 0.1f, 100.f);
-	Projection =Projection * view;
-	//m_programPipelines[1]->setUniform(GLProgram::SHADER_TYPE::VERTEX, "MVP", Projection);
+	glm::mat4 Projection = glm::perspective(glm::radians(40.0f), 4.0f / 3.0f, 0.1f, 100.f);
+	Projection = Projection * view;
+	m_programPipelines[1]->setUniform(GLProgram::SHADER_TYPE::VERTEX, "MVP", Projection);
 	glViewport(0, 0, 800, 600);
 	//glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -153,7 +154,7 @@ void OpenGLDriver::renderQuad()
 		cerr << "OpenGLDriver: render issue " << err << endl;
 	}
 	
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	GLuint vertarray;
 	glGenVertexArrays(1, &vertarray);
@@ -173,6 +174,9 @@ void OpenGLDriver::renderQuad()
 
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glDisableVertexAttribArray(0);
+
+	glDeleteBuffers(1, &vertices);
+	glDeleteBuffers(1, &vertarray);
 	
 }
 

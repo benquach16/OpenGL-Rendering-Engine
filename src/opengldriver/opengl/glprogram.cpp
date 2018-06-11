@@ -114,7 +114,7 @@ void GLProgram::setUniform(const std::string &uniform, Mat4 val)
 	glProgramUniformMatrix4fv(m_program, location, 1, false, val.data());
 }
 
-void GLProgram::setUniform(const std::string &uniform, glm::mat4 val)
+void GLProgram::setUniform(const std::string &uniform, glm::mat4 &val)
 {
 	if(!m_program)
 	{
