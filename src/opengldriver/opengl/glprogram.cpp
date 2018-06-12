@@ -80,7 +80,7 @@ void GLProgram::setUniform(const std::string &uniform, int val)
 	auto err = glGetError();
 	if(err != GL_NO_ERROR)
 	{
-		cerr << "GLProgram: uniform error " << err << endl;
+		cerr << "GLProgram: uniform error " << err << " when assigning " << val << " to " << uniform << endl;
 	}
 	glProgramUniform1i(m_program, location, GLint(val));
 }

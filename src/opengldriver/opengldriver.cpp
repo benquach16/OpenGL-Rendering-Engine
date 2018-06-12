@@ -45,9 +45,10 @@ void OpenGLDriver::resize(ScreenInfo info)
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
 	glGenTextures(1, &m_depth);
 	glBindTexture(GL_TEXTURE_2D, m_depth);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, info.m_width, info.m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, info.m_width, info.m_height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	
@@ -57,12 +58,12 @@ void OpenGLDriver::resize(ScreenInfo info)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_depth, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_albedo, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_albedo, 0);
 	
 	// Set the list of draw buffers.
-	GLenum DrawBuffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
-	glDrawBuffers(2, DrawBuffers); // "1" is the size of DrawBuffers
+	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
 	
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
@@ -150,7 +151,7 @@ void OpenGLDriver::renderQuad()
 	m_programPipelines[0]->bindPipeline();
 	m_programPipelines[0]->setUniform(GLProgram::SHADER_TYPE::FRAGMENT, "depth", 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_depth);
+	glBindTexture(GL_TEXTURE_2D, m_albedo);
 
 	auto err = glGetError();
 	if(err != GL_NO_ERROR)
