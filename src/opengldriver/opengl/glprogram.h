@@ -53,13 +53,14 @@ public:
 	void create();
 	void reset();
 	void setUniform(const std::string &uniform, int val);
-	void setUniform(const std::string &uniform, Mat4 val);
+	void setUniform(const std::string &uniform, float val); 
 	void setUniform(const std::string &uniform, glm::mat4 &val);
 	SHADER_TYPE getProgramType();
 protected:
 	static GLuint         getShaderBit(SHADER_TYPE type);
 	static ATTRIBUTE_UNIFORM_TYPE getAttributeFromGL(GLint type);
 	void                  getShaderInputs();
+	void verifyValidUniform(const std::string& uniform, ATTRIBUTE_UNIFORM_TYPE type);
 	
 	//reimplementation of glCreateShaderProgramv
 	int                                  createShaderProgram(GLenum type, const char **str);

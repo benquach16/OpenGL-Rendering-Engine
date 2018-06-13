@@ -13,7 +13,7 @@ void main()
 	vec3 L = normalize(light_pos - vVertexPosition);
 	float LN = dot(L, N);
 	color = color * LN;
-	//vColor = vNormal;
-	vColor=color.xyz;
+	vColor = vNormal;
+	//vColor=color.xyz;
 	//gl_FragColor=vec4(vNormal, 1.0);
 }

@@ -1,4 +1,5 @@
 #include "glprogram.h"
+#include "../../util/debug.h"
 
 using namespace std;
 
@@ -31,7 +32,6 @@ void GLProgram::create()
 	const char *ptr = contents.c_str();
 	//auto id = glCreateShaderProgramv(getShaderBit(m_shaderType), 1, &ptr);
 	auto id = createShaderProgram(getShaderBit(m_shaderType),&ptr);
-
 	if(!id)
 	{
 		//error!
@@ -59,23 +59,7 @@ void GLProgram::reset()
 
 void GLProgram::setUniform(const std::string &uniform, int val)
 {
-	if(!m_program)
-	{
-		cerr << "attempted to set uniform on uninitialized program" << endl;
-		return;
-	}
-	auto it = m_uniforms.find(uniform);
-	if(it == m_uniforms.end())
-	{
-		cerr << "attempted to set unknown uniform " << uniform << endl;
-		return;
-	}
-	if(it->second != ATTRIBUTE_UNIFORM_TYPE::INT)
-	{
-		cerr << "attempted to set incorrect uniform type, got INT" << endl;
-		return;
-	}
-	
+	verifyValidUniform(uniform, ATTRIBUTE_UNIFORM_TYPE::INT);	
 	auto location = glGetUniformLocation(m_program, uniform.c_str());
 	auto err = glGetError();
 	if(err != GL_NO_ERROR)
@@ -85,53 +69,21 @@ void GLProgram::setUniform(const std::string &uniform, int val)
 	glProgramUniform1i(m_program, location, GLint(val));
 }
 
-
-void GLProgram::setUniform(const std::string &uniform, Mat4 val)
+void GLProgram::setUniform(const std::string &uniform, float val)
 {
-	if(!m_program)
-	{
-		cerr << "attempted to set uniform on uninitialized program" << endl;
-		return;
-	}
-	auto it = m_uniforms.find(uniform);
-	if(it == m_uniforms.end())
-	{
-		cerr << "attempted to set unknown uniform " << uniform << endl;
-		return;
-	}	
-	if(it->second != ATTRIBUTE_UNIFORM_TYPE::MAT4)
-	{
-		cerr << "attempted to set incorrect uniform type, got MAT4" << endl;
-		return;
-	}	
+	verifyValidUniform(uniform, ATTRIBUTE_UNIFORM_TYPE::FLOAT);	
 	auto location = glGetUniformLocation(m_program, uniform.c_str());
 	auto err = glGetError();
 	if(err != GL_NO_ERROR)
 	{
-		cerr << "GLProgram: uniform error " << err << endl;
+		cerr << "GLProgram: uniform error " << err << " when assigning " << val << " to " << uniform << endl;
 	}
-	
-	glProgramUniformMatrix4fv(m_program, location, 1, false, val.data());
+	glProgramUniform1f(m_program, location, GLfloat(val));
 }
 
 void GLProgram::setUniform(const std::string &uniform, glm::mat4 &val)
 {
-	if(!m_program)
-	{
-		cerr << "attempted to set uniform on uninitialized program" << endl;
-		return;
-	}
-	auto it = m_uniforms.find(uniform);
-	if(it == m_uniforms.end())
-	{
-		cerr << "attempted to set unknown uniform " << uniform << endl;
-		return;
-	}	
-	if(it->second != ATTRIBUTE_UNIFORM_TYPE::MAT4)
-	{
-		cerr << "attempted to set incorrect uniform type, got MAT4" << endl;
-		return;
-	}	
+	verifyValidUniform(uniform, ATTRIBUTE_UNIFORM_TYPE::MAT4);
 	auto location = glGetUniformLocation(m_program, uniform.c_str());
 	auto err = glGetError();
 	if(err != GL_NO_ERROR)
@@ -264,4 +216,25 @@ void GLProgram::getShaderInputs()
 	}
 }
 
+
+void GLProgram::verifyValidUniform(const std::string& uniform, ATTRIBUTE_UNIFORM_TYPE type)
+{
+	
+	if(!m_program)
+	{
+		cerr << "attempted to set uniform on uninitialized program" << endl;
+		return;
+	}
+	auto it = m_uniforms.find(uniform);
+	if(it == m_uniforms.end())
+	{
+		cerr << "attempted to set unknown uniform " << uniform << endl;
+		return;
+	}
+	if(it->second != type)
+	{
+		cerr << "attempted to set incorrect uniform type" << endl;
+		return;
+	}
+}
 

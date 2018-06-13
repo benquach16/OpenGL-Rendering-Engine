@@ -60,6 +60,7 @@ protected:
 	GLuint m_gbuffer;
 	GLuint m_depth;
 	GLuint m_albedo;
+	GLuint m_normals;
 
 	ScreenInfo m_screenInfo;
 

@@ -8,5 +8,6 @@ public:
 
 	void create();
 protected:
+	int m_depth;
 	int m_buffer;
 };

@@ -31,10 +31,8 @@ void GLPipeline::addShader(const GLProgram *program)
 	while(err != GL_NO_ERROR)
 	{
 		cerr << "Error adding shader to program pipeline: " << err << " on shader program " << program->m_path << endl;
-		err = glGetError();
-		
+		err = glGetError();	
 	}
-	//m_programs.push_back(program);
 }
 
 void GLPipeline::addShader(std::string path, GLProgram::SHADER_TYPE type)
@@ -57,14 +55,6 @@ void GLPipeline::bindPipeline()
 }
 
 void GLPipeline::setUniform(GLProgram::SHADER_TYPE type, const std::string &uniform, int val)
-{
-	if(m_programs[type])
-	{
-		m_programs[type]->setUniform(uniform, val);
-	}
-}
-
-void GLPipeline::setUniform(GLProgram::SHADER_TYPE type, const std::string &uniform, Mat4 val)
 {
 	if(m_programs[type])
 	{
