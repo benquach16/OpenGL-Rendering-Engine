@@ -50,6 +50,7 @@ public:
 protected:
 	void renderScene();
 	void renderQuad();
+	void renderQuad(GLuint buffer, int x0, int y0, int x1, int y1);
 	std::vector<GLPipeline*> m_programPipelines;
 	int m_currentPipeline;
 	

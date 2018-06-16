@@ -1,4 +1,5 @@
 #include "opengldriver.h"
+#include "../util/debug.h"
 
 using namespace std;
 
@@ -95,7 +96,7 @@ void OpenGLDriver::resize(ScreenInfo info)
 
 void OpenGLDriver::initializeDriver()
 {
-	glClearColor(0.0, 0.1, 0.6, 0.0);
+	glClearColor(0.0, 0.1, 0.6, 1.0);
 	glewExperimental = GL_TRUE;
 	glewInit();
 	//refactor this
@@ -128,7 +129,17 @@ void OpenGLDriver::submit(VertexBuffer* buf)
 void OpenGLDriver::render()
 {
 	renderScene();
-	renderQuad();
+
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_gbuffer);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBlitFramebuffer(0,0,800,600,
+					  0,0,400,300,
+					  GL_COLOR_BUFFER_BIT,
+					  GL_NEAREST);
+	GL_GET_ERROR("Error on BlitFramebuffer");
+	//renderQuad(m_albedo, 0,0,400,300);
+	//renderQuad(m_depth,400,0,800,300);
+	//renderQuad();
 }
 
 void OpenGLDriver::renderScene()
@@ -145,7 +156,6 @@ void OpenGLDriver::renderScene()
 	m_programPipelines[1]->setUniform(GLProgram::SHADER_TYPE::VERTEX, "MVP", Projection);
 	glViewport(0, 0, 800, 600);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
-		glEnable(GL_DEPTH_TEST);
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	m_rendermanager.render();
 }
@@ -158,7 +168,43 @@ void OpenGLDriver::renderQuad()
 	m_programPipelines[0]->bindPipeline();
 	m_programPipelines[0]->setUniform(GLProgram::SHADER_TYPE::FRAGMENT, "depth", 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_albedo);
+	glBindTexture(GL_TEXTURE_2D, m_depth);
+
+	GL_GET_ERROR("Error rendering quad");
+	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// todo : defer this so we dont alloc memory every frame
+	GLuint vertarray;
+	glGenVertexArrays(1, &vertarray);
+	glBindVertexArray(vertarray);
+	GLuint vertices;
+	glGenBuffers(1, &vertices);
+	glBindBuffer(GL_ARRAY_BUFFER, vertices);
+	
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*5, BUFFER_OFFSET(0));
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float)*5, BUFFER_OFFSET(12));
+	
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisableVertexAttribArray(0);
+
+	glDeleteBuffers(1, &vertices);
+	glDeleteBuffers(1, &vertarray);
+	
+}
+
+void OpenGLDriver::renderQuad(GLuint buffer, int x0, int y0, int x1, int y1)
+{
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(x0, y0, x1, y1);
+	m_programPipelines[0]->bindPipeline();
+	m_programPipelines[0]->setUniform(GLProgram::SHADER_TYPE::FRAGMENT, "depth", 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, buffer);
 
 	auto err = glGetError();
 	if(err != GL_NO_ERROR)
@@ -188,7 +234,6 @@ void OpenGLDriver::renderQuad()
 
 	glDeleteBuffers(1, &vertices);
 	glDeleteBuffers(1, &vertarray);
-	
 }
 
 void OpenGLDriver::run()

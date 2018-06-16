@@ -32,18 +32,8 @@ void GLProgram::create()
 	const char *ptr = contents.c_str();
 	//auto id = glCreateShaderProgramv(getShaderBit(m_shaderType), 1, &ptr);
 	auto id = createShaderProgram(getShaderBit(m_shaderType),&ptr);
-	if(!id)
-	{
-		//error!
-		cerr << "error creating shaderprogram" << endl;
-	}
-	
-	auto err = glGetError();
-	while(err != GL_NO_ERROR)
-	{
-		cerr << "error creating shaderprogram " << err << " with shader " << m_path << endl;
-		err = glGetError();
-	}
+	ASSERT(id, "invalid shaderprogram generated");
+	GET_GL_ERROR("error creating shaderprogram with shader");
 	m_program = id;
 	getShaderInputs();
 }

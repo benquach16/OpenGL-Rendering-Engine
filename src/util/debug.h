@@ -12,9 +12,31 @@
 #   define ASSERT(condition, message) do { } while (false)
 #endif
 
+
+#ifndef NDEBUG
+#define GET_GL_ERROR(message) \
+	do { \
+	auto err = glGetError(); \
+	while(err != GL_NO_ERROR) { \
+	std::cerr << message << std::endl;\
+	std::cerr << "GL Error found with error code " << err << std::endl; \
+	}\
+	} while (false)
+#else
+#define GL_GET_ERROR(message) do {} while (false)
+#endif
+
+
+/*
 namespace debug
 {
-	void getLastGLError()
+	static void getLastGLError(const std::string& message)
 	{
+		auto err = glGetError();
+		if(err != GL_NO_ERROR) {
+			cerr << message << endl;
+			cerr << "GL Error found with error code " << endl;
+		}
 	}
 };
+*/
