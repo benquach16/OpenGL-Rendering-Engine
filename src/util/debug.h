@@ -1,5 +1,5 @@
 #define NDEBUG
-#ifndef NDEBUG
+
 #   define ASSERT(condition, message) \
 	do { \
 	if (! (condition)) { \
@@ -8,12 +8,9 @@
 	std::terminate(); \
 	} \
 	} while (false)
-#else
-#   define ASSERT(condition, message) do { } while (false)
-#endif
 
 
-#ifndef NDEBUG
+
 #define GET_GL_ERROR(message) \
 	do { \
 	auto err = glGetError(); \
@@ -22,9 +19,7 @@
 	std::cerr << "GL Error found with error code " << err << std::endl; \
 	}\
 	} while (false)
-#else
-#define GL_GET_ERROR(message) do {} while (false)
-#endif
+
 
 
 /*

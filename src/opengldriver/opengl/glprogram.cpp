@@ -33,7 +33,7 @@ void GLProgram::create()
 	//auto id = glCreateShaderProgramv(getShaderBit(m_shaderType), 1, &ptr);
 	auto id = createShaderProgram(getShaderBit(m_shaderType),&ptr);
 	ASSERT(id, "invalid shaderprogram generated");
-	GET_GL_ERROR("error creating shaderprogram with shader");
+	GET_GL_ERROR("error creating shaderprogram with shader " + m_path);
 	m_program = id;
 	getShaderInputs();
 }
@@ -51,11 +51,7 @@ void GLProgram::setUniform(const std::string &uniform, int val)
 {
 	verifyValidUniform(uniform, ATTRIBUTE_UNIFORM_TYPE::INT);	
 	auto location = glGetUniformLocation(m_program, uniform.c_str());
-	auto err = glGetError();
-	if(err != GL_NO_ERROR)
-	{
-		cerr << "GLProgram: uniform error " << err << " when assigning " << val << " to " << uniform << endl;
-	}
+	GET_GL_ERROR("GLProgram: Uniform Error when assigning to " + uniform + " in shader " + m_path);
 	glProgramUniform1i(m_program, location, GLint(val));
 }
 
@@ -63,11 +59,7 @@ void GLProgram::setUniform(const std::string &uniform, float val)
 {
 	verifyValidUniform(uniform, ATTRIBUTE_UNIFORM_TYPE::FLOAT);	
 	auto location = glGetUniformLocation(m_program, uniform.c_str());
-	auto err = glGetError();
-	if(err != GL_NO_ERROR)
-	{
-		cerr << "GLProgram: uniform error " << err << " when assigning " << val << " to " << uniform << endl;
-	}
+	GET_GL_ERROR("GLProgram: Uniform Error when assigning to " + uniform + " in shader " + m_path);
 	glProgramUniform1f(m_program, location, GLfloat(val));
 }
 
@@ -75,12 +67,7 @@ void GLProgram::setUniform(const std::string &uniform, glm::mat4 &val)
 {
 	verifyValidUniform(uniform, ATTRIBUTE_UNIFORM_TYPE::MAT4);
 	auto location = glGetUniformLocation(m_program, uniform.c_str());
-	auto err = glGetError();
-	if(err != GL_NO_ERROR)
-	{
-		cerr << "GLProgram: uniform error " << err << endl;
-	}
-	
+	GET_GL_ERROR("GLProgram: Uniform Error when assigning to " + uniform + " in shader " + m_path);
 	glProgramUniformMatrix4fv(m_program, location, 1, false, glm::value_ptr(val));
 }
 
@@ -132,6 +119,8 @@ GLuint GLProgram::getShaderBit(GLProgram::SHADER_TYPE type)
 	{
 	case GLProgram::SHADER_TYPE::VERTEX:
 		return GL_VERTEX_SHADER;
+	case GLProgram::SHADER_TYPE::TESSELATION:
+		return GL_TESS_CONTROL_SHADER;
 	case GLProgram::SHADER_TYPE::GEOMETRY:
 		return GL_GEOMETRY_SHADER;
 	case GLProgram::SHADER_TYPE::FRAGMENT:
@@ -209,12 +198,7 @@ void GLProgram::getShaderInputs()
 
 void GLProgram::verifyValidUniform(const std::string& uniform, ATTRIBUTE_UNIFORM_TYPE type)
 {
-	
-	if(!m_program)
-	{
-		cerr << "attempted to set uniform on uninitialized program" << endl;
-		return;
-	}
+	ASSERT(m_program, "attempted to set uniform on uninitialized program");
 	auto it = m_uniforms.find(uniform);
 	if(it == m_uniforms.end())
 	{
