@@ -1,5 +1,6 @@
 #include <iostream>
 #include "glpipeline.h"
+#include "../util/debug.h"
 
 using namespace std;
 
@@ -22,6 +23,10 @@ void GLPipeline::create()
 void GLPipeline::reset()
 {
 	glDeleteProgramPipelines(1, &m_pipeline);
+	for(auto i : m_programs)
+	{
+		delete i.second;
+	}
 }
 
 void GLPipeline::addShader(const GLProgram *program)
@@ -37,13 +42,9 @@ void GLPipeline::addShader(const GLProgram *program)
 
 void GLPipeline::addShader(std::string path, GLProgram::SHADER_TYPE type)
 {
-	if(m_programs.find(type) != m_programs.end())
-	{
-		//found a shader of this type already
-		//for now just don't do anything
-		return;
-	}
-	
+	//if we find a shader type thats already been added
+	//we could also overwrite
+	ASSERT(m_programs.find(type) == m_programs.end(), "shader program type already found in pipeline");
 	auto program = new GLProgram(path, type);
 	m_programs[type] = program;
 	addShader(program);

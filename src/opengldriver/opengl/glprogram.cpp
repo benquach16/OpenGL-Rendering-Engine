@@ -195,7 +195,6 @@ void GLProgram::getShaderInputs()
 	}
 }
 
-
 void GLProgram::verifyValidUniform(const std::string& uniform, ATTRIBUTE_UNIFORM_TYPE type)
 {
 	ASSERT(m_program, "attempted to set uniform on uninitialized program");
