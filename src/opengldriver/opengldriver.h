@@ -28,12 +28,15 @@ ScreenInfo() : m_width(2), m_height(2){}
 class OpenGLDriver
 {
 public:
-	enum RENDER_BUFFERS
+	enum eRenderBuffers
 	{
-		DEPTH,
-		NORMAL,
-		ALBEDO,
-		COUNT
+	};
+
+	enum eRenderPipelines
+	{
+		Deferred,
+		PostProcess,
+		Framebuffer,
 	};
 	
 	OpenGLDriver();
@@ -50,8 +53,9 @@ public:
 protected:
 	void renderScene();
 	void renderQuad();
-	void renderQuad(GLuint buffer, int x0, int y0, int x1, int y1);
+	void renderDeferred();
 	std::vector<GLPipeline*> m_programPipelines;
+	std::unordered_map<eRenderPipelines, GLPipeline*> m_renderPipelines;
 	int m_currentPipeline;
 	
 	//temporary

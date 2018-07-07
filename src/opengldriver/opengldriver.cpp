@@ -27,17 +27,16 @@ GLfloat quad[] = {
 
 
 OpenGLDriver::OpenGLDriver()
-{
-	//glEnable(GL_CULL_FACE);  
-	
+{	
 }
 
 OpenGLDriver::~OpenGLDriver()
 {
-	for(auto i : m_programPipelines)
+	for(auto i : m_renderPipelines)
 	{
-		delete i;
+		delete i.second;
 	}
+	m_renderPipelines.clear();
 }
 
 void OpenGLDriver::resize(ScreenInfo info)
@@ -111,12 +110,13 @@ void OpenGLDriver::loadShaderProgram()
 	quad->addShader("shaders/framebuffer.vert", GLProgram::SHADER_TYPE::VERTEX);
 	quad->addShader("shaders/framebuffer.frag", GLProgram::SHADER_TYPE::FRAGMENT);
 	m_programPipelines.push_back(quad);
-
+	m_renderPipelines[eRenderPipelines::Framebuffer] = quad;
+	
 	auto scene = new GLPipeline;
 	scene->addShader("shaders/phong.vert", GLProgram::SHADER_TYPE::VERTEX);
 	scene->addShader("shaders/phong.frag", GLProgram::SHADER_TYPE::FRAGMENT);
 	m_programPipelines.push_back(scene);
-
+	m_renderPipelines[eRenderPipelines::Deferred] = scene;
 	m_currentPipeline = 0;
 }
 
@@ -129,23 +129,14 @@ void OpenGLDriver::submit(VertexBuffer* buf)
 void OpenGLDriver::render()
 {
 	renderScene();
-
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_gbuffer);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBlitFramebuffer(0,0,800,600,
-					  0,0,400,300,
-					  GL_COLOR_BUFFER_BIT,
-					  GL_NEAREST);
-	GET_GL_ERROR("Error on BlitFramebuffer");
 	//renderQuad(m_albedo, 0,0,400,300);
 	//renderQuad(m_depth,400,0,800,300);
-	//renderQuad();
+	renderQuad();
 }
 
 void OpenGLDriver::renderScene()
 {
-	m_programPipelines[1]->bindPipeline();
-
+	m_renderPipelines[eRenderPipelines::Deferred]->bindPipeline();
 	//mat = view * mat;
 	glm::mat4 view = glm::lookAt(
 		glm::vec3(0.5f, 1.5f, 1.5f),
@@ -165,10 +156,10 @@ void OpenGLDriver::renderQuad()
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, 800, 600);
-	m_programPipelines[0]->bindPipeline();
-	m_programPipelines[0]->setUniform(GLProgram::SHADER_TYPE::FRAGMENT, "depth", 0);
+	m_renderPipelines[eRenderPipelines::Framebuffer]->bindPipeline();
+	m_renderPipelines[eRenderPipelines::Framebuffer]->setUniform(GLProgram::SHADER_TYPE::FRAGMENT, "depth", 0);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_depth);
+	glBindTexture(GL_TEXTURE_2D, m_albedo);
 
 	GET_GL_ERROR("Error rendering quad");
 	
@@ -194,6 +185,11 @@ void OpenGLDriver::renderQuad()
 
 	glDeleteBuffers(1, &vertices);
 	glDeleteBuffers(1, &vertarray);
+	
+}
+
+void OpenGLDriver::renderDeferred()
+{
 	
 }
 
