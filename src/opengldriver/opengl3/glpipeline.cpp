@@ -40,7 +40,7 @@ void GLPipeline::addShader(const GLProgram *program)
 	}
 }
 
-void GLPipeline::addShader(std::string path, GLProgram::SHADER_TYPE type)
+void GLPipeline::addShader(std::string path, GLProgram::eShaderType type)
 {
 	//if we find a shader type thats already been added
 	//we could also overwrite
@@ -55,31 +55,27 @@ void GLPipeline::bindPipeline()
 	glBindProgramPipeline(m_pipeline);
 }
 
-void GLPipeline::setUniform(GLProgram::SHADER_TYPE type, const std::string &uniform, int val)
+void GLPipeline::setUniform(GLProgram::eShaderType type, const std::string &uniform, int val)
 {
-	if(m_programs[type])
-	{
-		m_programs[type]->setUniform(uniform, val);
-	}
+	ASSERT(m_programs.find(type) != m_programs.end(), "shader program for this type has not yet been set");
+	m_programs[type]->setUniform(uniform, val);
 }
 
-void GLPipeline::setUniform(GLProgram::SHADER_TYPE type, const std::string &uniform, glm::mat4 val)
+void GLPipeline::setUniform(GLProgram::eShaderType type, const std::string &uniform, glm::mat4 val)
 {
-	if(m_programs[type])
-	{
-		m_programs[type]->setUniform(uniform, val);
-	}	
+	ASSERT(m_programs.find(type) != m_programs.end(), "shader program for this type has not yet been set");
+	m_programs[type]->setUniform(uniform, val);
 }
 
-GLuint GLPipeline::getShaderBit(GLProgram::SHADER_TYPE type)
+GLuint GLPipeline::getShaderBit(GLProgram::eShaderType type)
 { 
 	switch (type)
 	{
-	case GLProgram::SHADER_TYPE::VERTEX:
+	case GLProgram::eShaderType::Vertex:
 		return GL_VERTEX_SHADER_BIT;
-	case GLProgram::SHADER_TYPE::GEOMETRY:
+	case GLProgram::eShaderType::Geometry:
 		return GL_GEOMETRY_SHADER_BIT;
-	case GLProgram::SHADER_TYPE::FRAGMENT:
+	case GLProgram::eShaderType::Fragment:
 		return GL_FRAGMENT_SHADER_BIT;
 	}
 	return -1;

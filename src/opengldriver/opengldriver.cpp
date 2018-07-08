@@ -107,13 +107,13 @@ void OpenGLDriver::initializeDriver()
 void OpenGLDriver::loadShaderProgram()
 {
 	auto quad = new GLPipeline;
-	quad->addShader("shaders/framebuffer.vert", GLProgram::SHADER_TYPE::VERTEX);
-	quad->addShader("shaders/framebuffer.frag", GLProgram::SHADER_TYPE::FRAGMENT);
+	quad->addShader("shaders/framebuffer.vert", GLProgram::eShaderType::Vertex);
+	quad->addShader("shaders/framebuffer.frag", GLProgram::eShaderType::Fragment);
 	m_renderPipelines[eRenderPipelines::Framebuffer] = quad;
 	
 	auto scene = new GLPipeline;
-	scene->addShader("shaders/phong.vert", GLProgram::SHADER_TYPE::VERTEX);
-	scene->addShader("shaders/phong.frag", GLProgram::SHADER_TYPE::FRAGMENT);
+	scene->addShader("shaders/phong.vert", GLProgram::eShaderType::Vertex);
+	scene->addShader("shaders/phong.frag", GLProgram::eShaderType::Fragment);
 	m_renderPipelines[eRenderPipelines::Deferred] = scene;
 	m_currentPipeline = 0;
 }
@@ -142,7 +142,7 @@ void OpenGLDriver::renderScene()
 		glm::vec3(0.0f, 0.0f, 1.0f));
 	glm::mat4 Projection = glm::perspective(glm::radians(40.0f), 4.0f / 3.0f, 0.1f, 100.f);
 	Projection = Projection * view;
-	m_renderPipelines[eRenderPipelines::Deferred]->setUniform(GLProgram::SHADER_TYPE::VERTEX, "MVP", Projection);
+	m_renderPipelines[eRenderPipelines::Deferred]->setUniform(GLProgram::eShaderType::Vertex, "MVP", Projection);
 	glViewport(0, 0, 800, 600);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -155,7 +155,7 @@ void OpenGLDriver::renderQuad()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, 800, 600);
 	m_renderPipelines[eRenderPipelines::Framebuffer]->bindPipeline();
-	m_renderPipelines[eRenderPipelines::Framebuffer]->setUniform(GLProgram::SHADER_TYPE::FRAGMENT, "depth", 0);
+	m_renderPipelines[eRenderPipelines::Framebuffer]->setUniform(GLProgram::eShaderType::Fragment, "depth", 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_albedo);
 

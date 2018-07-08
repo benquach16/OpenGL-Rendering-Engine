@@ -22,12 +22,12 @@ class GLProgram
 {
 	friend class GLPipeline;
 public:
-	enum SHADER_TYPE
+	enum eShaderType
 	{
-		VERTEX,
-		TESSELATION,
-		GEOMETRY,
-		FRAGMENT
+		Vertex,
+		Tesselation,
+		Geometry,
+		Fragment,
 	};
 
 	enum ATTRIBUTE_UNIFORM_TYPE
@@ -46,7 +46,7 @@ public:
 		SAMPLER3D
 	};
 	
-	GLProgram(std::string path, SHADER_TYPE shaderType);
+	GLProgram(std::string path, eShaderType shaderType);
 	GLProgram& operator=(const GLProgram &rhs);
 	~GLProgram();
 
@@ -55,9 +55,9 @@ public:
 	void setUniform(const std::string &uniform, int val);
 	void setUniform(const std::string &uniform, float val); 
 	void setUniform(const std::string &uniform, glm::mat4 &val);
-	SHADER_TYPE getProgramType();
+	eShaderType getProgramType();
 protected:
-	static GLuint         getShaderBit(SHADER_TYPE type);
+	static GLuint         getShaderBit(eShaderType type);
 	static ATTRIBUTE_UNIFORM_TYPE getAttributeFromGL(GLint type);
 	void                  getShaderInputs();
 	void verifyValidUniform(const std::string& uniform, ATTRIBUTE_UNIFORM_TYPE type);
@@ -66,7 +66,7 @@ protected:
 	int                                  createShaderProgram(GLenum type, const char **str);
 	std::vector<GLuint>                  m_shaderIds;
 	GLuint                               m_program;
-	SHADER_TYPE                          m_shaderType;
+	eShaderType                          m_shaderType;
 	std::string                          m_path;
 	std::unordered_map<std::string, ATTRIBUTE_UNIFORM_TYPE> m_attributes;
 	std::unordered_map<std::string, ATTRIBUTE_UNIFORM_TYPE> m_uniforms;

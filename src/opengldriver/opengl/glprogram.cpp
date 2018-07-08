@@ -3,7 +3,7 @@
 
 using namespace std;
 
-GLProgram::GLProgram(std::string path, SHADER_TYPE shaderType) : m_program(0), m_shaderType(shaderType), m_path(path)
+GLProgram::GLProgram(std::string path, eShaderType shaderType) : m_program(0), m_shaderType(shaderType), m_path(path)
 {
 	create();
 }
@@ -113,17 +113,17 @@ int GLProgram::createShaderProgram(GLenum type, const char **str)
 	}
 }
 
-GLuint GLProgram::getShaderBit(GLProgram::SHADER_TYPE type)
+GLuint GLProgram::getShaderBit(GLProgram::eShaderType type)
 { 
 	switch (type)
 	{
-	case GLProgram::SHADER_TYPE::VERTEX:
+	case GLProgram::eShaderType::Vertex:
 		return GL_VERTEX_SHADER;
-	case GLProgram::SHADER_TYPE::TESSELATION:
+	case GLProgram::eShaderType::Tesselation:
 		return GL_TESS_CONTROL_SHADER;
-	case GLProgram::SHADER_TYPE::GEOMETRY:
+	case GLProgram::eShaderType::Geometry:
 		return GL_GEOMETRY_SHADER;
-	case GLProgram::SHADER_TYPE::FRAGMENT:
+	case GLProgram::eShaderType::Fragment:
 		return GL_FRAGMENT_SHADER;
 	}
 	return -1;
