@@ -109,13 +109,11 @@ void OpenGLDriver::loadShaderProgram()
 	auto quad = new GLPipeline;
 	quad->addShader("shaders/framebuffer.vert", GLProgram::SHADER_TYPE::VERTEX);
 	quad->addShader("shaders/framebuffer.frag", GLProgram::SHADER_TYPE::FRAGMENT);
-	m_programPipelines.push_back(quad);
 	m_renderPipelines[eRenderPipelines::Framebuffer] = quad;
 	
 	auto scene = new GLPipeline;
 	scene->addShader("shaders/phong.vert", GLProgram::SHADER_TYPE::VERTEX);
 	scene->addShader("shaders/phong.frag", GLProgram::SHADER_TYPE::FRAGMENT);
-	m_programPipelines.push_back(scene);
 	m_renderPipelines[eRenderPipelines::Deferred] = scene;
 	m_currentPipeline = 0;
 }
@@ -144,7 +142,7 @@ void OpenGLDriver::renderScene()
 		glm::vec3(0.0f, 0.0f, 1.0f));
 	glm::mat4 Projection = glm::perspective(glm::radians(40.0f), 4.0f / 3.0f, 0.1f, 100.f);
 	Projection = Projection * view;
-	m_programPipelines[1]->setUniform(GLProgram::SHADER_TYPE::VERTEX, "MVP", Projection);
+	m_renderPipelines[eRenderPipelines::Deferred]->setUniform(GLProgram::SHADER_TYPE::VERTEX, "MVP", Projection);
 	glViewport(0, 0, 800, 600);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
