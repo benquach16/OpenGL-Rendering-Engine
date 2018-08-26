@@ -63,6 +63,7 @@ protected:
 	GLuint m_buffers[3];
 	
 	GLuint m_gbuffer;
+	GLuint m_position;
 	GLuint m_depth;
 	GLuint m_albedo;
 	GLuint m_normals;

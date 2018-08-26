@@ -1,6 +1,7 @@
 #version 330 core
 
 uniform sampler2D uDepth;
+uniform sampler2D uPosition;
 uniform sampler2D uAlbedo;
 uniform sampler2D uNormals;
 
@@ -31,7 +32,8 @@ void main()
 	vec3 normal   = texture(uNormals, v_texCoord).xyz;
 	
 	vec3 N = normalize(normal);
-	vec3 L = normalize(light_pos - position);
+	vec3 L = position - light_pos;
+	L = normalize(L);
 	float NdotL = dot(L, N);
 
 	v_outColor = albedo * NdotL;

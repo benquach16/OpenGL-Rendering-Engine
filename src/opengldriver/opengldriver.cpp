@@ -51,6 +51,12 @@ void OpenGLDriver::resize(ScreenInfo info)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, info.m_width, info.m_height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glGenTextures(1, &m_position);
+	glBindTexture(GL_TEXTURE_2D, m_position);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, info.m_width, info.m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	
 	glGenTextures(1, &m_albedo);
 	glBindTexture(GL_TEXTURE_2D, m_albedo);
@@ -65,12 +71,13 @@ void OpenGLDriver::resize(ScreenInfo info)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_albedo, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_normals, 0);	
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_position, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_albedo, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_normals, 0);	
 	
 	// Set the list of draw buffers.
-	GLenum DrawBuffers[2] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1};
-	glDrawBuffers(2, DrawBuffers); // "1" is the size of DrawBuffers
+	GLenum DrawBuffers[3] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
+	glDrawBuffers(3, DrawBuffers); // "1" is the size of DrawBuffers
 	
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
@@ -108,7 +115,7 @@ void OpenGLDriver::loadShaderProgram()
 {
 	auto quad = new GLPipeline;
 	quad->addShader("shaders/framebuffer.vert", GLProgram::eShaderType::Vertex);
-	quad->addShader("shaders/framebuffer.frag", GLProgram::eShaderType::Fragment);
+	quad->addShader("shaders/cooktorrance.frag", GLProgram::eShaderType::Fragment);
 	m_renderPipelines[eRenderPipelines::Framebuffer] = quad;
 	
 	auto scene = new GLPipeline;
@@ -155,9 +162,15 @@ void OpenGLDriver::renderQuad()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, 800, 600);
 	m_renderPipelines[eRenderPipelines::Framebuffer]->bindPipeline();
-	m_renderPipelines[eRenderPipelines::Framebuffer]->setUniform(GLProgram::eShaderType::Fragment, "depth", 0);
+	m_renderPipelines[eRenderPipelines::Framebuffer]->setUniform(GLProgram::eShaderType::Fragment, "uDepth", 0);
+	m_renderPipelines[eRenderPipelines::Framebuffer]->setUniform(GLProgram::eShaderType::Fragment, "uAlbedo", 1);
+	m_renderPipelines[eRenderPipelines::Framebuffer]->setUniform(GLProgram::eShaderType::Fragment, "uNormals", 2);
 	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_position);
+	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, m_albedo);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, m_normals);
 
 	GET_GL_ERROR("Error rendering quad");
 	
