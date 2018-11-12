@@ -34,7 +34,7 @@ void Renderer::setup()
 {
 	//setup render scene
 	mesh = new Mesh;
-	mesh->load("assets/monkey.obj");
+	mesh->load("assets/sphere.obj");
 }
 
 Renderer::~Renderer()

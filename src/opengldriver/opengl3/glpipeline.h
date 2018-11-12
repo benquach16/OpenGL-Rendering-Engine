@@ -19,7 +19,8 @@ public:
 	void addShader(std::string path, GLProgram::eShaderType type);
 	void bindPipeline();
 	void setUniform(GLProgram::eShaderType type, const std::string &uniform, int val);
-	void setUniform(GLProgram::eShaderType type, const std::string &uniform, glm::mat4 val);	
+	void setUniform(GLProgram::eShaderType type, const std::string &uniform, glm::mat4 val);
+	void setUniform(GLProgram::eShaderType type, const std::string &uniform, glm::vec3 val);
 	void create();
 	void reset();
 private:

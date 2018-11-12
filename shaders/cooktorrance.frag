@@ -9,12 +9,14 @@ uniform vec3 uCameraPosition;
 in vec2 v_texCoord;
 out vec3 v_outColor;
 
+const float PI = 3.14151;
+
 
 //transform me into screen space!
-vec3 light_pos = vec3(-0.5, 0.5, -0.6);
-vec3 camera_pos = vec3(0.5f, 0.5f, 1.5f);
+vec3 light_pos = vec3(2.0, 2.0, 3.0);
+vec3 camera_pos = vec3(0.0, 0.0, 2.0);
 
-float roughness = 0.2;
+float roughness = 0.6;
 
 
 vec3 toGammaSpace(vec3 color)
@@ -33,12 +35,19 @@ vec3 toLinearSpace(vec3 color)
 	return color;
 }
 
-
-vec3 GGX()
+float chi(float v)
 {
-	float alpha2 = roughness * roughness;
-	
-	return vec3(1.0);
+	return v > 0 ? 1 : 0;
+}
+
+float GGX(vec3 N, vec3 H)
+{
+	float alpha = 0.6;
+    float NoH = dot(N,H);
+	float alpha2 = alpha * alpha;
+	float NoH2 = NoH * NoH;
+	float den = NoH2 * alpha2 + (1 - NoH2);
+	return (alpha2) / ( PI * den * den );
 }
 
 vec3 Fresnel()
@@ -61,17 +70,21 @@ void main()
 
 	vec3 V = normalize(position - camera_pos);
 	vec3 N = normalize(normal);
-	vec3 L = normalize(position - light_pos);
+	vec3 L = -normalize(position - light_pos);
 	vec3 R = normalize(reflect(L,N));
+	vec3 H = normalize(-L + V);
 
 	float NdotL = max(dot(L, N), 0.0);
 	float VdotN = max(dot(V, N), 0.0);
 	float spec = dot(V, R);
 
+	vec3 numerator = GGX(N, H) * Fresnel() * Geometric();
+	vec3 denominator;
+	
 	//do lighting once we transform color space
 	albedo = toGammaSpace(albedo);
-	albedo = albedo * NdotL + max(0.0, pow(spec, 5.0));
-	
+	//albedo = albedo * NdotL + max(pow(spec, 50.0), 0.0);
+	albedo  = albedo * GGX(N,H);
 	albedo = toLinearSpace(albedo);
 	v_outColor = albedo;
 

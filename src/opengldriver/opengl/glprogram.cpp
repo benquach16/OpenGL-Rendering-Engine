@@ -71,6 +71,10 @@ void GLProgram::setUniform(const std::string &uniform, glm::mat4 &val)
 	glProgramUniformMatrix4fv(m_program, location, 1, false, glm::value_ptr(val));
 }
 
+void GLProgram::setUniform(const std::string &uniform, glm::vec3 &val)
+{
+}
+
 //create our own glCreateShaderProgram function because we want our own logging
 int GLProgram::createShaderProgram(GLenum type, const char **str)
 {

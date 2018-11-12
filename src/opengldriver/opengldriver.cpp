@@ -46,6 +46,7 @@ void OpenGLDriver::resize(ScreenInfo info)
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
+	glEnable(GL_MULTISAMPLE);
 	glGenTextures(1, &m_depth);
 	glBindTexture(GL_TEXTURE_2D, m_depth);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, info.m_width, info.m_height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
@@ -144,10 +145,10 @@ void OpenGLDriver::renderScene()
 	m_renderPipelines[eRenderPipelines::Deferred]->bindPipeline();
 	//mat = view * mat;
 	glm::mat4 view = glm::lookAt(
-		glm::vec3(0.5f, 1.5f, 1.5f),
+		glm::vec3(0.0f, 0.0f, 2.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f));
-	glm::mat4 Projection = glm::perspective(glm::radians(40.0f), 4.0f / 3.0f, 0.1f, 100.f);
+		glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 Projection = glm::perspective(glm::radians(40.0f), 4.0f / 3.0f, 0.1f, 200.f);
 	Projection = Projection * view;
 	m_renderPipelines[eRenderPipelines::Deferred]->setUniform(GLProgram::eShaderType::Vertex, "MVP", Projection);
 	glViewport(0, 0, 800, 600);
