@@ -16,7 +16,7 @@ const float PI = 3.14151;
 vec3 light_pos = vec3(2.0, 2.0, 3.0);
 vec3 camera_pos = vec3(0.0, 0.0, 2.0);
 
-float roughness = 0.3;
+float roughness = 0.02;
 float metalness = 0.9;
 float ior = 1.4;
 
@@ -41,11 +41,10 @@ float chi(float v)
 	return v > 0 ? 1 : 0;
 }
 
-float GGX_NormalDistribution(vec3 N, vec3 H)
+float GGX_NormalDistribution(float NdotH)
 {
-    float NoH = dot(N,H);
 	float alpha2 = roughness * roughness;
-	float NoH2 = NoH * NoH;
+	float NoH2 = NdotH * NdotH;
 	float den = NoH2 * alpha2 + (1 - NoH2);
 	return (alpha2) / ( PI * den * den );
 }
@@ -55,17 +54,13 @@ vec3 Fresnel(float cosT, vec3 F0)
 	return F0 + (1.0-F0) * pow(1.0 - cosT, 5.0);
 }
 
-float GGX_Geometric(vec3 N, vec3 H, vec3 V)
+float GGX_Geometric(float NdotL, float VdotN)
 {
-	float alpha = roughness;
-	float VoH2 = max(dot(V, H), 0.0);
-    float chi = chi( VoH2 / max(dot(V,N), 0.0));
-	VoH2 = VoH2 * VoH2;
-	float tan2 = ( 1 - VoH2 ) / VoH2;
-	return (chi * 2) / ( 1 + sqrt( 1 + alpha * alpha * tan2 ) );
+	float r2 = roughness * roughness;
+	float gv = NdotL * sqrt( VdotN * ( VdotN - VdotN * r2 ) + r2 );
+	float gl = VdotN * sqrt( NdotL * ( NdotL - NdotL * r2 ) + r2 );
+	return 0.5 / max( gv + gl, 0.00001 );
 }
-
-
 
 void main()
 {
@@ -82,6 +77,9 @@ void main()
 	float NdotL = max(dot(L, N), 0.0);
 	float VdotN = max(dot(V, N), 0.0);
 	float VdotH = max(dot(V, H), 0.0);
+	float NdotH = max(dot(N, H), 0.0);
+	float LdotH = max(dot(L, H), 0.0);
+
 	float spec = dot(V, R);
 
 	vec3 F0 = vec3(abs((1.0 - ior) / (1.0 + ior)));
@@ -95,12 +93,16 @@ void main()
 	albedo = toGammaSpace(albedo);
 	//albedo = albedo * NdotL + max(pow(spec, 50.0), 0.0);
 	//albedo = albedo * GGX_NormalDistribution(N,H) * GGX_Geometric(N, H, V);
-	float D = GGX_NormalDistribution(N, H);
-	float G = GGX_Geometric(N, H, V);
-	float F = pow(1.0 - VdotN, 6.0);
+	float D = GGX_NormalDistribution(NdotH);
+	float G = GGX_Geometric(NdotL, VdotN);
+	vec3 F = Fresnel(LdotH, vec3(0.02));
 
-	float Rs = G * F * D / max(3.14159265 * VdotN * NdotL, 0.000001);
-	albedo = albedo * NdotL + vec3(1.0) * NdotL * (roughness + Rs * (1.0 - roughness));
+	vec3 Rs = G * F * D;
+	//albedo = albedo * NdotL + vec3(1.0) * NdotL * (roughness + Rs * (1.0 - roughness));
+	vec3 diffuse = albedo * NdotL * (1.0 - roughness);
+	
+	albedo = diffuse + Rs;
+	//albedo = albedo * 2.0 * NdotL;
 	albedo = toLinearSpace(albedo);
 	v_outColor = albedo;
 
