@@ -41,12 +41,16 @@ OpenGLDriver::~OpenGLDriver()
 
 void OpenGLDriver::resize(ScreenInfo info)
 {
+	m_screenInfo = info;
+	
 	glGenFramebuffers(1, &m_gbuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
 	glEnable(GL_MULTISAMPLE);
+	glEnable(GL_BLEND);
+
 	glGenTextures(1, &m_depth);
 	glBindTexture(GL_TEXTURE_2D, m_depth);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, info.m_width, info.m_height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, 0);
@@ -120,8 +124,8 @@ void OpenGLDriver::loadShaderProgram()
 	m_renderPipelines[eRenderPipelines::Framebuffer] = quad;
 	
 	auto scene = new GLPipeline;
-	scene->addShader("shaders/phong.vert", GLProgram::eShaderType::Vertex);
-	scene->addShader("shaders/phong.frag", GLProgram::eShaderType::Fragment);
+	scene->addShader("shaders/gbuffer.vert", GLProgram::eShaderType::Vertex);
+	scene->addShader("shaders/gbuffer.frag", GLProgram::eShaderType::Fragment);
 	m_renderPipelines[eRenderPipelines::Deferred] = scene;
 	m_currentPipeline = 0;
 }
@@ -142,16 +146,19 @@ void OpenGLDriver::render()
 
 void OpenGLDriver::renderScene()
 {
+	ASSERT(m_renderPipelines.size() != 0, "No render pipelines created");
+	ASSERT(m_renderPipelines[eRenderPipelines::Deferred] != nullptr, "No Deferred rendering pipeline created");
+	
 	m_renderPipelines[eRenderPipelines::Deferred]->bindPipeline();
 	//mat = view * mat;
 	glm::mat4 view = glm::lookAt(
 		glm::vec3(0.0f, 0.0f, 2.0f),
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::mat4 Projection = glm::perspective(glm::radians(40.0f), 4.0f / 3.0f, 0.1f, 200.f);
+	glm::mat4 Projection = glm::perspective(glm::radians(40.0f), 16.0f / 9.0f, 0.1f, 200.f);
 	Projection = Projection * view;
 	m_renderPipelines[eRenderPipelines::Deferred]->setUniform(GLProgram::eShaderType::Vertex, "MVP", Projection);
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, m_screenInfo.m_width, m_screenInfo.m_height);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	m_rendermanager.render();
@@ -159,9 +166,10 @@ void OpenGLDriver::renderScene()
 
 void OpenGLDriver::renderQuad()
 {
-
+	ASSERT(m_renderPipelines[eRenderPipelines::Framebuffer] != nullptr, "No framebuffer rendering pipeline created");
+	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, m_screenInfo.m_width, m_screenInfo.m_height);
 	m_renderPipelines[eRenderPipelines::Framebuffer]->bindPipeline();
 	m_renderPipelines[eRenderPipelines::Framebuffer]->setUniform(GLProgram::eShaderType::Fragment, "uDepth", 0);
 	m_renderPipelines[eRenderPipelines::Framebuffer]->setUniform(GLProgram::eShaderType::Fragment, "uAlbedo", 1);

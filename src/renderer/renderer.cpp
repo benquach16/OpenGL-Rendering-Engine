@@ -5,8 +5,8 @@
 Renderer::Renderer()
 {
 
-	m_screenInfo.m_width = 800;
-	m_screenInfo.m_height = 600;
+	m_screenInfo.m_width = 1600;
+	m_screenInfo.m_height = 900;
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 		std::cerr << "failed to initialize SDL" << std::endl;
 	m_window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -34,7 +34,7 @@ void Renderer::setup()
 {
 	//setup render scene
 	mesh = new Mesh;
-	mesh->load("assets/sphere.obj");
+	mesh->load("assets/monkey.obj");
 }
 
 Renderer::~Renderer()
