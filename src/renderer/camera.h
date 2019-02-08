@@ -10,8 +10,9 @@ class Camera
 public:
 	Camera();
 
-	void setPosition();
+	void setPosition(glm::vec3 position) { m_origin = position; }
 	void lookAt();
+	glm::mat4 getTransform();
 private:
 	glm::mat4 m_transform;
 	glm::vec3 m_origin;

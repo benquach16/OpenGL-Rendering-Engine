@@ -50,6 +50,7 @@ public:
 	void loadShaderProgram();
 	void run();
 	void submit(VertexBuffer* buf);
+	void setCameraPerspective(const glm::mat4 &MVP);
 protected:
 	void renderScene();
 	void renderQuad();

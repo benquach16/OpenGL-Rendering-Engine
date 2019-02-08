@@ -47,10 +47,21 @@ void Renderer::run()
 {
 	setup();
 	//run opengl scene
+	float rot = 0.0f;
 	while(true)
 	{
 		m_driver.submit(mesh->getBuffer());
 		glClear(GL_COLOR_BUFFER_BIT);
+		glm::mat4 view = glm::lookAt(
+			glm::vec3(0.0f, 0.0f, 2.0f),
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 Projection = glm::perspective(glm::radians(40.0f), 16.0f / 9.0f, 0.1f, 200.f);
+
+		Projection = Projection * view;
+		Projection = glm::rotate(Projection, rot, glm::vec3(0.0, 1.0, 0.0));
+		rot+=0.01f;
+		m_driver.setCameraPerspective(Projection);
 		m_driver.render();
 		SDL_GL_SwapWindow( m_window );
 	}	
