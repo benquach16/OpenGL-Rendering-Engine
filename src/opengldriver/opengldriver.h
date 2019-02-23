@@ -49,8 +49,9 @@ public:
 	void initializeDriver();
 	void loadShaderProgram();
 	void run();
+	void renderLightVolumes();
 	void submit(VertexBuffer* buf);
-	void setCameraPerspective(const glm::mat4 &MVP);
+	void setCameraPerspective(const glm::mat4 &MVP, const glm::vec3 &cameraPosition);
 protected:
 	void renderScene();
 	void renderQuad();

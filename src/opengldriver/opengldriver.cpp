@@ -7,7 +7,7 @@ using namespace std;
 //0: vertex pos
 //1: texcoord
 GLfloat quad[] = {
-    //upper left vert
+    //upper left triangle
 	-1.0f, -1.0f, 0.0f,
 	0.0f, 0.0f,
 	1.0f, -1.0f, 0.0f,
@@ -15,7 +15,7 @@ GLfloat quad[] = {
 	-1.0f, 1.0f, 0.0f,
 	0.0f, 1.0f,
 
-	//bottom right vert
+	//bottom right triangle
 	1.0f, 1.0f, 0.0f,
 	1.0f, 1.0f,
 	-1.0f, 1.0f, 0.0f,
@@ -23,6 +23,22 @@ GLfloat quad[] = {
 	1.0f, -1.0f, 0.0f,
 	1.0f, 0.0f
 };
+
+GLfloat box[] = {
+	// front face
+	-1.0f, -1.0f, -1.0f,
+	1.0f, -1.0f, -1.0f,
+	-1.0f, 1.0f, -1.0f,
+	1.0f, 1.0f, -1.0f,
+
+	// back face
+	-1.0f, -1.0f, 1.0f,
+	1.0f, -1.0f, 1.0f,
+	-1.0f, 1.0f, 1.0f,
+	1.0f, 1.0f, 1.0f
+};
+
+GLfloat indices[] = {0, 1, 2};
 
 
 
@@ -136,10 +152,10 @@ void OpenGLDriver::submit(VertexBuffer* buf)
 	m_rendermanager.push(buf);
 }
 
-void OpenGLDriver::setCameraPerspective(const glm::mat4 &MVP)
+void OpenGLDriver::setCameraPerspective(const glm::mat4 &MVP, const glm::vec3 &cameraPosition)
 {
 	ASSERT(m_renderPipelines[eRenderPipelines::Deferred] != nullptr, "No Deferred rendering pipeline created");
-	m_renderPipelines[eRenderPipelines::Deferred]->setUniform(GLProgram::eShaderType::Vertex, "MVP", MVP);	
+	m_renderPipelines[eRenderPipelines::Deferred]->setUniform(GLProgram::eShaderType::Vertex, "MVP", MVP);
 }
 
 void OpenGLDriver::render()
@@ -154,13 +170,38 @@ void OpenGLDriver::renderScene()
 {
 	ASSERT(m_renderPipelines.size() != 0, "No render pipelines created");
 	ASSERT(m_renderPipelines[eRenderPipelines::Deferred] != nullptr, "No Deferred rendering pipeline created");
-	
 	m_renderPipelines[eRenderPipelines::Deferred]->bindPipeline();
 	//mat = view * mat;
 	glViewport(0, 0, m_screenInfo.m_width, m_screenInfo.m_height);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	m_rendermanager.render();
+
+	
+}
+
+void OpenGLDriver::renderLightVolumes()
+{
+	// todo : defer this so we dont alloc memory every frame
+	GLuint vertarray;
+	glGenVertexArrays(1, &vertarray);
+	glBindVertexArray(vertarray);
+	GLuint vertices;
+	glGenBuffers(1, &vertices);
+	glBindBuffer(GL_ARRAY_BUFFER, vertices);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*5, BUFFER_OFFSET(0));
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float)*5, BUFFER_OFFSET(12));
+	
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
+
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDisableVertexAttribArray(0);
+
+	glDeleteBuffers(1, &vertices);
+	glDeleteBuffers(1, &vertarray);
 }
 
 void OpenGLDriver::renderQuad()

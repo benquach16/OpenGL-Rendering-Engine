@@ -4,14 +4,33 @@
 
 RenderManager::RenderManager() 
 {
+	/*
+	auto quad = new GLPipeline;
+	quad->addShader("shaders/framebuffer.vert", GLProgram::eShaderType::Vertex);
+	quad->addShader("shaders/cooktorrance.frag", GLProgram::eShaderType::Fragment);
+	m_renderPipelines[eRenderPipelines::Framebuffer] = quad;
 	
+	auto scene = new GLPipeline;
+	scene->addShader("shaders/gbuffer.vert", GLProgram::eShaderType::Vertex);
+	scene->addShader("shaders/gbuffer.frag", GLProgram::eShaderType::Fragment);
+	m_renderPipelines[eRenderPipelines::Deferred] = scene;
+	m_currentPipeline = 0;	
+	*/
+}
+
+RenderManager::~RenderManager()
+{
+	for(auto i : m_renderPipelines)
+	{
+		delete i.second;
+	}
+	m_renderPipelines.clear();
 }
 
 void RenderManager::render()
 {	
 	while(!m_queue.empty())
-	{
-		
+	{		
 		auto object = m_queue.front();
 		m_queue.pop();
 

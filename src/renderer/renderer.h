@@ -15,6 +15,7 @@ public:
 	~Renderer();
 	void setup();
 	void run();
+	void createLightVolume();
 protected:
 	ScreenInfo m_screenInfo;
 	SDL_Window *m_window;

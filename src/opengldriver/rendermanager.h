@@ -8,17 +8,28 @@
 #include <queue>
 #include "vertexbuffer.h"
 #include "renderstate.h"
+#include "opengl/glprogram.h"
+#include "opengl3/glpipeline.h"
 
 class RenderManager
 {
 public:
-	enum RENDER_PASSES
+	enum eRenderPasses
 	{
-		TRANSPARENT,
-		STATIC,
-		DYNAMIC
+		Transparent,
+		Static,
+		Dynamic
 	};
+
+	enum eRenderPipelines
+	{
+		Deferred,
+		PostProcess,
+		Framebuffer,
+	};
+	
 	RenderManager();
+	~RenderManager();
 	void render();
 	void renderDeferred();
 	void renderForward();
@@ -31,5 +42,7 @@ public:
 private:
 	std::queue<VertexBuffer*> m_queue;
 	std::vector<RenderState> m_renderStates;
+	std::unordered_map<eRenderPipelines, GLPipeline*> m_renderPipelines;
 	unsigned m_currentRenderstate;
+	unsigned m_currentPipeline;
 };

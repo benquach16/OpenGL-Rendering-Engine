@@ -87,9 +87,6 @@ void main()
 	F0 = F0 * F0;
 	F0 = mix(F0, albedo, metalness);
 	
-
-	vec3 denominator;
-	
 	//do lighting once we transform color space
 	albedo = toGammaSpace(albedo);
 	//albedo = albedo * NdotL + max(pow(spec, 50.0), 0.0);
