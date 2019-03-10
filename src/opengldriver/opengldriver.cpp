@@ -128,6 +128,7 @@ void OpenGLDriver::initializeDriver()
 	glewInit();
 	//refactor this
 	loadShaderProgram();
+	m_renderManager.initRenderPipelines();
 }
 
 
@@ -149,7 +150,7 @@ void OpenGLDriver::loadShaderProgram()
 void OpenGLDriver::submit(VertexBuffer* buf)
 {
 	//cerr << "pushing vertex buffer" << endl;
-	m_rendermanager.push(buf);
+	m_renderManager.push(buf);
 }
 
 void OpenGLDriver::setCameraPerspective(const glm::mat4 &MVP, const glm::vec3 &cameraPosition)
@@ -175,7 +176,7 @@ void OpenGLDriver::renderScene()
 	glViewport(0, 0, m_screenInfo.m_width, m_screenInfo.m_height);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	m_rendermanager.render();
+	m_renderManager.render();
 
 	
 }

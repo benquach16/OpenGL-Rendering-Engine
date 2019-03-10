@@ -85,7 +85,7 @@ void main()
 
 	vec3 F0 = vec3(abs((1.0 - ior) / (1.0 + ior)));
 	F0 = F0 * F0;
-	F0 = mix(F0, albedo, metalness);
+	//F0 = mix(F0, albedo, metalness);
 	
 	//do lighting once we transform color space
 	albedo = toGammaSpace(albedo);
@@ -93,10 +93,12 @@ void main()
 	//albedo = albedo * GGX_NormalDistribution(N,H) * GGX_Geometric(N, H, V);
 	float D = GGX_NormalDistribution(NdotH);
 	float G = GGX_Geometric(NdotL, VdotN);
-	vec3 F = Fresnel(VdotN, vec3(0.02));
+	vec3 F = Fresnel(VdotN, F0);
 
 	vec3 Rs = G * F * D * PI * NdotL;
 	//albedo = albedo * NdotL + vec3(1.0) * NdotL * (roughness + Rs * (1.0 - roughness));
+	vec3 indirect = vec3(0.05, 0.0, 0.0);
+	Rs += indirect * F;
 	vec3 diffuse = albedo * NdotL * 1.0/PI;
 	albedo = diffuse + Rs;
 

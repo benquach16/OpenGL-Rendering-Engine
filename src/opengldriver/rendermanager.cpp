@@ -2,9 +2,23 @@
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
+
+
 RenderManager::RenderManager() 
 {
-	/*
+}
+
+RenderManager::~RenderManager()
+{
+	for(auto i : m_renderPipelines)
+	{
+		delete i.second;
+	}
+	m_renderPipelines.clear();
+}
+
+void RenderManager::initRenderPipelines()
+{
 	auto quad = new GLPipeline;
 	quad->addShader("shaders/framebuffer.vert", GLProgram::eShaderType::Vertex);
 	quad->addShader("shaders/cooktorrance.frag", GLProgram::eShaderType::Fragment);
@@ -15,16 +29,6 @@ RenderManager::RenderManager()
 	scene->addShader("shaders/gbuffer.frag", GLProgram::eShaderType::Fragment);
 	m_renderPipelines[eRenderPipelines::Deferred] = scene;
 	m_currentPipeline = 0;	
-	*/
-}
-
-RenderManager::~RenderManager()
-{
-	for(auto i : m_renderPipelines)
-	{
-		delete i.second;
-	}
-	m_renderPipelines.clear();
 }
 
 void RenderManager::render()

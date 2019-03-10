@@ -72,5 +72,5 @@ protected:
 
 	ScreenInfo m_screenInfo;
 
-	RenderManager m_rendermanager;
+	RenderManager m_renderManager;
 };

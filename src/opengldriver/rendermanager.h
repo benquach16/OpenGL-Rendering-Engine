@@ -16,6 +16,10 @@ class RenderManager
 public:
 	enum eRenderPasses
 	{
+		Shadows,
+		GBuffer,
+		DirectLighting,
+		IndirectLighting,
 		Transparent,
 		Static,
 		Dynamic
@@ -30,6 +34,8 @@ public:
 	
 	RenderManager();
 	~RenderManager();
+	void initRenderPipelines();
+	void renderLightVolume();
 	void render();
 	void renderDeferred();
 	void renderForward();
@@ -45,4 +51,6 @@ private:
 	std::unordered_map<eRenderPipelines, GLPipeline*> m_renderPipelines;
 	unsigned m_currentRenderstate;
 	unsigned m_currentPipeline;
+
+	std::vector<GLuint> m_framebuffers;
 };
