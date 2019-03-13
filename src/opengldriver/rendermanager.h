@@ -10,6 +10,7 @@
 #include "renderstate.h"
 #include "opengl/glprogram.h"
 #include "opengl3/glpipeline.h"
+#include "job.h"
 
 class RenderManager
 {
@@ -46,9 +47,12 @@ public:
 	void sort();
 	void push(VertexBuffer* buf) { m_queue.push(buf); }
 private:
+	Job* m_root;
+	
 	std::queue<VertexBuffer*> m_queue;
 	std::vector<RenderState> m_renderStates;
 	std::unordered_map<eRenderPipelines, GLPipeline*> m_renderPipelines;
+	std::unordered_map<eRenderPasses, GLPipeline*> m_renderPasses;
 	unsigned m_currentRenderstate;
 	unsigned m_currentPipeline;
 
