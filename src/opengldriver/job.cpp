@@ -19,6 +19,16 @@ Job::~Job()
 	m_pipeline = nullptr;
 }
 
+void Job::setVertexShader(const std::string& path)
+{
+	m_pipeline->addShader(path, GLProgram::eShaderType::Vertex);
+}
+
+void Job::setFragmentShader(const std::string& path)
+{
+	m_pipeline->addShader(path, GLProgram::eShaderType::Fragment);
+}
+
 void Job::run()
 {
 	if(m_pipeline == nullptr)

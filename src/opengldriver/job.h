@@ -11,6 +11,10 @@ public:
 	Job();
 	void init();
 	~Job();
+	void setVertexShader(const std::string& path);
+	void setComputeShader(const std::string& path);
+	void setFragmentShader(const std::string& path);
+	
 	void run();
 	void push(VertexBuffer* buf) { m_queue.push(buf); }
 protected:
