@@ -2,8 +2,6 @@
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-
-
 RenderManager::RenderManager() 
 {
 }
@@ -15,10 +13,30 @@ RenderManager::~RenderManager()
 		delete i.second;
 	}
 	m_renderPipelines.clear();
+
+	for(auto i : m_renderJobs)
+	{
+		delete i.second;
+	}
+	m_renderJobs.clear();
 }
 
 void RenderManager::initRenderPipelines()
 {
+	m_renderJobs[eRenderPasses::Shadows] = new Job;
+	Job* gbufferJob = new Job;
+	gbufferJob->setVertexShader("shaders/framebuffer.vert");
+	gbufferJob->setFragmentShader("shaders/cooktorrance.frag");
+	m_renderJobs[eRenderPasses::GBuffer] = gbufferJob;
+
+	Job* directLightingJob = new Job;
+	directLightingJob->setVertexShader("shaders/gbuffer.vert");
+	directLightingJob->setFragmentShader("shaders/gbuffer.frag");
+	m_renderJobs[eRenderPasses::DirectLighting] = directLightingJob;
+	
+	m_renderJobs[eRenderPasses::IndirectLighting] = new Job;
+	m_renderJobs[eRenderPasses::Transparent] = new Job;
+	
 	auto quad = new GLPipeline;
 	quad->addShader("shaders/framebuffer.vert", GLProgram::eShaderType::Vertex);
 	quad->addShader("shaders/cooktorrance.frag", GLProgram::eShaderType::Fragment);

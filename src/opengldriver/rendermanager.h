@@ -21,9 +21,7 @@ public:
 		GBuffer,
 		DirectLighting,
 		IndirectLighting,
-		Transparent,
-		Static,
-		Dynamic
+		Transparent
 	};
 
 	enum eRenderPipelines
@@ -46,13 +44,15 @@ public:
 	//we also need to make sure that if we're rendering transparents, we sort them front to back
 	void sort();
 	void push(VertexBuffer* buf) { m_queue.push(buf); }
+	void push(VertexBuffer* buf, eRenderPasses renderPass);
 private:
 	Job* m_root;
 	
 	std::queue<VertexBuffer*> m_queue;
 	std::vector<RenderState> m_renderStates;
+	std::unordered_map<eRenderPasses, Job*> m_renderJobs;
 	std::unordered_map<eRenderPipelines, GLPipeline*> m_renderPipelines;
-	std::unordered_map<eRenderPasses, GLPipeline*> m_renderPasses;
+
 	unsigned m_currentRenderstate;
 	unsigned m_currentPipeline;
 
