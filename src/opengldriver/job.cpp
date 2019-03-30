@@ -2,6 +2,7 @@
 
 Job::Job() : m_pipeline(nullptr)
 {
+	init();
 }
 
 void Job::init()
@@ -41,7 +42,5 @@ void Job::run()
 	{
 		auto object = m_queue.front();
 		m_queue.pop();
-
-		
 	}
 }
