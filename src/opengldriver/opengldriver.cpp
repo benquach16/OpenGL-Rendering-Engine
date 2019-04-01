@@ -150,7 +150,7 @@ void OpenGLDriver::loadShaderProgram()
 void OpenGLDriver::submit(VertexBuffer* buf)
 {
 	//cerr << "pushing vertex buffer" << endl;
-	m_renderManager.push(buf);
+	m_renderManager.push(buf, eRenderPasses::GBuffer);
 }
 
 void OpenGLDriver::setCameraPerspective(const glm::mat4 &MVP, const glm::vec3 &cameraPosition)

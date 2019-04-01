@@ -10,12 +10,12 @@ class Job
 public:
 	Job();
 	void init();
-	~Job();
+	virtual ~Job();
 	void setVertexShader(const std::string& path);
 	void setComputeShader(const std::string& path);
 	void setFragmentShader(const std::string& path);
 	
-	void run();
+	virtual void run();
 	void push(VertexBuffer* buf) { m_queue.push(buf); }
 protected:
 	std::queue<VertexBuffer*> m_queue;

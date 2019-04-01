@@ -10,27 +10,27 @@
 #include "renderstate.h"
 #include "opengl/glprogram.h"
 #include "opengl3/glpipeline.h"
-#include "job.h"
+#include "job/job.h"
+
+enum eRenderPasses
+{
+	Shadows,
+	GBuffer,
+	DirectLighting,
+	IndirectLighting,
+	Transparent
+};
+
+enum eRenderPipelines
+{
+	Deferred,
+	PostProcess,
+	Framebuffer,
+};
 
 class RenderManager
 {
-public:
-	enum eRenderPasses
-	{
-		Shadows,
-		GBuffer,
-		DirectLighting,
-		IndirectLighting,
-		Transparent
-	};
-
-	enum eRenderPipelines
-	{
-		Deferred,
-		PostProcess,
-		Framebuffer,
-	};
-	
+public:	
 	RenderManager();
 	~RenderManager();
 	void initRenderPipelines();

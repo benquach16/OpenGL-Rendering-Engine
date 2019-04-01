@@ -4,9 +4,9 @@
 #include <iostream>
 #include <fstream>
 
-class FileLoader
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
+namespace util
 {
-public:
-	static std::string loadFile(const std::string &path);
-	
+std::string loadFile(const std::string &path);
 };

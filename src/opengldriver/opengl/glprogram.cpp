@@ -28,7 +28,7 @@ GLProgram::~GLProgram()
 void GLProgram::create()
 {
 	reset();
-	std::string contents = FileLoader::loadFile(m_path);
+	std::string contents = util::loadFile(m_path);
 	const char *ptr = contents.c_str();
 	//auto id = glCreateShaderProgramv(getShaderBit(m_shaderType), 1, &ptr);
 	auto id = createShaderProgram(getShaderBit(m_shaderType),&ptr);
@@ -73,6 +73,7 @@ void GLProgram::setUniform(const std::string &uniform, glm::mat4 &val)
 
 void GLProgram::setUniform(const std::string &uniform, glm::vec3 &val)
 {
+
 }
 
 //create our own glCreateShaderProgram function because we want our own logging

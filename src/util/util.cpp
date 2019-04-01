@@ -2,7 +2,10 @@
 
 using namespace std;
 
-string FileLoader::loadFile(const string &path)
+namespace util
+{
+
+string loadFile(const string &path)
 {
 	std::string content;
 	std::ifstream fileStream(path, std::ios::in);
@@ -20,4 +23,6 @@ string FileLoader::loadFile(const string &path)
 
 	fileStream.close();
 	return content;
+}
+
 }
