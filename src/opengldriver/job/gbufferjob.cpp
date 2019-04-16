@@ -1,6 +1,8 @@
 #include "gbufferjob.h"
 #include "../../util/util.h"
 
+using namespace std;
+
 GBufferJob::GBufferJob() : Job()
 {
 	setVertexShader("shaders/gbuffer.vert");
@@ -44,11 +46,41 @@ void GBufferJob::initRTs(int width, int height)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_position, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_albedo, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_normals, 0);	
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_normals, 0);
+
+	// Set the list of draw buffers.
+	GLenum DrawBuffers[3] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
+	glDrawBuffers(3, DrawBuffers); // "1" is the size of DrawBuffers
+	
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+
+	if(status != GL_FRAMEBUFFER_COMPLETE)
+	{
+		if(status == GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT)
+		{
+			cerr << "GL_FRAMEBUFFER: incomplete attachment error" << endl;
+		}
+		if(status == GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT)
+		{
+			cerr << "GL_FRAMEBUFFER: incomplete missing attachment" << endl;
+		}
+		cerr << "framebuffer error" << endl;
+	}
+	else
+	{
+		cerr << "framebuffer success" << endl;
+	}
+}
+
+void GBufferJob::setMVP(const glm::mat4 &MVP)
+{
+	m_pipeline->setUniform(GLProgram::eShaderType::Vertex, "MVP", MVP);
+	
 }
 
 void GBufferJob::run()
 {
+	m_pipeline->bindPipeline();
 	while(!m_queue.empty())
 	{
 		auto object = m_queue.front();

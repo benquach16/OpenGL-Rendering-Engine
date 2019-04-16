@@ -41,6 +41,7 @@ void RenderManager::initRenderPipelines()
 
 void RenderManager::render()
 {
+	// an stl map should guarantee the correct order traversal (smallest enum to largest)
 	for(auto i : m_renderJobs)
 	{
 		i.second->run();
@@ -50,6 +51,11 @@ void RenderManager::render()
 void RenderManager::push(VertexBuffer* buf, eRenderPasses renderPass)
 {
 	m_renderJobs[renderPass]->push(buf);
+}
+
+void RenderManager::setCameraPerspective(const glm::mat4 &MVP)
+{
+	static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->setMVP(MVP);
 }
 
 

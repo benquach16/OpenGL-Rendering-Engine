@@ -1,11 +1,6 @@
 #include "job.h"
 
-Job::Job() : m_pipeline(nullptr)
-{
-	init();
-}
-
-void Job::init()
+Job::Job() : m_pipeline(nullptr), m_parent(nullptr)
 {
 	m_pipeline = new GLPipeline;
 }

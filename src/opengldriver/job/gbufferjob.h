@@ -9,13 +9,14 @@
 
 class GBufferJob : public Job
 {
-public:
+public:	
 	GBufferJob();
+
 	void initRTs(int width, int height);
-	
 	void run() override;
 
-private:
+	void setMVP(const glm::mat4 &MVP);
+private:	
 	GLuint m_gbuffer;
 	GLuint m_position;
 	GLuint m_depth;

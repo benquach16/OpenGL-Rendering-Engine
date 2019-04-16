@@ -155,15 +155,14 @@ void OpenGLDriver::submit(VertexBuffer* buf)
 
 void OpenGLDriver::setCameraPerspective(const glm::mat4 &MVP, const glm::vec3 &cameraPosition)
 {
-	ASSERT(m_renderPipelines[eRenderPipelines::Deferred] != nullptr, "No Deferred rendering pipeline created");
-	m_renderPipelines[eRenderPipelines::Deferred]->setUniform(GLProgram::eShaderType::Vertex, "MVP", MVP);
+	//ASSERT(m_renderPipelines[eRenderPipelines::Deferred] != nullptr, "No Deferred rendering pipeline created");
+	//m_renderPipelines[eRenderPipelines::Deferred]->setUniform(GLProgram::eShaderType::Vertex, "MVP", MVP);
+	m_renderManager.setCameraPerspective(MVP);
 }
 
 void OpenGLDriver::render()
 {
 	renderScene();
-	//renderQuad(m_albedo, 0,0,400,300);
-	//renderQuad(m_depth,400,0,800,300);
 	renderQuad();
 }
 
@@ -171,14 +170,11 @@ void OpenGLDriver::renderScene()
 {
 	ASSERT(m_renderPipelines.size() != 0, "No render pipelines created");
 	ASSERT(m_renderPipelines[eRenderPipelines::Deferred] != nullptr, "No Deferred rendering pipeline created");
-	m_renderPipelines[eRenderPipelines::Deferred]->bindPipeline();
-	//mat = view * mat;
+	//m_renderPipelines[eRenderPipelines::Deferred]->bindPipeline();
 	glViewport(0, 0, m_screenInfo.m_width, m_screenInfo.m_height);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	m_renderManager.render();
-
-	
 }
 
 void OpenGLDriver::renderLightVolumes()

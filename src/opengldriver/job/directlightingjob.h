@@ -9,4 +9,5 @@ public:
 
 	void run() override;
 
+private:
 };

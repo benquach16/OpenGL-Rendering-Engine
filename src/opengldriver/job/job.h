@@ -9,7 +9,6 @@ class Job
 {
 public:
 	Job();
-	void init();
 	virtual ~Job();
 	void setVertexShader(const std::string& path);
 	void setComputeShader(const std::string& path);
@@ -20,6 +19,6 @@ public:
 protected:
 	std::queue<VertexBuffer*> m_queue;
 	std::vector<Job*> m_children;
-
+	Job* m_parent;
 	GLPipeline* m_pipeline;
 };
