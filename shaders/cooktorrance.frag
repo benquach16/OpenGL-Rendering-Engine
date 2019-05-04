@@ -105,5 +105,4 @@ void main()
 	//albedo = albedo * 2.0 * NdotL;
 	albedo = toLinearSpace(albedo);
 	v_outColor = albedo;
-
 }

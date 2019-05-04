@@ -8,6 +8,6 @@ public:
 	DirectLightingJob();
 
 	void run() override;
-
+	eRenderPasses getJobType() override { return eRenderPasses::DirectLighting; }
 private:
 };

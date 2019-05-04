@@ -11,11 +11,20 @@ class GBufferJob : public Job
 {
 public:	
 	GBufferJob();
-
-	void initRTs(int width, int height);
+	~GBufferJob();
+	void resetRTs();
 	void run() override;
 
 	void setMVP(const glm::mat4 &MVP);
+
+	void resize(int screenWidth, int screenHeight) override;
+	
+	eRenderPasses getJobType() override { return eRenderPasses::GBuffer; }
+
+	GLuint getPositionRT() { return m_position; }
+	GLuint getDepthRT() { return m_depth; }
+	GLuint getAlbedoRT() { return m_albedo; }
+	GLuint getNormalRT() { return m_normals; }
 private:	
 	GLuint m_gbuffer;
 	GLuint m_position;

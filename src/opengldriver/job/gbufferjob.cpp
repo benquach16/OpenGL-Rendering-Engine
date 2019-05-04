@@ -3,14 +3,35 @@
 
 using namespace std;
 
-GBufferJob::GBufferJob() : Job()
+GBufferJob::GBufferJob() : Job(), m_gbuffer(0), m_position(0), m_depth(0), m_albedo(0), m_normals(0)
 {
 	setVertexShader("shaders/gbuffer.vert");
 	setFragmentShader("shaders/gbuffer.frag");
 }
 
-void GBufferJob::initRTs(int width, int height)
+GBufferJob::~GBufferJob()
 {
+	resetRTs();
+}
+
+void GBufferJob::resetRTs()
+{
+	if(m_gbuffer != 0) {
+		glDeleteFramebuffers(1, &m_gbuffer);
+		m_gbuffer = 0;
+	}
+	if(m_position != 0) {
+		glDeleteTextures(1, &m_position);
+		m_position = 0;
+	}
+}
+
+void GBufferJob::resize(int width, int height)
+{
+	Job::resize(width, height);
+
+	resetRTs();
+	
 	glGenFramebuffers(1, &m_gbuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	glEnable(GL_CULL_FACE);
@@ -80,6 +101,7 @@ void GBufferJob::setMVP(const glm::mat4 &MVP)
 
 void GBufferJob::run()
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	m_pipeline->bindPipeline();
 	while(!m_queue.empty())
 	{

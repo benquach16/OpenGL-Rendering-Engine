@@ -31,20 +31,34 @@ void RenderManager::initRenderPipelines()
 	m_renderJobs[eRenderPasses::GBuffer] = gbufferJob;
 
 	Job* directLightingJob = new DirectLightingJob;
+	directLightingJob->setParent(gbufferJob);
 	m_renderJobs[eRenderPasses::DirectLighting] = directLightingJob;
-	
+
 	//m_renderJobs[eRenderPasses::IndirectLighting] = new Job;
 	//m_renderJobs[eRenderPasses::Transparent] = new Job;
 	
 	m_currentPipeline = 0;	
 }
 
+void RenderManager::resize(int screenWidth, int screenHeight)
+{
+	m_screenWidth = screenWidth;
+	m_screenHeight = screenHeight;
+	for(auto i : m_renderJobs)
+	{
+		i.second->resize(screenWidth, screenHeight);
+	}	
+}
+
 void RenderManager::render()
 {
 	// an stl map should guarantee the correct order traversal (smallest enum to largest)
-	for(auto i : m_renderJobs)
+	//int count = 0;
+	for(auto it = m_renderJobs.begin(); it != m_renderJobs.end(); ++it )
 	{
-		i.second->run();
+		//std::cout << "Running job: " << static_cast<unsigned>(it->first) << " in order " << count << std::endl;
+		//count++;
+		it->second->run();
 	}
 }
 

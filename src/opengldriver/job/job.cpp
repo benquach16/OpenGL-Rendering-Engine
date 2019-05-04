@@ -1,6 +1,6 @@
 #include "job.h"
 
-Job::Job() : m_pipeline(nullptr), m_parent(nullptr)
+Job::Job() : m_pipeline(nullptr), m_parent(nullptr), m_width(-1), m_height(-1)
 {
 	m_pipeline = new GLPipeline;
 }

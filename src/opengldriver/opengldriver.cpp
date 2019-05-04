@@ -57,6 +57,7 @@ OpenGLDriver::~OpenGLDriver()
 
 void OpenGLDriver::resize(ScreenInfo info)
 {
+	m_renderManager.resize(info.m_width, info.m_height);
 	m_screenInfo = info;
 	
 	glGenFramebuffers(1, &m_gbuffer);
@@ -163,7 +164,7 @@ void OpenGLDriver::setCameraPerspective(const glm::mat4 &MVP, const glm::vec3 &c
 void OpenGLDriver::render()
 {
 	renderScene();
-	renderQuad();
+	//renderQuad();
 }
 
 void OpenGLDriver::renderScene()
@@ -172,7 +173,7 @@ void OpenGLDriver::renderScene()
 	ASSERT(m_renderPipelines[eRenderPipelines::Deferred] != nullptr, "No Deferred rendering pipeline created");
 	//m_renderPipelines[eRenderPipelines::Deferred]->bindPipeline();
 	glViewport(0, 0, m_screenInfo.m_width, m_screenInfo.m_height);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
+	//glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	m_renderManager.render();
 }
