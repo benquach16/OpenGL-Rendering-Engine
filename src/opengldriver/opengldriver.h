@@ -47,7 +47,6 @@ public:
 	void render();
 
 	void initializeDriver();
-	void loadShaderProgram();
 	void run();
 	void renderLightVolumes();
 	void submit(VertexBuffer* buf);
