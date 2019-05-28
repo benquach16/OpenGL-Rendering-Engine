@@ -9,7 +9,7 @@
 
 class GBufferJob : public Job
 {
-public:	
+public:
 	GBufferJob();
 	~GBufferJob();
 	void resetRTs();
@@ -18,14 +18,17 @@ public:
 	void setMVP(const glm::mat4 &MVP);
 
 	void resize(int screenWidth, int screenHeight) override;
-	
+	void loadCubemap();
 	eRenderPasses getJobType() override { return eRenderPasses::GBuffer; }
 
 	GLuint getPositionRT() { return m_position; }
 	GLuint getDepthRT() { return m_depth; }
 	GLuint getAlbedoRT() { return m_albedo; }
 	GLuint getNormalRT() { return m_normals; }
-private:	
+	GLuint getFramebuffer() { return m_gbuffer; }
+private:
+	GLuint m_skybox;
+	
 	GLuint m_gbuffer;
 	GLuint m_position;
 	GLuint m_depth;

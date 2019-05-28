@@ -3,27 +3,6 @@
 
 using namespace std;
 
-#define BUFFER_OFFSET(i) ((char *)NULL + (i)) 
-//0: vertex pos
-//1: texcoord
-GLfloat quad[] = {
-    //upper left triangle
-	-1.0f, -1.0f, 0.0f,
-	0.0f, 0.0f,
-	1.0f, -1.0f, 0.0f,
-	1.0f, 0.0f,
-	-1.0f, 1.0f, 0.0f,
-	0.0f, 1.0f,
-
-	//bottom right triangle
-	1.0f, 1.0f, 0.0f,
-	1.0f, 1.0f,
-	-1.0f, 1.0f, 0.0f,
-	0.0f, 1.0f,
-	1.0f, -1.0f, 0.0f,
-	1.0f, 0.0f
-};
-
 GLfloat box[] = {
 	// front face
 	-1.0f, -1.0f, -1.0f,
@@ -87,7 +66,6 @@ void OpenGLDriver::setCameraPerspective(const glm::mat4 &MVP, const glm::vec3 &c
 void OpenGLDriver::render()
 {
 	renderScene();
-	//renderQuad();
 }
 
 void OpenGLDriver::renderScene()
@@ -100,23 +78,5 @@ void OpenGLDriver::renderScene()
 void OpenGLDriver::renderLightVolumes()
 {
 	// todo : defer this so we dont alloc memory every frame
-	GLuint vertarray;
-	glGenVertexArrays(1, &vertarray);
-	glBindVertexArray(vertarray);
-	GLuint vertices;
-	glGenBuffers(1, &vertices);
-	glBindBuffer(GL_ARRAY_BUFFER, vertices);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*5, BUFFER_OFFSET(0));
 
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float)*5, BUFFER_OFFSET(12));
-	
-	glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
-
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glDisableVertexAttribArray(0);
-
-	glDeleteBuffers(1, &vertices);
-	glDeleteBuffers(1, &vertarray);
 }

@@ -18,7 +18,9 @@ enum class eRenderPasses : unsigned
 	GBuffer = 1,
 	DirectLighting = 2,
 	IndirectLighting = 3,
-	Transparent = 4
+	Skybox = 4,
+	Transparent = 5,
+	Framebuffer = 6,
 };
 
 class Job

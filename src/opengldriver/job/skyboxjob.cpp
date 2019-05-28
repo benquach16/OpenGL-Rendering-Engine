@@ -100,6 +100,25 @@ SkyboxJob::~SkyboxJob()
 
 void SkyboxJob::run()
 {
-	m_pipeline->bindPipeline();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	
+	m_pipeline->bindPipeline();
+	//todo : defer this so we dont alloc memory every frame
+	GLuint vertarray;
+	glGenVertexArrays(1, &vertarray);
+	glBindVertexArray(vertarray);
+	GLuint vertices;
+	glGenBuffers(1, &vertices);
+	glBindBuffer(GL_ARRAY_BUFFER, vertices);
+	
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*3, BUFFER_OFFSET(0));
+	
+	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glDisableVertexAttribArray(0);
+
+	glDeleteBuffers(1, &vertices);
+	glDeleteBuffers(1, &vertarray);
 }

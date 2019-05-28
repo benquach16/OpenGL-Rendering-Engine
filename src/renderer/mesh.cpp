@@ -1,8 +1,7 @@
 #include "mesh.h"
 
-#define TINYOBJLOADER_IMPLEMENTATION
 #include "../3rdparty/OBJ_Loader.h"
-#include "../3rdparty/tiny_obj_loader.h"
+
 #include <iostream>
 
 using namespace std;

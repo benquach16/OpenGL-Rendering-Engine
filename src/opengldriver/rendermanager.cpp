@@ -2,6 +2,7 @@
 
 #include "job/gbufferjob.h"
 #include "job/directlightingjob.h"
+#include "job/skyboxjob.h"
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
@@ -33,6 +34,9 @@ void RenderManager::initRenderPipelines()
 	Job* directLightingJob = new DirectLightingJob;
 	directLightingJob->setParent(gbufferJob);
 	m_renderJobs[eRenderPasses::DirectLighting] = directLightingJob;
+
+	//Job* skyboxJob = new SkyboxJob;
+	//m_renderJobs[eRenderPasses::Skybox] = skyboxJob;
 
 	//m_renderJobs[eRenderPasses::IndirectLighting] = new Job;
 	//m_renderJobs[eRenderPasses::Transparent] = new Job;
