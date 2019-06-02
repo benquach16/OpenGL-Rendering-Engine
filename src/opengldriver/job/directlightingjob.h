@@ -11,7 +11,8 @@ public:
 	void run() override;
 	void resize(int width, int height) override;
 	eRenderPasses getJobType() override { return eRenderPasses::DirectLighting; }
-	
+
+	GLuint getAlbedoRT() { return m_albedo; }
 private:
 	GLuint m_rendertarget;
 	GLuint m_framebuffer;

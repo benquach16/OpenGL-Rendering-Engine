@@ -23,6 +23,27 @@ enum class eRenderPasses : unsigned
 	Framebuffer = 6,
 };
 
+//0: vertex pos
+//1: texcoord
+// todo: move me!
+static GLfloat quad[] = {
+    //upper left triangle
+	-1.0f, -1.0f, 0.0f,
+	0.0f, 0.0f,
+	1.0f, -1.0f, 0.0f,
+	1.0f, 0.0f,
+	-1.0f, 1.0f, 0.0f,
+	0.0f, 1.0f,
+
+	//bottom right triangle
+	1.0f, 1.0f, 0.0f,
+	1.0f, 1.0f,
+	-1.0f, 1.0f, 0.0f,
+	0.0f, 1.0f,
+	1.0f, -1.0f, 0.0f,
+	1.0f, 0.0f
+};
+
 class Job
 {
 public:

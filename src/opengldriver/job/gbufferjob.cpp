@@ -1,5 +1,6 @@
 #include "gbufferjob.h"
 #include "../../util/util.h"
+#include "../../util/debug.h"
 
 using namespace std;
 
@@ -75,7 +76,7 @@ void GBufferJob::resize(int width, int height)
 
 	// Set the list of draw buffers.
 	GLenum DrawBuffers[3] = {GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
-	glDrawBuffers(3, DrawBuffers); // "1" is the size of DrawBuffers
+	glDrawBuffers(3, DrawBuffers); // 3 is the size of DrawBuffers
 	
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
@@ -107,6 +108,9 @@ void GBufferJob::setMVP(const glm::mat4 &MVP)
 
 void GBufferJob::run()
 {
+	ASSERT(m_width > 0, "Screen Width not set for GBuffer Pass");
+	ASSERT(m_height > 0, "Screen Height not set for GBuffer Pass");
+	
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	m_pipeline->bindPipeline();
 	while(!m_queue.empty())

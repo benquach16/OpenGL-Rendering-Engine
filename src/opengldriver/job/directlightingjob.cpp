@@ -6,26 +6,6 @@
 
 using namespace std;
 
-//0: vertex pos
-//1: texcoord
-
-GLfloat quad[] = {
-    //upper left triangle
-	-1.0f, -1.0f, 0.0f,
-	0.0f, 0.0f,
-	1.0f, -1.0f, 0.0f,
-	1.0f, 0.0f,
-	-1.0f, 1.0f, 0.0f,
-	0.0f, 1.0f,
-
-	//bottom right triangle
-	1.0f, 1.0f, 0.0f,
-	1.0f, 1.0f,
-	-1.0f, 1.0f, 0.0f,
-	0.0f, 1.0f,
-	1.0f, -1.0f, 0.0f,
-	1.0f, 0.0f
-};
 
 DirectLightingJob::DirectLightingJob() : m_framebuffer(0), m_albedo(0)
 {
@@ -35,7 +15,7 @@ DirectLightingJob::DirectLightingJob() : m_framebuffer(0), m_albedo(0)
 
 void DirectLightingJob::run()
 {	
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 
 	// make sure we have a properly initialized job
 	ASSERT(m_width > 0, "Screen Width not set for Direct Lighting Pass");
@@ -55,13 +35,13 @@ void DirectLightingJob::run()
 	
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, parent->getPositionRT());
-	GET_GL_ERROR("Error setting position render target");
+	GET_GL_ERROR("Error setting position render target for direct lighting pass");
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, parent->getAlbedoRT());
-	GET_GL_ERROR("Error setting albedo render target");
+	GET_GL_ERROR("Error setting albedo render target for direct lighting pass");
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, parent->getNormalRT());
-	GET_GL_ERROR("Error setting normal render target");
+	GET_GL_ERROR("Error setting normal render target for direct lighting pass");
 	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// todo : defer this so we dont alloc memory every frame
@@ -90,7 +70,6 @@ void DirectLightingJob::run()
 void DirectLightingJob::resize(int width, int height)
 {
 	Job::resize(width, height);
-	
 	glGenFramebuffers(1, &m_framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 	glGenTextures(1, &m_albedo);
