@@ -111,10 +111,9 @@ void SkyboxJob::run()
 	glBindFramebuffer(GL_FRAMEBUFFER, parent->getFramebuffer());
 	glDepthMask(false);
 
-	glEnable(GL_DEPTH_TEST);
 	m_pipeline->bindPipeline();
 	m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uSkybox", 0);
-	//glClear(GL_DEPTH_BUFFER_BIT);
+
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
 	GET_GL_ERROR("Error setting skybox texture");

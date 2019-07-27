@@ -56,11 +56,11 @@ void OpenGLDriver::submit(VertexBuffer* buf)
 	m_renderManager.push(buf, eRenderPasses::GBuffer);
 }
 
-void OpenGLDriver::setCameraPerspective(const glm::mat4 &MVP, const glm::vec3 &cameraPosition)
+void OpenGLDriver::setCameraPerspective(const glm::mat4 &view, const glm::mat4 &projection, const glm::vec3 &cameraPosition)
 {
 	//ASSERT(m_renderPipelines[eRenderPipelines::Deferred] != nullptr, "No Deferred rendering pipeline created");
 	//m_renderPipelines[eRenderPipelines::Deferred]->setUniform(GLProgram::eShaderType::Vertex, "MVP", MVP);
-	m_renderManager.setCameraPerspective(MVP);
+	m_renderManager.setCameraPerspective(view, projection);
 }
 
 void OpenGLDriver::render()

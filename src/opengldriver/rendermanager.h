@@ -39,7 +39,7 @@ public:
 	void push(VertexBuffer* buf) { m_queue.push(buf); }
 	void push(VertexBuffer* buf, eRenderPasses renderPass);
 
-	void setCameraPerspective(const glm::mat4 &MVP);
+	void setCameraPerspective(const glm::mat4 &view, const glm::mat4 &projection);
 private:
 	
 	Job* m_root;

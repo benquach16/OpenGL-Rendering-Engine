@@ -77,8 +77,10 @@ void RenderManager::push(VertexBuffer* buf, eRenderPasses renderPass)
 	m_renderJobs[renderPass]->push(buf);
 }
 
-void RenderManager::setCameraPerspective(const glm::mat4 &MVP)
+void RenderManager::setCameraPerspective(const glm::mat4 &view, const glm::mat4 &projection)
 {
+	//add jobs that need the MVP here
+	glm::mat4 MVP = projection * view;
 	static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->setMVP(MVP);
 	static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->setMVP(MVP);
 }
