@@ -18,7 +18,7 @@ public:
 	void setMVP(const glm::mat4 &MVP) {	m_pipeline->setUniform(GLProgram::eShaderType::Vertex, "MVP", MVP); }
 
 	void resize(int screenWidth, int screenHeight) override;
-	void loadCubemap();
+
 	eRenderPasses getJobType() override { return eRenderPasses::GBuffer; }
 
 	GLuint getPositionRT() { return m_position; }
@@ -27,7 +27,6 @@ public:
 	GLuint getNormalRT() { return m_normals; }
 	GLuint getFramebuffer() { return m_gbuffer; }
 private:
-	GLuint m_skybox;
 	
 	GLuint m_gbuffer;
 	GLuint m_position;

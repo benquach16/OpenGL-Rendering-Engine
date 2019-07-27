@@ -53,7 +53,13 @@ void Renderer::run()
 	{
 		SDL_Event event;
 		while(SDL_PollEvent(&event)) {
+			// for some reason overly sensitive
+			/*
 			if(event.key.keysym.sym == SDLK_ESCAPE) {
+				exit = true;
+			}
+			*/
+			if(event.type == SDL_QUIT) {
 				exit = true;
 			}
 		}

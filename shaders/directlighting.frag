@@ -4,6 +4,7 @@ uniform sampler2D uDepth;
 uniform sampler2D uPosition;
 uniform sampler2D uAlbedo;
 uniform sampler2D uNormals;
+uniform samplerCube uCubemap;
 uniform vec3 uCameraPosition;
 uniform mat4 uMVP;
 
@@ -97,8 +98,10 @@ void main()
 
 	vec3 Rs = G * F * D * PI * NdotL;
 	//albedo = albedo * NdotL + vec3(1.0) * NdotL * (roughness + Rs * (1.0 - roughness));
-	vec3 indirect = vec3(0.02, 0.0, 0.0);
-	Rs += indirect * F;
+	//vec3 indirect = vec3(0.02, 0.0, 0.0);
+	vec4 indirect = texture(uCubemap, R);
+	indirect *= 0.1;
+	Rs += indirect.xyz * F;
 	vec3 diffuse = albedo * NdotL * 1.0/PI;
 	albedo = diffuse + Rs;
 

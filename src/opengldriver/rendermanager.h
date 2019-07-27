@@ -26,6 +26,7 @@ public:
 	RenderManager();
 	~RenderManager();
 	void initRenderPipelines();
+	void loadSkybox();
 	void renderLightVolume();
 	void render();
 	void resize(int screenWidth, int screeHeight);
@@ -53,6 +54,8 @@ private:
 	unsigned m_currentPipeline;
 
 	std::vector<GLuint> m_framebuffers;
+
+	GLuint m_skyboxTexture;
 
 	int m_screenWidth;
 	int m_screenHeight;

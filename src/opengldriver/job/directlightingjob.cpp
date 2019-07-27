@@ -7,7 +7,7 @@
 using namespace std;
 
 
-DirectLightingJob::DirectLightingJob() : m_framebuffer(0), m_albedo(0)
+DirectLightingJob::DirectLightingJob() : m_framebuffer(0), m_albedo(0), m_cubemap(0)
 {
 	setVertexShader("shaders/framebuffer.vert");
 	setFragmentShader("shaders/directlighting.frag");
@@ -26,6 +26,7 @@ void DirectLightingJob::run()
 	m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uDepth", 0);
 	m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uAlbedo", 1);
 	m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uNormals", 2);
+	m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uCubemap", 3);
 
 	// make sure that our parent is a gbuffer job (DAG strictly enforced)
 	ASSERT(m_parent != nullptr, "DAG initialized incorrectly");
@@ -42,6 +43,9 @@ void DirectLightingJob::run()
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, parent->getNormalRT());
 	GET_GL_ERROR("Error setting normal render target for direct lighting pass");
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubemap);
+	GET_GL_ERROR("Error setting cubemap for direct lighting pass");
 	
 	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glDepthFunc(GL_LEQUAL);

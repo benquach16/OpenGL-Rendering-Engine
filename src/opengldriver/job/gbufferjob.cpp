@@ -4,7 +4,7 @@
 
 using namespace std;
 
-GBufferJob::GBufferJob() : Job(), m_gbuffer(0), m_position(0), m_depth(0), m_albedo(0), m_normals(0), m_skybox(0)
+GBufferJob::GBufferJob() : Job(), m_gbuffer(0), m_position(0), m_depth(0), m_albedo(0), m_normals(0)
 {
 	setVertexShader("shaders/gbuffer.vert");
 	setFragmentShader("shaders/gbuffer.frag");
@@ -24,10 +24,6 @@ void GBufferJob::resetRTs()
 	if(m_position != 0) {
 		glDeleteTextures(1, &m_position);
 		m_position = 0;
-	}
-	if(m_skybox != 0) {
-		glDeleteTextures(1, &m_skybox);
-		m_skybox = 0;		
 	}
 }
 

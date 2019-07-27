@@ -1,14 +1,18 @@
 #include "rendermanager.h"
-
+#include "../../util/debug.h"
 #include "job/gbufferjob.h"
 #include "job/directlightingjob.h"
 #include "job/skyboxjob.h"
 #include "job/framebufferjob.h"
+#include "../3rdparty/stb_image.h"
+
+using namespace std;
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
-RenderManager::RenderManager() 
+RenderManager::RenderManager() : m_skyboxTexture(0)
 {
+
 }
 
 RenderManager::~RenderManager()
@@ -28,12 +32,15 @@ RenderManager::~RenderManager()
 
 void RenderManager::initRenderPipelines()
 {
+	loadSkybox();
 	//m_renderJobs[eRenderPasses::Shadows] = new Job;
 	Job* gbufferJob = new GBufferJob;
 	m_renderJobs[eRenderPasses::GBuffer] = gbufferJob;
 
-	Job* directLightingJob = new DirectLightingJob;
+	DirectLightingJob* directLightingJob = new DirectLightingJob;
 	directLightingJob->setParent(gbufferJob);
+	ASSERT(m_skyboxTexture !=0, "skybox not loaded");
+	directLightingJob->setCubemap(m_skyboxTexture);
 	m_renderJobs[eRenderPasses::DirectLighting] = directLightingJob;
 
 	Job* skyboxJob = new SkyboxJob;
@@ -48,6 +55,46 @@ void RenderManager::initRenderPipelines()
 	m_renderJobs[eRenderPasses::Framebuffer] = framebufferJob;
 	
 	m_currentPipeline = 0;	
+}
+
+void RenderManager::loadSkybox()
+{
+	GLuint textureId = 0;
+	glGenTextures(1, &m_skyboxTexture);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
+
+	vector<std::string> faces = 
+		{
+			"assets/skybox/right.jpg",
+			"assets/skybox/left.jpg",
+			"assets/skybox/top.jpg",
+			"assets/skybox/bottom.jpg",
+			"assets/skybox/front.jpg",
+			"assets/skybox/back.jpg"
+		};
+	int width, height, nrChannels;
+	for(unsigned i = 0; i < faces.size(); ++i)
+	{
+        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+						 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+				);
+			stbi_image_free(data);
+		}
+		else
+		{
+			std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+			stbi_image_free(data);
+		}
+	}
+	
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 }
 
 void RenderManager::resize(int screenWidth, int screenHeight)
