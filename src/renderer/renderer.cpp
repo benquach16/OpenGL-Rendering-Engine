@@ -48,8 +48,15 @@ void Renderer::run()
 	setup();
 	//run opengl scene
 	float rot = 0.0f;
-	while(true)
+	bool exit = false;
+	while(exit == false)
 	{
+		SDL_Event event;
+		while(SDL_PollEvent(&event)) {
+			if(event.key.keysym.sym == SDLK_ESCAPE) {
+				exit = true;
+			}
+		}
 		m_driver.submit(mesh->getBuffer());
 		glClear(GL_COLOR_BUFFER_BIT);
 		glm::vec3 position(0.0f, 0.0f, 2.0);
