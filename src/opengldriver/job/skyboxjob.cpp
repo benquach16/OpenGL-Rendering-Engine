@@ -1,4 +1,6 @@
 #include "skyboxjob.h"
+#include "../../util/debug.h"
+#include "directlightingjob.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../3rdparty/stb_image.h"
 
@@ -100,9 +102,22 @@ SkyboxJob::~SkyboxJob()
 
 void SkyboxJob::run()
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	
+	// make sure that our parent is a directlighting job (DAG strictly enforced)
+	ASSERT(m_parent != nullptr, "DAG initialized incorrectly");
+	ASSERT(m_parent->getJobType() == eRenderPasses::DirectLighting, "Parent job of incorrect type");
+
+	DirectLightingJob* parent = static_cast<DirectLightingJob*>(m_parent);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, parent->getFramebuffer());
+	glDepthMask(false);
+
+	glEnable(GL_DEPTH_TEST);
 	m_pipeline->bindPipeline();
+	m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uSkybox", 0);
+	//glClear(GL_DEPTH_BUFFER_BIT);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
+	GET_GL_ERROR("Error setting skybox texture");
 	//todo : defer this so we dont alloc memory every frame
 	GLuint vertarray;
 	glGenVertexArrays(1, &vertarray);
@@ -110,7 +125,7 @@ void SkyboxJob::run()
 	GLuint vertices;
 	glGenBuffers(1, &vertices);
 	glBindBuffer(GL_ARRAY_BUFFER, vertices);
-	
+	glDepthFunc(GL_LEQUAL);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float)*3, BUFFER_OFFSET(0));
 	
@@ -121,4 +136,6 @@ void SkyboxJob::run()
 
 	glDeleteBuffers(1, &vertices);
 	glDeleteBuffers(1, &vertarray);
+
+	glDepthMask(true);
 }

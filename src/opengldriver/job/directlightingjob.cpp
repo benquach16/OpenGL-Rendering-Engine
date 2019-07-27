@@ -32,7 +32,7 @@ void DirectLightingJob::run()
 	ASSERT(m_parent->getJobType() == eRenderPasses::GBuffer, "Parent job of incorrect type");
 
 	GBufferJob* parent = static_cast<GBufferJob*>(m_parent);
-	
+	glDepthMask(GL_FALSE);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, parent->getPositionRT());
 	GET_GL_ERROR("Error setting position render target for direct lighting pass");
@@ -43,7 +43,8 @@ void DirectLightingJob::run()
 	glBindTexture(GL_TEXTURE_2D, parent->getNormalRT());
 	GET_GL_ERROR("Error setting normal render target for direct lighting pass");
 	
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glDepthFunc(GL_LEQUAL);
 	// todo : defer this so we dont alloc memory every frame
 	GLuint vertarray;
 	glGenVertexArrays(1, &vertarray);
@@ -70,6 +71,10 @@ void DirectLightingJob::run()
 void DirectLightingJob::resize(int width, int height)
 {
 	Job::resize(width, height);
+	ASSERT(m_parent->getJobType() == eRenderPasses::GBuffer, "Parent job of incorrect type");
+
+	GBufferJob* parent = static_cast<GBufferJob*>(m_parent);
+	
 	glGenFramebuffers(1, &m_framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 	glGenTextures(1, &m_albedo);
@@ -77,7 +82,8 @@ void DirectLightingJob::resize(int width, int height)
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	
+	cout << parent->getDepthRT() << endl;
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, parent->getDepthRT(), 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_albedo, 0);
 
 	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};

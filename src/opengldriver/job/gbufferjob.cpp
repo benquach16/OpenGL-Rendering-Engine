@@ -100,12 +100,6 @@ void GBufferJob::resize(int width, int height)
 	
 }
 
-void GBufferJob::setMVP(const glm::mat4 &MVP)
-{
-	m_pipeline->setUniform(GLProgram::eShaderType::Vertex, "MVP", MVP);
-	
-}
-
 void GBufferJob::run()
 {
 	ASSERT(m_width > 0, "Screen Width not set for GBuffer Pass");
@@ -113,6 +107,7 @@ void GBufferJob::run()
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, m_gbuffer);
 	m_pipeline->bindPipeline();
+
 	while(!m_queue.empty())
 	{
 		auto object = m_queue.front();

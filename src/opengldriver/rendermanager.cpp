@@ -36,8 +36,9 @@ void RenderManager::initRenderPipelines()
 	directLightingJob->setParent(gbufferJob);
 	m_renderJobs[eRenderPasses::DirectLighting] = directLightingJob;
 
-	//Job* skyboxJob = new SkyboxJob;
-	//m_renderJobs[eRenderPasses::Skybox] = skyboxJob;
+	Job* skyboxJob = new SkyboxJob;
+	skyboxJob->setParent(directLightingJob);
+	m_renderJobs[eRenderPasses::Skybox] = skyboxJob;
 
 	//m_renderJobs[eRenderPasses::IndirectLighting] = new Job;
 	//m_renderJobs[eRenderPasses::Transparent] = new Job;
@@ -79,6 +80,7 @@ void RenderManager::push(VertexBuffer* buf, eRenderPasses renderPass)
 void RenderManager::setCameraPerspective(const glm::mat4 &MVP)
 {
 	static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->setMVP(MVP);
+	static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->setMVP(MVP);
 }
 
 

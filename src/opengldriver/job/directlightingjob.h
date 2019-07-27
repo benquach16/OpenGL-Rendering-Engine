@@ -13,6 +13,7 @@ public:
 	eRenderPasses getJobType() override { return eRenderPasses::DirectLighting; }
 
 	GLuint getAlbedoRT() { return m_albedo; }
+	GLuint getFramebuffer() { return m_framebuffer; } 
 private:
 	GLuint m_rendertarget;
 	GLuint m_framebuffer;

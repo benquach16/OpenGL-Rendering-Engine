@@ -15,7 +15,7 @@ public:
 	void resetRTs();
 	void run() override;
 
-	void setMVP(const glm::mat4 &MVP);
+	void setMVP(const glm::mat4 &MVP) {	m_pipeline->setUniform(GLProgram::eShaderType::Vertex, "MVP", MVP); }
 
 	void resize(int screenWidth, int screenHeight) override;
 	void loadCubemap();
