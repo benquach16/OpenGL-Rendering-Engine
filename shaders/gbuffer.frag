@@ -10,7 +10,7 @@ layout(location = 2) out vec3 out_Normal;
 vec3 light_pos = vec3(0.5, 0.3, -1.5);
 void main()
 {
-	vec4 color = vec4(0.0, 1.0, 1.0, 1.0);
+	vec4 color = vec4(0.9, 0.9, 0.6, 1.0);
 
 	out_Position = vVertexPosition;
 	out_Color = color.xyz;

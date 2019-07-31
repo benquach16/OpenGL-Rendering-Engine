@@ -95,13 +95,16 @@ void main()
 	float D = GGX_NormalDistribution(NdotH);
 	float G = GGX_Geometric(NdotL, VdotN);
 	vec3 F = Fresnel(VdotN, F0);
-
+	
 	vec3 Rs = G * F * D * PI * NdotL;
+	vec3 env = texture(uCubemap, R).xyz;
+	Rs += env * 0.004;
 	//albedo = albedo * NdotL + vec3(1.0) * NdotL * (roughness + Rs * (1.0 - roughness));
-	//vec3 indirect = vec3(0.02, 0.0, 0.0);
-	vec4 indirect = texture(uCubemap, R);
-	indirect *= 0.1;
-	Rs += indirect.xyz * F;
+	vec3 indirect = vec3(0.01, 0.01, 0.01);
+	indirect * 0.05;
+	//vec4 indirect = texture(uCubemap, R);
+
+	Rs += indirect * F;
 	vec3 diffuse = albedo * NdotL * 1.0/PI;
 	albedo = diffuse + Rs;
 
