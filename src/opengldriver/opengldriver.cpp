@@ -44,6 +44,9 @@ void OpenGLDriver::resize(ScreenInfo info)
 void OpenGLDriver::initializeDriver()
 {
 	glClearColor(0.0, 0.1, 0.6, 1.0);
+	glEnable(GL_POLYGON_SMOOTH);
+	glEnable(GL_BLEND);
+	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
 	glewExperimental = GL_TRUE;
 	glewInit();
 	m_renderManager.initRenderPipelines();

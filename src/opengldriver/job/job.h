@@ -18,9 +18,10 @@ enum class eRenderPasses : unsigned
 	GBuffer = 1,
 	DirectLighting = 2,
 	IndirectLighting = 3,
-	Skybox = 4,
-	Transparent = 5,
-	Framebuffer = 6,
+	AmbientOcclusion = 4,
+	Skybox = 5,
+	Transparent = 6,
+	Framebuffer = 7,
 };
 
 //0: vertex pos
