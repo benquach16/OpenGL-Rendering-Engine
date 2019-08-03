@@ -2,12 +2,11 @@
 
 #include "job.h"
 
-class FramebufferJob : public Job
-{
+class FramebufferJob : public Job {
 public:
-	FramebufferJob();
+    FramebufferJob();
 
-	void run() override;
+    void run() override;
 
-	eRenderPasses getJobType() override { return eRenderPasses::Framebuffer; }
+    eRenderPasses getJobType() override { return eRenderPasses::Framebuffer; }
 };

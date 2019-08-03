@@ -2,15 +2,15 @@
 
 #include "job.h"
 
-class AmbientOcclusionJob : public Job
-{
+class AmbientOcclusionJob : public Job {
 public:
-	AmbientOcclusionJob();
-	~AmbientOcclusionJob();
+    AmbientOcclusionJob();
+    ~AmbientOcclusionJob();
 
-	void run() override;
-	void resize(int width, int height) override;
+    void run() override;
+    void resize(int width, int height) override;
 
-	eRenderPasses getJobType() override { return eRenderPasses::AmbientOcclusion; }
+    eRenderPasses getJobType() override { return eRenderPasses::AmbientOcclusion; }
+
 private:
 };

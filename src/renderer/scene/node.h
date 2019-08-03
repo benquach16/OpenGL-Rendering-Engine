@@ -2,10 +2,8 @@
 
 #include <glm/vec3.hpp>
 
-class Node
-{
+class Node {
 public:
 private:
-	glm::vec3 m_position;
-
+    glm::vec3 m_position;
 };

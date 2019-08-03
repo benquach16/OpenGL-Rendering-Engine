@@ -1,13 +1,13 @@
 #pragma once
 
-class GLFramebuffer
-{
+class GLFramebuffer {
 public:
-	GLFramebuffer();
-	~GLFramebuffer();
+    GLFramebuffer();
+    ~GLFramebuffer();
 
-	void create();
+    void create();
+
 protected:
-	int m_depth;
-	int m_buffer;
+    int m_depth;
+    int m_buffer;
 };

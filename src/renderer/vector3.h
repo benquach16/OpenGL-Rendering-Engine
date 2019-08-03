@@ -1,9 +1,8 @@
 #pragma once
 
-class Vector3
-{
+class Vector3 {
 private:
-	float x;
-	float y;
-	float z;
+    float x;
+    float y;
+    float z;
 };

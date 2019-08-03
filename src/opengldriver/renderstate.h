@@ -2,10 +2,8 @@
 
 #include "../renderer/mat4.h"
 
-class RenderState
-{
+class RenderState {
 public:
-
 private:
-	Mat4 m_cameraTransform;
+    Mat4 m_cameraTransform;
 };

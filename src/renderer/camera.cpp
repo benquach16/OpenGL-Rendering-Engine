@@ -3,5 +3,3 @@
 Camera::Camera()
 {
 }
-
-

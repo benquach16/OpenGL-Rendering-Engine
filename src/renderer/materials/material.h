@@ -1,9 +1,6 @@
 #pragma once
 
-
-
-class Material
-{
+class Material {
 public:
-	Material();
+    Material();
 };

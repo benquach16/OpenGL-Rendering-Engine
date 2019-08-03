@@ -6,46 +6,42 @@
 
 using namespace std;
 
-
 Mesh::Mesh()
 {
-	m_vertexbuffer = new VertexBuffer;
+    m_vertexbuffer = new VertexBuffer;
 }
 
 Mesh::~Mesh()
 {
-	delete m_vertexbuffer;
+    delete m_vertexbuffer;
 }
-
 
 void Mesh::load(const char* str)
 {
-	
-	objl::Loader loader;
-	loader.LoadFile(str);
-	std::cerr << "loaded file :" << str << " with " << loader.LoadedMeshes.size() << " meshes" << std::endl;
-	
-	for(int i = 0; i < loader.LoadedMeshes[0].Vertices.size(); ++i)
-	{
-		auto vert = loader.LoadedMeshes[0].Vertices[i];		
-		VertexLayout layout;
-		layout.x = vert.Position.X;
-		layout.y = vert.Position.Y;
-		layout.z = vert.Position.Z;
 
-		layout.nx = vert.Normal.X;
-		layout.ny = vert.Normal.Y;
-		layout.nz = vert.Normal.Z;
+    objl::Loader loader;
+    loader.LoadFile(str);
+    std::cerr << "loaded file :" << str << " with " << loader.LoadedMeshes.size() << " meshes" << std::endl;
 
-		layout.tx = vert.TextureCoordinate.X;
-		layout.ty = vert.TextureCoordinate.Y;
+    for (int i = 0; i < loader.LoadedMeshes[0].Vertices.size(); ++i) {
+        auto vert = loader.LoadedMeshes[0].Vertices[i];
+        VertexLayout layout;
+        layout.x = vert.Position.X;
+        layout.y = vert.Position.Y;
+        layout.z = vert.Position.Z;
 
-		m_vertexbuffer->m_vertices.push_back(layout);
-	}
-	m_vertexbuffer->m_indices = loader.LoadedMeshes[0].Indices;
-	
+        layout.nx = vert.Normal.X;
+        layout.ny = vert.Normal.Y;
+        layout.nz = vert.Normal.Z;
 
-/*	
+        layout.tx = vert.TextureCoordinate.X;
+        layout.ty = vert.TextureCoordinate.Y;
+
+        m_vertexbuffer->m_vertices.push_back(layout);
+    }
+    m_vertexbuffer->m_indices = loader.LoadedMeshes[0].Indices;
+
+    /*	
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
@@ -94,9 +90,8 @@ void Mesh::load(const char* str)
 			index_offset += fv;
 		}
 	}
-*/	
+*/
 }
-
 
 void Mesh::render()
 {

@@ -2,5 +2,4 @@
 
 Material::Material()
 {
-	
 }

@@ -1,9 +1,10 @@
 #include "ambientocclusionjob.h"
 
-AmbientOcclusionJob::AmbientOcclusionJob() : Job()
+AmbientOcclusionJob::AmbientOcclusionJob()
+    : Job()
 {
-	setVertexShader("shaders/framebuffer.vert");
-	setFragmentShader("shaders/ambientocclusion.frag");
+    setVertexShader("shaders/framebuffer.vert");
+    setFragmentShader("shaders/ambientocclusion.frag");
 }
 
 AmbientOcclusionJob::~AmbientOcclusionJob()

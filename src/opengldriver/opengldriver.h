@@ -17,60 +17,60 @@
 #include "vertexbuffer.h"
 #include <fstream>
 
-
 //screen info struct
-struct ScreenInfo
-{
-	int m_width;
-	int m_height;
-ScreenInfo() : m_width(2), m_height(2){}
+struct ScreenInfo {
+    int m_width;
+    int m_height;
+    ScreenInfo()
+        : m_width(2)
+        , m_height(2)
+    {
+    }
 };
 
-class OpenGLDriver
-{
+class OpenGLDriver {
 public:
-	enum eRenderBuffers
-	{
-	};
+    enum eRenderBuffers {
+    };
 
-	enum eRenderPipelines
-	{
-		Deferred,
-		PostProcess,
-		Framebuffer,
-	};
-	
-	OpenGLDriver();
-	~OpenGLDriver();
+    enum eRenderPipelines {
+        Deferred,
+        PostProcess,
+        Framebuffer,
+    };
 
-	void resize(ScreenInfo info);
-	//generic render that renders everything
-	void render();
+    OpenGLDriver();
+    ~OpenGLDriver();
 
-	void initializeDriver();
-	void run();
-	void renderLightVolumes();
-	void submit(VertexBuffer* buf);
-	void setCameraPerspective(const glm::mat4 &view, const glm::mat4&projection, const glm::vec3 &cameraPosition);
+    void resize(ScreenInfo info);
+    //generic render that renders everything
+    void render();
+
+    void initializeDriver();
+    void run();
+    void renderLightVolumes();
+    void submit(VertexBuffer* buf);
+    void setCameraPerspective(const glm::mat4& view, const glm::mat4& projection, const glm::vec3& cameraPosition);
+
 protected:
-	void renderScene();
-	void renderQuad();
-	void renderDeferred();
-	std::vector<GLPipeline*> m_programPipelines;
-	std::unordered_map<eRenderPipelines, GLPipeline*> m_renderPipelines;
-	int m_currentPipeline;
-	
-	//temporary
-	//should make a frame buffer object
-	GLuint m_buffers[3];
-	
-	GLuint m_gbuffer;
-	GLuint m_position;
-	GLuint m_depth;
-	GLuint m_albedo;
-	GLuint m_normals;
+    void renderScene();
+    void renderQuad();
+    void renderDeferred();
+    std::vector<GLPipeline*> m_programPipelines;
+    std::unordered_map<eRenderPipelines, GLPipeline*> m_renderPipelines;
+    int m_currentPipeline;
 
-	ScreenInfo m_screenInfo;
+    //temporary
+    //should make a frame buffer object
+    GLuint m_buffers[3];
 
-	RenderManager m_renderManager;
+    GLuint m_gbuffer;
+    GLuint m_position;
+    GLuint m_depth;
+    GLuint m_albedo;
+    GLuint m_normals;
+
+    ScreenInfo m_screenInfo;
+
+    RenderManager m_renderManager;
 };
