@@ -17,7 +17,7 @@ public:
 
 	void setMVP(const glm::mat4 &MVP) {	m_pipeline->setUniform(GLProgram::eShaderType::Vertex, "MVP", MVP); }
 
-	void resize(int screenWidth, int screenHeight) override;
+	void resize(int width, int height) override;
 
 	eRenderPasses getJobType() override { return eRenderPasses::GBuffer; }
 

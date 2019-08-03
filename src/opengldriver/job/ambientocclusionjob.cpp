@@ -6,6 +6,15 @@ AmbientOcclusionJob::AmbientOcclusionJob() : Job()
 	setFragmentShader("shaders/ambientocclusion.frag");
 }
 
+AmbientOcclusionJob::~AmbientOcclusionJob()
+{
+}
+
 void AmbientOcclusionJob::run()
 {
+}
+
+void AmbientOcclusionJob::resize(int width, int height)
+{
+    Job::resize(width, height);
 }
