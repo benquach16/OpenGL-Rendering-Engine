@@ -5,6 +5,7 @@
 class DirectLightingJob : public Job {
 public:
     DirectLightingJob();
+    ~DirectLightingJob();
 
     void initRTs();
     void run() override;

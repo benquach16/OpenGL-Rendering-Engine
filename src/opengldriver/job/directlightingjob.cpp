@@ -15,6 +15,10 @@ DirectLightingJob::DirectLightingJob()
     setFragmentShader("shaders/directlighting.frag");
 }
 
+DirectLightingJob::~DirectLightingJob()
+{
+}
+
 void DirectLightingJob::run()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
