@@ -13,4 +13,5 @@ public:
     eRenderPasses getJobType() override { return eRenderPasses::AmbientOcclusion; }
 
 private:
+    GLuint m_framebuffer;
 };

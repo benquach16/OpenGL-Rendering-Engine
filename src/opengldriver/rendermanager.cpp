@@ -1,6 +1,7 @@
 #include "rendermanager.h"
 #include "../../util/debug.h"
 #include "../3rdparty/stb_image.h"
+#include "job/ambientocclusionjob.h"
 #include "job/directlightingjob.h"
 #include "job/framebufferjob.h"
 #include "job/gbufferjob.h"
@@ -49,8 +50,9 @@ void RenderManager::initRenderPipelines()
     //m_renderJobs[eRenderPasses::Transparent] = new Job;
 
     Job* framebufferJob = new FramebufferJob;
-    framebufferJob->setParent(directLightingJob);
+    framebufferJob->setParent(skyboxJob);
     m_renderJobs[eRenderPasses::Framebuffer] = framebufferJob;
+
 
     m_currentPipeline = 0;
 }
