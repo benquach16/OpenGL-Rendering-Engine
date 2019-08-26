@@ -1,6 +1,7 @@
 #include "framebufferjob.h"
 #include "../../util/debug.h"
 #include "directlightingjob.h"
+#include "skyboxjob.h"
 
 #include <iostream>
 
@@ -20,11 +21,11 @@ void FramebufferJob::run()
 
     // make sure that our parent is a directlighting job (DAG strictly enforced)
     ASSERT(m_parent != nullptr, "DAG initialized incorrectly");
-    ASSERT(m_parent->getJobType() == eRenderPasses::DirectLighting, "Parent job of incorrect type");
+    ASSERT(m_parent->getJobType() == eRenderPasses::Skybox, "Parent job of incorrect type");
 
-    DirectLightingJob* parent = static_cast<DirectLightingJob*>(m_parent);
+    SkyboxJob* parent = static_cast<SkyboxJob*>(m_parent);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, parent->getAlbedoRT());
+    glBindTexture(GL_TEXTURE_2D, parent->getRT());
     GET_GL_ERROR("Error setting position render target in framebuffer job");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

@@ -53,7 +53,6 @@ void RenderManager::initRenderPipelines()
     framebufferJob->setParent(skyboxJob);
     m_renderJobs[eRenderPasses::Framebuffer] = framebufferJob;
 
-
     m_currentPipeline = 0;
 }
 

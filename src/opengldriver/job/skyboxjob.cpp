@@ -131,3 +131,11 @@ void SkyboxJob::run()
 
     glDepthMask(true);
 }
+
+GLuint SkyboxJob::getRT()
+{
+    ASSERT(m_parent != nullptr, "DAG initialized incorrectly");
+    ASSERT(m_parent->getJobType() == eRenderPasses::DirectLighting, "Parent job of incorrect type");
+    DirectLightingJob* parent = static_cast<DirectLightingJob*>(m_parent);
+    return parent->getAlbedoRT();
+}

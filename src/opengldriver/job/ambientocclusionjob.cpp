@@ -1,6 +1,6 @@
 #include "ambientocclusionjob.h"
-#include "directlightingjob.h"
 #include "../../util/debug.h"
+#include "directlightingjob.h"
 
 #include <iostream>
 
@@ -25,7 +25,6 @@ void AmbientOcclusionJob::run()
 
     glViewport(0, 0, m_width, m_height);
     m_pipeline->bindPipeline();
-
 
     ASSERT(m_parent != nullptr, "DAG initiatized incorrectly");
     ASSERT(m_parent->getJobType() == eRenderPasses::DirectLighting, "Parent job of incorrect type");
@@ -66,7 +65,7 @@ void AmbientOcclusionJob::resize(int width, int height)
     glGenFramebuffers(1, &m_framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 
-        GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
     if (status != GL_FRAMEBUFFER_COMPLETE) {
         if (status == GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT) {
