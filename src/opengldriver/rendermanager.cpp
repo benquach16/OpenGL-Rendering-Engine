@@ -42,9 +42,13 @@ void RenderManager::initRenderPipelines()
     directLightingJob->setCubemap(m_skyboxTexture);
     m_renderJobs[eRenderPasses::DirectLighting] = directLightingJob;
 
+    AmbientOcclusionJob* aoJob = new AmbientOcclusionJob;
+    aoJob->setParent(directLightingJob);
+    m_renderJobs[eRenderPasses::AmbientOcclusion] = aoJob;
+
     SkyboxJob* skyboxJob = new SkyboxJob;
     skyboxJob->setSkyboxTexture(m_skyboxTexture);
-    skyboxJob->setParent(directLightingJob);
+    skyboxJob->setParent(aoJob);
     m_renderJobs[eRenderPasses::Skybox] = skyboxJob;
 
     //m_renderJobs[eRenderPasses::IndirectLighting] = new Job;

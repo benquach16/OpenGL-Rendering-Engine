@@ -30,6 +30,10 @@ void AmbientOcclusionJob::run()
     ASSERT(m_parent->getJobType() == eRenderPasses::DirectLighting, "Parent job of incorrect type");
 
     DirectLightingJob* parent = static_cast<DirectLightingJob*>(m_parent);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, parent->getAlbedoRT());
+    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexture", 0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // todo : defer this so we dont alloc memory every frame
@@ -62,20 +66,20 @@ void AmbientOcclusionJob::resize(int width, int height)
 
     DirectLightingJob* parent = static_cast<DirectLightingJob*>(m_parent);
 
-    glGenFramebuffers(1, &m_framebuffer);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+}
 
-    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+GLuint AmbientOcclusionJob::getFramebuffer() const
+{
+    ASSERT(m_parent != nullptr, "DAG initialized incorrectly");
+    ASSERT(m_parent->getJobType() == eRenderPasses::DirectLighting, "Parent job of incorrect type");
+    DirectLightingJob* parent = static_cast<DirectLightingJob*>(m_parent);
+    return parent->getFramebuffer();        
+}
 
-    if (status != GL_FRAMEBUFFER_COMPLETE) {
-        if (status == GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT) {
-            cerr << "GL_FRAMEBUFFER: incomplete attachment error" << endl;
-        }
-        if (status == GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT) {
-            cerr << "GL_FRAMEBUFFER: incomplete missing attachment" << endl;
-        }
-        cerr << "framebuffer error" << endl;
-    } else {
-        cerr << "framebuffer success" << endl;
-    }
+GLuint AmbientOcclusionJob::getRT()
+{
+    ASSERT(m_parent != nullptr, "DAG initialized incorrectly");
+    ASSERT(m_parent->getJobType() == eRenderPasses::DirectLighting, "Parent job of incorrect type");
+    DirectLightingJob* parent = static_cast<DirectLightingJob*>(m_parent);
+    return parent->getAlbedoRT();    
 }

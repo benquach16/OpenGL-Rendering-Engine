@@ -11,7 +11,9 @@ public:
     void resize(int width, int height) override;
 
     eRenderPasses getJobType() override { return eRenderPasses::AmbientOcclusion; }
+    GLuint getFramebuffer() const;
 
+    GLuint getRT();
 private:
     GLuint m_framebuffer;
 };

@@ -1,6 +1,7 @@
 #include "skyboxjob.h"
 #include "../../util/debug.h"
 #include "directlightingjob.h"
+#include "ambientocclusionjob.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../3rdparty/stb_image.h"
 
@@ -66,9 +67,9 @@ void SkyboxJob::run()
 {
     // make sure that our parent is a directlighting job (DAG strictly enforced)
     ASSERT(m_parent != nullptr, "DAG initialized incorrectly");
-    ASSERT(m_parent->getJobType() == eRenderPasses::DirectLighting, "Parent job of incorrect type");
+    ASSERT(m_parent->getJobType() == eRenderPasses::AmbientOcclusion, "Parent job of incorrect type");
 
-    DirectLightingJob* parent = static_cast<DirectLightingJob*>(m_parent);
+    AmbientOcclusionJob* parent = static_cast<AmbientOcclusionJob*>(m_parent);
 
     glBindFramebuffer(GL_FRAMEBUFFER, parent->getFramebuffer());
     glDepthMask(false);
@@ -78,6 +79,7 @@ void SkyboxJob::run()
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
+    
     GET_GL_ERROR("Error setting skybox texture");
     //todo : defer this so we dont alloc memory every frame
     GLuint vertarray;
@@ -104,7 +106,7 @@ void SkyboxJob::run()
 GLuint SkyboxJob::getRT()
 {
     ASSERT(m_parent != nullptr, "DAG initialized incorrectly");
-    ASSERT(m_parent->getJobType() == eRenderPasses::DirectLighting, "Parent job of incorrect type");
-    DirectLightingJob* parent = static_cast<DirectLightingJob*>(m_parent);
-    return parent->getAlbedoRT();
+    ASSERT(m_parent->getJobType() == eRenderPasses::AmbientOcclusion, "Parent job of incorrect type");
+    AmbientOcclusionJob* parent = static_cast<AmbientOcclusionJob*>(m_parent);
+    return parent->getRT();
 }
