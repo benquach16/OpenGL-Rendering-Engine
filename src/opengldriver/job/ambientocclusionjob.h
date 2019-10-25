@@ -14,6 +14,8 @@ public:
     GLuint getFramebuffer() const;
 
     GLuint getRT();
+
 private:
     GLuint m_framebuffer;
+    GLuint m_rendertarget;
 };

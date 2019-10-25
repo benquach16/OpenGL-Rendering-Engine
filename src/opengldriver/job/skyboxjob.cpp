@@ -1,7 +1,7 @@
 #include "skyboxjob.h"
 #include "../../util/debug.h"
-#include "directlightingjob.h"
 #include "ambientocclusionjob.h"
+#include "directlightingjob.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "../../3rdparty/stb_image.h"
 
@@ -52,7 +52,8 @@ float skyboxVertices[] = {
     1.0f, -1.0f, 1.0f
 };
 
-SkyboxJob::SkyboxJob() : m_skyboxTexture(0)
+SkyboxJob::SkyboxJob()
+    : m_skyboxTexture(0)
 {
     setVertexShader("shaders/skybox.vert");
     setFragmentShader("shaders/skybox.frag");
@@ -79,7 +80,7 @@ void SkyboxJob::run()
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
-    
+
     GET_GL_ERROR("Error setting skybox texture");
     //todo : defer this so we dont alloc memory every frame
     GLuint vertarray;

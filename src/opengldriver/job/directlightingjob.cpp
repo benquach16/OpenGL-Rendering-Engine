@@ -113,3 +113,10 @@ void DirectLightingJob::resize(int width, int height)
         cerr << "framebuffer success" << endl;
     }
 }
+GLuint DirectLightingJob::getDepthRT()
+{
+    ASSERT(m_parent != nullptr, "DAG initialized incorrectly");
+    ASSERT(m_parent->getJobType() == eRenderPasses::GBuffer, "Parent job of incorrect type");
+    GBufferJob* parent = static_cast<GBufferJob*>(m_parent);
+    return parent->getDepthRT();
+}

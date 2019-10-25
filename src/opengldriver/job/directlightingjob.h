@@ -14,6 +14,7 @@ public:
     void setCubemap(GLuint cubemap) { m_cubemap = cubemap; }
     GLuint getAlbedoRT() { return m_albedo; }
     GLuint getFramebuffer() { return m_framebuffer; }
+    GLuint getDepthRT();
 
 private:
     GLuint m_cubemap;
