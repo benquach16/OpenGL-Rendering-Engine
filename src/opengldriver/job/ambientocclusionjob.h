@@ -13,8 +13,8 @@ public:
     eRenderPasses getJobType() override { return eRenderPasses::AmbientOcclusion; }
     GLuint getFramebuffer() const;
 
-    GLuint getRT();
-
+    GLuint getRT() const { return m_rendertarget; }
+    void generateKernel();
 private:
     GLuint m_framebuffer;
     GLuint m_rendertarget;

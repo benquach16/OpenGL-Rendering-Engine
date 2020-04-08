@@ -194,12 +194,6 @@ void GLProgram::verifyValidUniform(const std::string& uniform, ATTRIBUTE_UNIFORM
 {
     ASSERT(m_program, "attempted to set uniform on uninitialized program");
     auto it = m_uniforms.find(uniform);
-    if (it == m_uniforms.end()) {
-        cerr << "attempted to set unknown uniform " << uniform << endl;
-        return;
-    }
-    if (it->second != type) {
-        cerr << "attempted to set incorrect uniform type" << endl;
-        return;
-    }
+    ASSERT(it != m_uniforms.end(), "attempted to set unknown uniform " << uniform);
+    ASSERT(it->second == type, "attempted to set incorrect uniform type");
 }
