@@ -18,4 +18,6 @@ public:
 private:
     GLuint m_framebuffer;
     GLuint m_rendertarget;
+    GLuint m_noiseTexture;
+    std::vector<glm::vec3> m_ssaoKernel;
 };
