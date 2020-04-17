@@ -2,6 +2,7 @@
 
 #include "job/job.h"
 #include "opengl/glprogram.h"
+#include "opengl/gbufferfbo.h"
 #include "opengl3/glpipeline.h"
 #include "renderstate.h"
 #include "vertexbuffer.h"
@@ -51,8 +52,8 @@ private:
     unsigned m_currentRenderstate;
     unsigned m_currentPipeline;
 
-    std::vector<GLuint> m_framebuffers;
-
+    GBufferFBO m_gbufferFBO;
+    
     GLuint m_skyboxTexture;
 
     int m_screenWidth;
