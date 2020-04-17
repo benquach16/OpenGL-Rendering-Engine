@@ -10,6 +10,7 @@ set(SOURCES
     ./src/opengldriver/rendermanager.cpp
     ./src/opengldriver/opengl/glprogram.cpp
     ./src/opengldriver/opengl/glframebuffer.cpp
+    ./src/opengldriver/opengl/gbufferfbo.cpp
     ./src/opengldriver/opengl3/glpipeline.cpp
     ./src/opengldriver/job/job.cpp
     ./src/opengldriver/job/directlightingjob.cpp
