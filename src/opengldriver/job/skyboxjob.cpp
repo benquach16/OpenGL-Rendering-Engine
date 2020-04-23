@@ -64,16 +64,10 @@ SkyboxJob::~SkyboxJob()
     m_skyboxTexture = 0;
 }
 
-void SkyboxJob::run()
+void SkyboxJob::run(ResolveFBO *fbo)
 {
-    // make sure that our parent is a directlighting job (DAG strictly enforced)
-    ASSERT(m_parent != nullptr, "DAG initialized incorrectly");
-    ASSERT(m_parent->getJobType() == eRenderPasses::AmbientOcclusion, "Parent job of incorrect type");
-
-    AmbientOcclusionJob* parent = static_cast<AmbientOcclusionJob*>(m_parent);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, parent->getFramebuffer());
-    glDepthMask(false);
+    fbo->bind();
+    glDepthMask(GL_FALSE);
 
     m_pipeline->bindPipeline();
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uSkybox", 0);
@@ -101,7 +95,7 @@ void SkyboxJob::run()
     glDeleteBuffers(1, &vertices);
     glDeleteBuffers(1, &vertarray);
 
-    glDepthMask(true);
+    glDepthMask(GL_TRUE);
 }
 
 GLuint SkyboxJob::getRT()

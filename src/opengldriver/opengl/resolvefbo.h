@@ -8,6 +8,8 @@ public:
     ResolveFBO();
 
     void resize(int width, int height) override;
+
+    GLuint getAlbedo() const { return m_albedo; }
 protected:
     GLuint m_albedo;
 };

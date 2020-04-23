@@ -51,8 +51,7 @@ public:
     void setComputeShader(const std::string& path);
     void setFragmentShader(const std::string& path);
 
-    virtual void run();
-    virtual void resize(int width, int height)
+    void resize(int width, int height)
     {
         m_width = width;
         m_height = height;
@@ -62,7 +61,6 @@ public:
     void push(VertexBuffer* buf) { m_queue.push(buf); }
 
     void setParent(Job* parent) { m_parent = parent; }
-    void addChild(Job* child) { m_children.push_back(child); }
 
 protected:
     int m_width;
@@ -71,7 +69,6 @@ protected:
     eRenderPasses m_jobType;
 
     std::queue<VertexBuffer*> m_queue;
-    std::vector<Job*> m_children;
     Job* m_parent;
     GLPipeline* m_pipeline;
 };

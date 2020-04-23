@@ -68,7 +68,7 @@ void OpenGLDriver::render()
 
 void OpenGLDriver::renderScene()
 {
-    glViewport(0, 0, m_screenInfo.m_width, m_screenInfo.m_height);
+    //glViewport(0, 0, m_screenInfo.m_width, m_screenInfo.m_height);
 
     m_renderManager.render();
 }

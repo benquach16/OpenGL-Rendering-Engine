@@ -11,6 +11,8 @@ ResolveFBO::ResolveFBO() : m_albedo(0)
 void ResolveFBO::resize(int width, int height)
 {
     GLFramebuffer::resize(width, height);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
     glGenTextures(1, &m_albedo);
     glBindTexture(GL_TEXTURE_2D, m_albedo);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, 0);
@@ -20,6 +22,8 @@ void ResolveFBO::resize(int width, int height)
 
     GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
     glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+
+    //need to get depth from gbufferjob
 
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 

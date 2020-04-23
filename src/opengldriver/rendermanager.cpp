@@ -12,7 +12,9 @@ using namespace std;
 #define BUFFER_OFFSET(i) ((char*)NULL + (i))
 
 RenderManager::RenderManager()
-    : m_skyboxTexture(0)
+    : m_skyboxTexture(0),
+    m_gbufferFBO(nullptr),
+    m_resolveFBO(nullptr)
 {
 }
 
@@ -27,10 +29,22 @@ RenderManager::~RenderManager()
         delete i.second;
     }
     m_renderJobs.clear();
+
+    if(m_gbufferFBO != nullptr) {
+        delete m_gbufferFBO;
+        m_gbufferFBO = nullptr;
+    }
+
+    if(m_resolveFBO != nullptr) {
+        delete m_resolveFBO;
+        m_resolveFBO = nullptr;
+    }
 }
 
 void RenderManager::initRenderPipelines()
 {
+    m_gbufferFBO = new GBufferFBO;
+    m_resolveFBO = new ResolveFBO;
     loadSkybox();
     //m_renderJobs[eRenderPasses::Shadows] = new Job;
     Job* gbufferJob = new GBufferJob;
@@ -50,9 +64,6 @@ void RenderManager::initRenderPipelines()
     skyboxJob->setSkyboxTexture(m_skyboxTexture);
     skyboxJob->setParent(aoJob);
     m_renderJobs[eRenderPasses::Skybox] = skyboxJob;
-
-    //m_renderJobs[eRenderPasses::IndirectLighting] = new Job;
-    //m_renderJobs[eRenderPasses::Transparent] = new Job;
 
     Job* framebufferJob = new FramebufferJob;
     framebufferJob->setParent(skyboxJob);
@@ -97,11 +108,16 @@ void RenderManager::loadSkybox()
 
 void RenderManager::resize(int screenWidth, int screenHeight)
 {
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_BLEND);
+    
     m_screenWidth = screenWidth;
     m_screenHeight = screenHeight;
-    for (auto i : m_renderJobs) {
-        i.second->resize(screenWidth, screenHeight);
-    }
+    m_gbufferFBO->resize(m_screenWidth, m_screenHeight);
+    m_resolveFBO->resize(m_screenWidth, m_screenHeight);
 }
 
 void RenderManager::render()
@@ -110,9 +126,12 @@ void RenderManager::render()
     //int count = 0;
     for (auto it = m_renderJobs.begin(); it != m_renderJobs.end(); ++it) {
         //std::cout << "Running job: " << static_cast<unsigned>(it->first) << " in order " << count << std::endl;
-        //count++;
-        it->second->run();
+        //count++; 
     }
+    static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->run(m_gbufferFBO);
+    static_cast<DirectLightingJob*>(m_renderJobs[eRenderPasses::DirectLighting])->run(m_gbufferFBO, m_resolveFBO);
+    static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->run(m_resolveFBO);
+    static_cast<FramebufferJob*>(m_renderJobs[eRenderPasses::Framebuffer])->run(m_resolveFBO);
 }
 
 void RenderManager::push(VertexBuffer* buf, eRenderPasses renderPass)
@@ -131,7 +150,7 @@ void RenderManager::setCameraPerspective(const glm::mat4& view, const glm::mat4&
     glm::mat4 skyboxMVP = projection * viewNoPos;
     glm::mat4 MVP = projection * view;
     static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->setMVP(MVP);
-    static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->setMVP(skyboxMVP);
+    //static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->setMVP(skyboxMVP);
 }
 
 void sort()

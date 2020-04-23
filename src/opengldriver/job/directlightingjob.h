@@ -1,5 +1,7 @@
 #pragma once
 
+#include "opengl/resolvefbo.h"
+#include "opengl/gbufferfbo.h"
 #include "job.h"
 
 class DirectLightingJob : public Job {
@@ -7,20 +9,11 @@ public:
     DirectLightingJob();
     ~DirectLightingJob();
 
-    void initRTs();
-    void run() override;
-    void resize(int width, int height) override;
+    void run(GBufferFBO *inFbo, ResolveFBO *outFbo);
     eRenderPasses getJobType() override { return eRenderPasses::DirectLighting; }
     void setCubemap(GLuint cubemap) { m_cubemap = cubemap; }
-    GLuint getAlbedoRT() { return m_albedo; }
-    GLuint getFramebuffer() { return m_framebuffer; }
-    GLuint getDepthRT();
 
 private:
     GLuint m_cubemap;
 
-    GLuint m_rendertarget;
-    GLuint m_framebuffer;
-
-    GLuint m_albedo;
 };

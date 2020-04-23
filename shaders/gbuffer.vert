@@ -13,7 +13,7 @@ out vec2 vTexCoord;
 void main()
 {
 	vec4 pos = MVP*vec4(vertex_position, 1.0);
-	vVertexPosition = vertex_position;
+	vVertexPosition = pos.xyz;
 	vNormal = normalize(normal);
 	vTexCoord = tex_coord;
 	//gl_Position=vec4(vVertexPosition,1.0);

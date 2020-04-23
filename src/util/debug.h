@@ -16,7 +16,7 @@
             std::cerr << message << std::endl;                                  \
             std::cerr << "GL Error found with error code " << err << std::endl; \
             err = glGetError();                                                 \
-             std::terminate();                                                   \
+            ASSERT(err != GL_NO_ERROR, "GL Error");                             \
         }                                                                       \
     } while (false)
 

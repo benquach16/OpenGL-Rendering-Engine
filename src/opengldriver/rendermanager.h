@@ -3,6 +3,7 @@
 #include "job/job.h"
 #include "opengl/glprogram.h"
 #include "opengl/gbufferfbo.h"
+#include "opengl/resolvefbo.h"
 #include "opengl3/glpipeline.h"
 #include "renderstate.h"
 #include "vertexbuffer.h"
@@ -52,7 +53,8 @@ private:
     unsigned m_currentRenderstate;
     unsigned m_currentPipeline;
 
-    GBufferFBO m_gbufferFBO;
+    GBufferFBO *m_gbufferFBO;
+    ResolveFBO *m_resolveFBO;
     
     GLuint m_skyboxTexture;
 

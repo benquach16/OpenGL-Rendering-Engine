@@ -7,8 +7,8 @@ public:
     AmbientOcclusionJob();
     ~AmbientOcclusionJob();
 
-    void run() override;
-    void resize(int width, int height) override;
+    void run();
+    void resize(int width, int height);
 
     eRenderPasses getJobType() override { return eRenderPasses::AmbientOcclusion; }
     GLuint getFramebuffer() const;

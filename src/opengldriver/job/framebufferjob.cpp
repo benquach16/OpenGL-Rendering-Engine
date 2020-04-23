@@ -11,10 +11,10 @@ FramebufferJob::FramebufferJob()
     setFragmentShader("shaders/framebuffer.frag");
 }
 
-void FramebufferJob::run()
+void FramebufferJob::run(ResolveFBO *fbo)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, m_width, m_height);
+    glViewport(0, 0, fbo->getWidth(), fbo->getHeight());
 
     m_pipeline->bindPipeline();
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexture", 0);
@@ -23,9 +23,8 @@ void FramebufferJob::run()
     ASSERT(m_parent != nullptr, "DAG initialized incorrectly");
     ASSERT(m_parent->getJobType() == eRenderPasses::Skybox, "Parent job of incorrect type");
 
-    SkyboxJob* parent = static_cast<SkyboxJob*>(m_parent);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, parent->getRT());
+    glBindTexture(GL_TEXTURE_2D, fbo->getAlbedo());
     GET_GL_ERROR("Error setting position render target in framebuffer job");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
