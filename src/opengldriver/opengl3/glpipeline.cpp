@@ -18,6 +18,7 @@ GLPipeline::~GLPipeline()
 void GLPipeline::create()
 {
     glGenProgramPipelines(1, &m_pipeline);
+    GET_GL_ERROR("Error creating pipeline");
 }
 
 void GLPipeline::reset()
@@ -31,11 +32,7 @@ void GLPipeline::reset()
 void GLPipeline::addShader(const GLProgram* program)
 {
     glUseProgramStages(m_pipeline, getShaderBit(program->m_shaderType), program->m_program);
-    auto err = glGetError();
-    while (err != GL_NO_ERROR) {
-        cerr << "Error adding shader to program pipeline: " << err << " on shader program " << program->m_path << endl;
-        err = glGetError();
-    }
+    GET_GL_ERROR("Error adding shader");
 }
 
 void GLPipeline::addShader(std::string path, GLProgram::eShaderType type)
@@ -51,6 +48,7 @@ void GLPipeline::addShader(std::string path, GLProgram::eShaderType type)
 void GLPipeline::bindPipeline()
 {
     glBindProgramPipeline(m_pipeline);
+    GET_GL_ERROR("Error binding pipeline");
 }
 
 void GLPipeline::setUniform(GLProgram::eShaderType type, const std::string& uniform, int val)

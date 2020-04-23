@@ -1,4 +1,9 @@
+#include <iostream>
 #include "gbufferfbo.h"
+#include "util/debug.h"
+#include "util/util.h"
+
+using namespace std;
 
 void GBufferFBO::resize(int width, int height)
 {
@@ -39,7 +44,6 @@ void GBufferFBO::resize(int width, int height)
     glDrawBuffers(3, DrawBuffers); // 3 is the size of DrawBuffers
 
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-
     if (status != GL_FRAMEBUFFER_COMPLETE) {
         if (status == GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT) {
             cerr << "GL_FRAMEBUFFER: incomplete attachment error" << endl;

@@ -1,4 +1,12 @@
+#include <iostream>
 #include "resolvefbo.h"
+
+using namespace std;
+
+ResolveFBO::ResolveFBO() : m_albedo(0)
+{
+    
+}
 
 void ResolveFBO::resize(int width, int height)
 {
