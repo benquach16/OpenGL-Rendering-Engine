@@ -25,9 +25,7 @@ void DirectLightingJob::run(GBufferFBO *inFbo, ResolveFBO *outFbo)
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uAlbedo", 1);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uNormals", 2);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uCubemap", 3);
-
-    // make sure that our parent is a gbuffer job (DAG strictly enforced)
-
+    
     glDepthMask(GL_FALSE);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, inFbo->getPosition());
@@ -42,7 +40,6 @@ void DirectLightingJob::run(GBufferFBO *inFbo, ResolveFBO *outFbo)
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubemap);
     GET_GL_ERROR("Error setting cubemap for direct lighting pass");
 
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // todo : defer this so we dont alloc memory every frame
     GLuint vertarray;
     glGenVertexArrays(1, &vertarray);
@@ -64,5 +61,7 @@ void DirectLightingJob::run(GBufferFBO *inFbo, ResolveFBO *outFbo)
 
     glDeleteBuffers(1, &vertices);
     glDeleteBuffers(1, &vertarray);
+
+    glDepthMask(GL_TRUE);
 }
 

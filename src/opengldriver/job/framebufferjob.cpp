@@ -18,11 +18,6 @@ void FramebufferJob::run(ResolveFBO *fbo)
 
     m_pipeline->bindPipeline();
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexture", 0);
-
-    // make sure that our parent is a directlighting job (DAG strictly enforced)
-    ASSERT(m_parent != nullptr, "DAG initialized incorrectly");
-    ASSERT(m_parent->getJobType() == eRenderPasses::Skybox, "Parent job of incorrect type");
-
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, fbo->getAlbedo());
     GET_GL_ERROR("Error setting position render target in framebuffer job");

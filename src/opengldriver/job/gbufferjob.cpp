@@ -18,6 +18,7 @@ GBufferJob::~GBufferJob()
 void GBufferJob::run(GBufferFBO *fbo)
 {
     fbo->bind();
+    //glBindFramebuffer(GL_FRAMEBUFFER, 0);
     m_pipeline->bindPipeline();
     glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

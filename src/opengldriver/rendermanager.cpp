@@ -44,7 +44,8 @@ RenderManager::~RenderManager()
 void RenderManager::initRenderPipelines()
 {
     m_gbufferFBO = new GBufferFBO;
-    m_resolveFBO = new ResolveFBO;
+    m_resolveFBO = new ResolveFBO(m_gbufferFBO);
+    m_skyboxFBO = new SkyboxFBO(m_gbufferFBO);
     loadSkybox();
     //m_renderJobs[eRenderPasses::Shadows] = new Job;
     Job* gbufferJob = new GBufferJob;
@@ -57,16 +58,13 @@ void RenderManager::initRenderPipelines()
     m_renderJobs[eRenderPasses::DirectLighting] = directLightingJob;
 
     AmbientOcclusionJob* aoJob = new AmbientOcclusionJob;
-    aoJob->setParent(directLightingJob);
     m_renderJobs[eRenderPasses::AmbientOcclusion] = aoJob;
 
     SkyboxJob* skyboxJob = new SkyboxJob;
     skyboxJob->setSkyboxTexture(m_skyboxTexture);
-    skyboxJob->setParent(aoJob);
     m_renderJobs[eRenderPasses::Skybox] = skyboxJob;
 
     Job* framebufferJob = new FramebufferJob;
-    framebufferJob->setParent(skyboxJob);
     m_renderJobs[eRenderPasses::Framebuffer] = framebufferJob;
 
     m_currentPipeline = 0;
@@ -110,7 +108,6 @@ void RenderManager::resize(int screenWidth, int screenHeight)
 {
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_BLEND);
     
@@ -118,6 +115,7 @@ void RenderManager::resize(int screenWidth, int screenHeight)
     m_screenHeight = screenHeight;
     m_gbufferFBO->resize(m_screenWidth, m_screenHeight);
     m_resolveFBO->resize(m_screenWidth, m_screenHeight);
+    m_skyboxFBO->resize(m_screenWidth, m_screenHeight);
 }
 
 void RenderManager::render()
@@ -150,7 +148,7 @@ void RenderManager::setCameraPerspective(const glm::mat4& view, const glm::mat4&
     glm::mat4 skyboxMVP = projection * viewNoPos;
     glm::mat4 MVP = projection * view;
     static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->setMVP(MVP);
-    //static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->setMVP(skyboxMVP);
+    static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->setMVP(skyboxMVP);
 }
 
 void sort()

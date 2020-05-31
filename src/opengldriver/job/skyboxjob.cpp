@@ -67,13 +67,14 @@ SkyboxJob::~SkyboxJob()
 void SkyboxJob::run(ResolveFBO *fbo)
 {
     fbo->bind();
+
     glDepthMask(GL_FALSE);
-
+    glDepthFunc(GL_LEQUAL);
     m_pipeline->bindPipeline();
-    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uSkybox", 0);
+    //m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uSkybox", 0);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
+    //glActiveTexture(GL_TEXTURE0);
+    //glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
 
     GET_GL_ERROR("Error setting skybox texture");
     //todo : defer this so we dont alloc memory every frame
@@ -83,7 +84,7 @@ void SkyboxJob::run(ResolveFBO *fbo)
     GLuint vertices;
     glGenBuffers(1, &vertices);
     glBindBuffer(GL_ARRAY_BUFFER, vertices);
-    glDepthFunc(GL_LEQUAL);
+
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, BUFFER_OFFSET(0));
 
@@ -100,8 +101,6 @@ void SkyboxJob::run(ResolveFBO *fbo)
 
 GLuint SkyboxJob::getRT()
 {
-    ASSERT(m_parent != nullptr, "DAG initialized incorrectly");
-    ASSERT(m_parent->getJobType() == eRenderPasses::AmbientOcclusion, "Parent job of incorrect type");
     AmbientOcclusionJob* parent = static_cast<AmbientOcclusionJob*>(m_parent);
     return parent->getRT();
 }
