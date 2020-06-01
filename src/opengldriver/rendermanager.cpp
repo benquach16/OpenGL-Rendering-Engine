@@ -44,8 +44,7 @@ RenderManager::~RenderManager()
 void RenderManager::initRenderPipelines()
 {
     m_gbufferFBO = new GBufferFBO;
-    m_resolveFBO = new ResolveFBO(m_gbufferFBO);
-    m_skyboxFBO = new SkyboxFBO(m_gbufferFBO);
+    m_resolveFBO = new ResolveFBO(m_gbufferFBO); 
     loadSkybox();
     //m_renderJobs[eRenderPasses::Shadows] = new Job;
     Job* gbufferJob = new GBufferJob;
@@ -115,7 +114,6 @@ void RenderManager::resize(int screenWidth, int screenHeight)
     m_screenHeight = screenHeight;
     m_gbufferFBO->resize(m_screenWidth, m_screenHeight);
     m_resolveFBO->resize(m_screenWidth, m_screenHeight);
-    m_skyboxFBO->resize(m_screenWidth, m_screenHeight);
 }
 
 void RenderManager::render()

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "opengl/skyboxfbo.h"
 #include "opengl/resolvefbo.h"
 #include "job.h"
 

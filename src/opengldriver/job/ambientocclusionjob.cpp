@@ -18,20 +18,19 @@ AmbientOcclusionJob::~AmbientOcclusionJob()
 {
 }
 
-void AmbientOcclusionJob::run()
+void AmbientOcclusionJob::run(ResolveFBO *fbo)
 {
     // make sure we have a properly initialized job
     ASSERT(m_width > 0, "Screen Width not set for Ambient Occlusion Pass");
     ASSERT(m_height > 0, "Screen Height not set for Ambient Occlusion Pass");
 
-    glViewport(0, 0, m_width, m_height);
+    fbo->bind();
     m_pipeline->bindPipeline();
     //using own framebuffer as input and output, so we get weird artifacts
-    glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
     glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_2D, parent->getAlbedoRT());
+    glBindTexture(GL_TEXTURE_2D, fbo->getAlbedo());
     glActiveTexture(GL_TEXTURE1);
-    //glBindTexture(GL_TEXTURE_2D, parent->getDepthRT());
+    glBindTexture(GL_TEXTURE_2D, fbo->getDepth());
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, m_noiseTexture);
 

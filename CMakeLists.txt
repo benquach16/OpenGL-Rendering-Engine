@@ -11,7 +11,6 @@ set(SOURCES
     ./src/opengldriver/opengl/glprogram.cpp
     ./src/opengldriver/opengl/glframebuffer.cpp
     ./src/opengldriver/opengl/gbufferfbo.cpp
-    ./src/opengldriver/opengl/skyboxfbo.cpp
     ./src/opengldriver/opengl/resolvefbo.cpp
     ./src/opengldriver/opengl3/glpipeline.cpp
     ./src/opengldriver/job/job.cpp
