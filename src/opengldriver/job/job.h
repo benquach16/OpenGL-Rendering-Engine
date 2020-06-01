@@ -60,7 +60,6 @@ public:
     virtual eRenderPasses getJobType() = 0;
     void push(VertexBuffer* buf) { m_queue.push(buf); }
 
-    void setParent(Job* parent) { m_parent = parent; }
 
 protected:
     int m_width;
@@ -69,6 +68,5 @@ protected:
     eRenderPasses m_jobType;
 
     std::queue<VertexBuffer*> m_queue;
-    Job* m_parent;
     GLPipeline* m_pipeline;
 };

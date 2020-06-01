@@ -71,10 +71,10 @@ void SkyboxJob::run(ResolveFBO *fbo)
     glDepthMask(GL_FALSE);
     glDepthFunc(GL_LEQUAL);
     m_pipeline->bindPipeline();
-    //m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uSkybox", 0);
+    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uSkybox", 0);
 
-    //glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
 
     GET_GL_ERROR("Error setting skybox texture");
     //todo : defer this so we dont alloc memory every frame
@@ -97,10 +97,4 @@ void SkyboxJob::run(ResolveFBO *fbo)
     glDeleteBuffers(1, &vertarray);
 
     glDepthMask(GL_TRUE);
-}
-
-GLuint SkyboxJob::getRT()
-{
-    AmbientOcclusionJob* parent = static_cast<AmbientOcclusionJob*>(m_parent);
-    return parent->getRT();
 }

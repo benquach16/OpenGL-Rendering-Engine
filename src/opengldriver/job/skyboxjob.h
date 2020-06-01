@@ -14,8 +14,6 @@ public:
     void run(ResolveFBO *fbo);
     eRenderPasses getJobType() override { return eRenderPasses::Skybox; }
 
-    GLuint getRT();
-
 private:
     GLuint m_skyboxTexture;
 };

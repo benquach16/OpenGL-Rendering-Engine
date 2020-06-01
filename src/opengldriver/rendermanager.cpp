@@ -52,7 +52,6 @@ void RenderManager::initRenderPipelines()
     m_renderJobs[eRenderPasses::GBuffer] = gbufferJob;
 
     DirectLightingJob* directLightingJob = new DirectLightingJob;
-    directLightingJob->setParent(gbufferJob);
     ASSERT(m_skyboxTexture != 0, "skybox not loaded");
     directLightingJob->setCubemap(m_skyboxTexture);
     m_renderJobs[eRenderPasses::DirectLighting] = directLightingJob;
@@ -74,6 +73,7 @@ void RenderManager::loadSkybox()
 {
     GLuint textureId = 0;
     glGenTextures(1, &m_skyboxTexture);
+    //funny thing, if you keep this bound it causes the skybox job to work even though the cubemap uniform hasn't been set correctly
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
 
     vector<std::string> faces = {
@@ -120,12 +120,6 @@ void RenderManager::resize(int screenWidth, int screenHeight)
 
 void RenderManager::render()
 {
-    // an stl map should guarantee the correct order traversal (smallest enum to largest)
-    //int count = 0;
-    for (auto it = m_renderJobs.begin(); it != m_renderJobs.end(); ++it) {
-        //std::cout << "Running job: " << static_cast<unsigned>(it->first) << " in order " << count << std::endl;
-        //count++; 
-    }
     static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->run(m_gbufferFBO);
     static_cast<DirectLightingJob*>(m_renderJobs[eRenderPasses::DirectLighting])->run(m_gbufferFBO, m_resolveFBO);
     static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->run(m_resolveFBO);
