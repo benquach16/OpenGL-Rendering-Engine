@@ -12,6 +12,7 @@ set(SOURCES
     ./src/opengldriver/opengl/glframebuffer.cpp
     ./src/opengldriver/opengl/gbufferfbo.cpp
     ./src/opengldriver/opengl/resolvefbo.cpp
+    ./src/opengldriver/opengl/blitfbo.cpp
     ./src/opengldriver/opengl3/glpipeline.cpp
     ./src/opengldriver/job/job.cpp
     ./src/opengldriver/job/directlightingjob.cpp

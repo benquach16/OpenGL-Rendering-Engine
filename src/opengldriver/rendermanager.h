@@ -4,6 +4,7 @@
 #include "opengl/glprogram.h"
 #include "opengl/gbufferfbo.h"
 #include "opengl/resolvefbo.h"
+#include "opengl/blitfbo.h"
 #include "opengl3/glpipeline.h"
 #include "renderstate.h"
 #include "vertexbuffer.h"
@@ -55,6 +56,7 @@ private:
 
     GBufferFBO *m_gbufferFBO;
     ResolveFBO *m_resolveFBO;
+    BlitFBO *m_blitFBO;
     
     GLuint m_skyboxTexture;
 

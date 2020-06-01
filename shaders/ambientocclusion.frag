@@ -1,7 +1,6 @@
 #version 330 core
 
 uniform sampler2D uTexture;
-uniform sampler2D uNormal;
 uniform sampler2D uDepth;
 uniform sampler2D uTexNoise;
 uniform vec3 samples[64];
@@ -13,7 +12,6 @@ out vec4 v_outColor;
 void main()
 {
 	vec4 color = texture(uTexture, v_texCoord);
-	vec4 normal = texture(uNormal, v_texCoord);
 
 	float currentDepth = texture(uDepth, v_texCoord).x;
 	vec4 sample = texture(uDepth, v_texCoord+vec2(0.0, 0.001));

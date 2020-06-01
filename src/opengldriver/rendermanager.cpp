@@ -44,7 +44,8 @@ RenderManager::~RenderManager()
 void RenderManager::initRenderPipelines()
 {
     m_gbufferFBO = new GBufferFBO;
-    m_resolveFBO = new ResolveFBO(m_gbufferFBO); 
+    m_resolveFBO = new ResolveFBO(m_gbufferFBO);
+    m_blitFBO = new BlitFBO;
     loadSkybox();
     //m_renderJobs[eRenderPasses::Shadows] = new Job;
     Job* gbufferJob = new GBufferJob;
@@ -114,6 +115,7 @@ void RenderManager::resize(int screenWidth, int screenHeight)
     m_screenHeight = screenHeight;
     m_gbufferFBO->resize(m_screenWidth, m_screenHeight);
     m_resolveFBO->resize(m_screenWidth, m_screenHeight);
+    m_blitFBO->resize(m_screenWidth, m_screenHeight);
 }
 
 void RenderManager::render()
@@ -121,7 +123,8 @@ void RenderManager::render()
     static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->run(m_gbufferFBO);
     static_cast<DirectLightingJob*>(m_renderJobs[eRenderPasses::DirectLighting])->run(m_gbufferFBO, m_resolveFBO);
     static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->run(m_resolveFBO);
-    static_cast<FramebufferJob*>(m_renderJobs[eRenderPasses::Framebuffer])->run(m_resolveFBO);
+    static_cast<AmbientOcclusionJob*>(m_renderJobs[eRenderPasses::AmbientOcclusion])->run(m_resolveFBO, m_blitFBO);
+    static_cast<FramebufferJob*>(m_renderJobs[eRenderPasses::Framebuffer])->run(m_blitFBO);
 }
 
 void RenderManager::push(VertexBuffer* buf, eRenderPasses renderPass)

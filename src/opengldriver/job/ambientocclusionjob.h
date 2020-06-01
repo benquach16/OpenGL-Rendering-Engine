@@ -1,6 +1,7 @@
 #pragma once
 
 #include "opengl/resolvefbo.h"
+#include "opengl/blitfbo.h"
 #include "job.h"
 
 class AmbientOcclusionJob : public Job {
@@ -8,7 +9,7 @@ public:
     AmbientOcclusionJob();
     ~AmbientOcclusionJob();
 
-    void run(ResolveFBO *fbo);
+    void run(ResolveFBO *inFbo, BlitFBO *outFbo);
     void resize(int width, int height);
 
     eRenderPasses getJobType() override { return eRenderPasses::AmbientOcclusion; }

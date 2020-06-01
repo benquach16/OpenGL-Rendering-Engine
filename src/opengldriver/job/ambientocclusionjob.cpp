@@ -12,31 +12,30 @@ AmbientOcclusionJob::AmbientOcclusionJob()
 {
     setVertexShader("shaders/framebuffer.vert");
     setFragmentShader("shaders/ambientocclusion.frag");
+    generateKernel();
 }
 
 AmbientOcclusionJob::~AmbientOcclusionJob()
 {
 }
 
-void AmbientOcclusionJob::run(ResolveFBO *fbo)
+void AmbientOcclusionJob::run(ResolveFBO *inFbo, BlitFBO *outFbo)
 {
-    // make sure we have a properly initialized job
-    ASSERT(m_width > 0, "Screen Width not set for Ambient Occlusion Pass");
-    ASSERT(m_height > 0, "Screen Height not set for Ambient Occlusion Pass");
-
-    fbo->bind();
+    outFbo->bind();
     m_pipeline->bindPipeline();
     //using own framebuffer as input and output, so we get weird artifacts
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, fbo->getAlbedo());
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, fbo->getDepth());
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, m_noiseTexture);
-
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexture", 0);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uDepth", 1);
-    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexNoise", 2);
+    //m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexNoise", 2);
+    GET_GL_ERROR("Error setting uniforms");
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, inFbo->getAlbedo());
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, inFbo->getDepth());
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, m_noiseTexture);
+    GET_GL_ERROR("Error setting uniforms");
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // todo : defer this so we dont alloc memory every frame
     GLuint vertarray;
@@ -59,6 +58,7 @@ void AmbientOcclusionJob::run(ResolveFBO *fbo)
 
     glDeleteBuffers(1, &vertices);
     glDeleteBuffers(1, &vertarray);
+
 }
 
 void AmbientOcclusionJob::resize(int width, int height)

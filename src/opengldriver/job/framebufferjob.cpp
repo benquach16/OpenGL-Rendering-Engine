@@ -11,10 +11,10 @@ FramebufferJob::FramebufferJob()
     setFragmentShader("shaders/framebuffer.frag");
 }
 
-void FramebufferJob::run(ResolveFBO *fbo)
+void FramebufferJob::run(BlitFBO *fbo)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, fbo->getWidth(), fbo->getHeight());
+    //glViewport(0, 0, fbo->getWidth(), fbo->getHeight());
 
     m_pipeline->bindPipeline();
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexture", 0);
