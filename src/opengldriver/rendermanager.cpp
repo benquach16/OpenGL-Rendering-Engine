@@ -123,7 +123,7 @@ void RenderManager::render()
     static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->run(m_gbufferFBO);
     static_cast<DirectLightingJob*>(m_renderJobs[eRenderPasses::DirectLighting])->run(m_gbufferFBO, m_resolveFBO);
     static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->run(m_resolveFBO);
-    static_cast<AmbientOcclusionJob*>(m_renderJobs[eRenderPasses::AmbientOcclusion])->run(m_resolveFBO, m_blitFBO);
+    static_cast<AmbientOcclusionJob*>(m_renderJobs[eRenderPasses::AmbientOcclusion])->run(m_resolveFBO, m_gbufferFBO, m_blitFBO);
     static_cast<FramebufferJob*>(m_renderJobs[eRenderPasses::Framebuffer])->run(m_blitFBO);
 }
 
@@ -144,6 +144,11 @@ void RenderManager::setCameraPerspective(const glm::mat4& view, const glm::mat4&
     glm::mat4 MVP = projection * view;
     static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->setMVP(MVP);
     static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->setMVP(skyboxMVP);
+
+    glm::mat4 projectionInv = glm::inverse(projection);
+    glm::mat4 viewInv = glm::inverse(view);
+    static_cast<AmbientOcclusionJob*>(m_renderJobs[eRenderPasses::AmbientOcclusion])->setProjInv(projectionInv);
+    static_cast<AmbientOcclusionJob*>(m_renderJobs[eRenderPasses::AmbientOcclusion])->setViewInv(viewInv);
 }
 
 void sort()

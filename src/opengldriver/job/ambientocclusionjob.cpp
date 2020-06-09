@@ -19,23 +19,28 @@ AmbientOcclusionJob::~AmbientOcclusionJob()
 {
 }
 
-void AmbientOcclusionJob::run(ResolveFBO *inFbo, BlitFBO *outFbo)
+void AmbientOcclusionJob::run(ResolveFBO *inFbo, GBufferFBO *normalInput, BlitFBO *outFbo)
 {
     outFbo->bind();
     m_pipeline->bindPipeline();
     //using own framebuffer as input and output, so we get weird artifacts
-    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexture", 0);
+    //m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexture", 0);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uDepth", 1);
-    //m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexNoise", 2);
+    //m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uNormal", 2);
+    //m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexNoise", 3);
     GET_GL_ERROR("Error setting uniforms");
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, inFbo->getAlbedo());
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, inFbo->getDepth());
     glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, normalInput->getNormal());
+    glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, m_noiseTexture);
     GET_GL_ERROR("Error setting uniforms");
-
+    //m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "projMatrixInv", m_projInv);
+    //m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "viewMatrixInv", m_viewInv);
+    GET_GL_ERROR("Error setting uniforms");
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // todo : defer this so we dont alloc memory every frame
     GLuint vertarray;
