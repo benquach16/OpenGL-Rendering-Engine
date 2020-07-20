@@ -1,6 +1,5 @@
 #version 330 core
 
-uniform sampler2D uDepth;
 uniform sampler2D uPosition;
 uniform sampler2D uAlbedo;
 uniform sampler2D uNormals;
@@ -66,7 +65,7 @@ float GGX_Geometric(float NdotL, float VdotN)
 
 void main()
 {
-	vec3 position = texture(uDepth, v_texCoord).xyz;
+	vec3 position = texture(uPosition, v_texCoord).xyz;
 	vec3 albedo   = texture(uAlbedo, v_texCoord).xyz;
 	vec3 normal   = texture(uNormals, v_texCoord).xyz;
 
@@ -97,14 +96,14 @@ void main()
 	vec3 F = Fresnel(VdotN, F0);
 	
 	vec3 Rs = G * F * D * PI * NdotL;
-	vec3 env = texture(uCubemap, R).xyz;
-	Rs += env * 0.004;
 	//albedo = albedo * NdotL + vec3(1.0) * NdotL * (roughness + Rs * (1.0 - roughness));
-	vec3 indirect = vec3(0.01, 0.01, 0.01);
-	indirect * 0.05;
-	//vec4 indirect = texture(uCubemap, R);
+	//vec3 indirect = vec3(0.01, 0.01, 0.01);
+	//indirect * 0.05;
+	vec3 indirect = texture(uCubemap, R).xyz;
 
-	Rs += indirect * F;
+	Rs += (indirect * F) * 0.05;
+
+	//Rs += F;
 	vec3 diffuse = albedo * NdotL * 1.0/PI;
 	albedo = diffuse + Rs;
 

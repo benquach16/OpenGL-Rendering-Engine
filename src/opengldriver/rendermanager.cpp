@@ -147,7 +147,7 @@ void RenderManager::setCameraPerspective(const glm::mat4& view, const glm::mat4&
 
     glm::mat4 projectionInv = glm::inverse(projection);
     glm::mat4 viewInv = glm::inverse(view);
-    static_cast<AmbientOcclusionJob*>(m_renderJobs[eRenderPasses::AmbientOcclusion])->setProjInv(projectionInv);
+    static_cast<AmbientOcclusionJob*>(m_renderJobs[eRenderPasses::AmbientOcclusion])->setProj(projection);
     static_cast<AmbientOcclusionJob*>(m_renderJobs[eRenderPasses::AmbientOcclusion])->setViewInv(viewInv);
 }
 

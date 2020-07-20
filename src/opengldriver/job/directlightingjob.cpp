@@ -21,7 +21,7 @@ void DirectLightingJob::run(GBufferFBO *inFbo, ResolveFBO *outFbo)
     outFbo->bind();
     glViewport(0, 0, outFbo->getWidth(), outFbo->getHeight());
     m_pipeline->bindPipeline();
-    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uDepth", 0);
+    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uPosition", 0);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uAlbedo", 1);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uNormals", 2);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uCubemap", 3);
