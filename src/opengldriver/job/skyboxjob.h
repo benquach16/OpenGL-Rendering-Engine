@@ -1,7 +1,7 @@
 #pragma once
 
-#include "opengl/resolvefbo.h"
 #include "job.h"
+#include "opengl/resolvefbo.h"
 
 class SkyboxJob : public Job {
 public:
@@ -11,7 +11,7 @@ public:
     void setMVP(const glm::mat4& MVP) { m_pipeline->setUniform(GLProgram::eShaderType::Vertex, "MVP", MVP); }
 
     void setSkyboxTexture(GLuint skyboxTexture) { m_skyboxTexture = skyboxTexture; }
-    void run(ResolveFBO *fbo);
+    void run(ResolveFBO* fbo);
     eRenderPasses getJobType() override { return eRenderPasses::Skybox; }
 
 private:

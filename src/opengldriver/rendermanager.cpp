@@ -2,6 +2,7 @@
 #include "../../util/debug.h"
 #include "../3rdparty/stb_image.h"
 #include "job/ambientocclusionjob.h"
+#include "job/blurjob.h"
 #include "job/directlightingjob.h"
 #include "job/framebufferjob.h"
 #include "job/gbufferjob.h"
@@ -12,9 +13,9 @@ using namespace std;
 #define BUFFER_OFFSET(i) ((char*)NULL + (i))
 
 RenderManager::RenderManager()
-    : m_skyboxTexture(0),
-    m_gbufferFBO(nullptr),
-    m_resolveFBO(nullptr)
+    : m_skyboxTexture(0)
+    , m_gbufferFBO(nullptr)
+    , m_resolveFBO(nullptr)
 {
 }
 
@@ -30,12 +31,12 @@ RenderManager::~RenderManager()
     }
     m_renderJobs.clear();
 
-    if(m_gbufferFBO != nullptr) {
+    if (m_gbufferFBO != nullptr) {
         delete m_gbufferFBO;
         m_gbufferFBO = nullptr;
     }
 
-    if(m_resolveFBO != nullptr) {
+    if (m_resolveFBO != nullptr) {
         delete m_resolveFBO;
         m_resolveFBO = nullptr;
     }
@@ -58,6 +59,9 @@ void RenderManager::initRenderPipelines()
 
     AmbientOcclusionJob* aoJob = new AmbientOcclusionJob;
     m_renderJobs[eRenderPasses::AmbientOcclusion] = aoJob;
+
+    BlurJob* blurJob = new BlurJob;
+    m_renderJobs[eRenderPasses::AOBlur] = blurJob;
 
     SkyboxJob* skyboxJob = new SkyboxJob;
     skyboxJob->setSkyboxTexture(m_skyboxTexture);
@@ -110,7 +114,7 @@ void RenderManager::resize(int screenWidth, int screenHeight)
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_BLEND);
-    
+
     m_screenWidth = screenWidth;
     m_screenHeight = screenHeight;
     m_gbufferFBO->resize(m_screenWidth, m_screenHeight);
@@ -124,6 +128,7 @@ void RenderManager::render()
     static_cast<DirectLightingJob*>(m_renderJobs[eRenderPasses::DirectLighting])->run(m_gbufferFBO, m_resolveFBO);
     static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->run(m_resolveFBO);
     static_cast<AmbientOcclusionJob*>(m_renderJobs[eRenderPasses::AmbientOcclusion])->run(m_resolveFBO, m_gbufferFBO, m_blitFBO);
+    static_cast<BlurJob*>(m_renderJobs[eRenderPasses::AOBlur])->run(m_blitFBO, m_blitFBO);
     static_cast<FramebufferJob*>(m_renderJobs[eRenderPasses::Framebuffer])->run(m_blitFBO);
 }
 
@@ -143,6 +148,7 @@ void RenderManager::setCameraPerspective(const glm::mat4& view, const glm::mat4&
     glm::mat4 skyboxMVP = projection * viewNoPos;
     glm::mat4 MVP = projection * view;
     static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->setMVP(MVP);
+    static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->setView(view);
     static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->setMVP(skyboxMVP);
 
     glm::mat4 projectionInv = glm::inverse(projection);

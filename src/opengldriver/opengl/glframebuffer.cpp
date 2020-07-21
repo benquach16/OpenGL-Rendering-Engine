@@ -2,7 +2,10 @@
 #include "util/debug.h"
 #include "util/util.h"
 
-GLFramebuffer::GLFramebuffer() : m_framebuffer(0), m_width(0), m_height(0)
+GLFramebuffer::GLFramebuffer()
+    : m_framebuffer(0)
+    , m_width(0)
+    , m_height(0)
 {
 }
 
@@ -27,7 +30,7 @@ void GLFramebuffer::bind()
 
 void GLFramebuffer::clean()
 {
-    if(m_framebuffer != 0) {
+    if (m_framebuffer != 0) {
         glDeleteFramebuffers(1, &m_framebuffer);
         m_framebuffer = 0;
     }

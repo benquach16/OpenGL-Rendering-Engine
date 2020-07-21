@@ -1,10 +1,10 @@
 #pragma once
 
 #include "job/job.h"
-#include "opengl/glprogram.h"
-#include "opengl/gbufferfbo.h"
-#include "opengl/resolvefbo.h"
 #include "opengl/blitfbo.h"
+#include "opengl/gbufferfbo.h"
+#include "opengl/glprogram.h"
+#include "opengl/resolvefbo.h"
 #include "opengl3/glpipeline.h"
 #include "renderstate.h"
 #include "vertexbuffer.h"
@@ -54,10 +54,10 @@ private:
     unsigned m_currentRenderstate;
     unsigned m_currentPipeline;
 
-    GBufferFBO *m_gbufferFBO;
-    ResolveFBO *m_resolveFBO;
-    BlitFBO *m_blitFBO;
-    
+    GBufferFBO* m_gbufferFBO;
+    ResolveFBO* m_resolveFBO;
+    BlitFBO* m_blitFBO;
+
     GLuint m_skyboxTexture;
 
     int m_screenWidth;

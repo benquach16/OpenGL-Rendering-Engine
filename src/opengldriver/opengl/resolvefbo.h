@@ -1,10 +1,10 @@
 #pragma once
 
-#include "glframebuffer.h"
 #include "gbufferfbo.h"
+#include "glframebuffer.h"
 
-class ResolveFBO : public GLFramebuffer
-{
+//FBO with pointer to GBuffer FBO for depth
+class ResolveFBO : public GLFramebuffer {
 public:
     ResolveFBO(const GBufferFBO* fbo);
 
@@ -12,7 +12,8 @@ public:
 
     GLuint getAlbedo() const { return m_albedo; }
     GLuint getDepth() const { return m_gbufferFBO->getDepth(); }
+
 protected:
     GLuint m_albedo;
-    const GBufferFBO *m_gbufferFBO;
+    const GBufferFBO* m_gbufferFBO;
 };

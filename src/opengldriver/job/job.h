@@ -17,9 +17,10 @@ enum class eRenderPasses : unsigned {
     DirectLighting = 2,
     IndirectLighting = 3,
     AmbientOcclusion = 4,
-    Skybox = 5,
-    Transparent = 6,
-    Framebuffer = 7,
+    AOBlur = 5,
+    Skybox = 6,
+    Transparent = 7,
+    Framebuffer = 8,
 };
 
 //0: vertex pos
@@ -59,7 +60,6 @@ public:
 
     virtual eRenderPasses getJobType() = 0;
     void push(VertexBuffer* buf) { m_queue.push(buf); }
-
 
 protected:
     int m_width;

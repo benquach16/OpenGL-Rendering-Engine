@@ -16,7 +16,7 @@ DirectLightingJob::~DirectLightingJob()
 {
 }
 
-void DirectLightingJob::run(GBufferFBO *inFbo, ResolveFBO *outFbo)
+void DirectLightingJob::run(GBufferFBO* inFbo, ResolveFBO* outFbo)
 {
     outFbo->bind();
     glViewport(0, 0, outFbo->getWidth(), outFbo->getHeight());
@@ -25,7 +25,7 @@ void DirectLightingJob::run(GBufferFBO *inFbo, ResolveFBO *outFbo)
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uAlbedo", 1);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uNormals", 2);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uCubemap", 3);
-    
+
     glDepthMask(GL_FALSE);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, inFbo->getPosition());
@@ -64,4 +64,3 @@ void DirectLightingJob::run(GBufferFBO *inFbo, ResolveFBO *outFbo)
 
     glDepthMask(GL_TRUE);
 }
-

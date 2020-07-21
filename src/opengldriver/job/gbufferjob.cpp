@@ -15,7 +15,7 @@ GBufferJob::~GBufferJob()
 {
 }
 
-void GBufferJob::run(GBufferFBO *fbo)
+void GBufferJob::run(GBufferFBO* fbo)
 {
     fbo->bind();
     //glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -76,4 +76,14 @@ void GBufferJob::run(GBufferFBO *fbo)
         }
         glDisableVertexAttribArray(0);
     }
+}
+
+void GBufferJob::setMVP(const glm::mat4& MVP)
+{
+    m_pipeline->setUniform(GLProgram::eShaderType::Vertex, "MVP", MVP);
+}
+
+void GBufferJob::setView(const glm::mat4& view)
+{
+    m_pipeline->setUniform(GLProgram::eShaderType::Vertex, "view", view);
 }

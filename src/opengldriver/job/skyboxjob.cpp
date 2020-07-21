@@ -64,7 +64,7 @@ SkyboxJob::~SkyboxJob()
     m_skyboxTexture = 0;
 }
 
-void SkyboxJob::run(ResolveFBO *fbo)
+void SkyboxJob::run(ResolveFBO* fbo)
 {
     fbo->bind();
 

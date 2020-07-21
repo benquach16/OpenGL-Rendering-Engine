@@ -1,14 +1,14 @@
-#include <iostream>
 #include "gbufferfbo.h"
 #include "util/debug.h"
 #include "util/util.h"
+#include <iostream>
 
 using namespace std;
 
 void GBufferFBO::resize(int width, int height)
 {
     GLFramebuffer::resize(width, height);
-    
+
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
     glGenTextures(1, &m_depth);
     glBindTexture(GL_TEXTURE_2D, m_depth);

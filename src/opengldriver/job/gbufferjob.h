@@ -13,9 +13,10 @@ public:
     GBufferJob();
     ~GBufferJob();
     void resetRTs();
-    void run(GBufferFBO *fbo);
+    void run(GBufferFBO* fbo);
 
-    void setMVP(const glm::mat4& MVP) { m_pipeline->setUniform(GLProgram::eShaderType::Vertex, "MVP", MVP); }
+    void setMVP(const glm::mat4& MVP);
+    void setView(const glm::mat4& view);
 
     eRenderPasses getJobType() override { return eRenderPasses::GBuffer; }
 };

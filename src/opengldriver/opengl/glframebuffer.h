@@ -6,8 +6,7 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-class GLFramebuffer 
-{
+class GLFramebuffer {
 public:
     GLFramebuffer();
     virtual ~GLFramebuffer();
@@ -17,6 +16,7 @@ public:
 
     int getWidth() const { return m_width; }
     int getHeight() const { return m_height; }
+
 protected:
     void clean();
     int m_width;

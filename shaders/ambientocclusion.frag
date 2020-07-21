@@ -47,27 +47,6 @@ vec3 arr[32] = vec3[32](
         vec3(0.534, 0.157, -0.250)
 );
 
-vec4 screen_to_proj(vec2 screen, float z)
-{
-	vec4 proj;
-	proj.w = 1.0;
-	proj.z = z;
-	proj.x = screen.x*2 - proj.w;
-	proj.y = -screen.y*2 + proj.w;
-	return proj;
-}
-
-
-vec4 convert_to_screen_space(vec4 proj)
-{
-	vec4 screen;
-	screen.x = (proj.x + proj.w)*0.5;
-	screen.y = (proj.w - proj.y)*0.5;
-	screen.z = proj.z;
-	screen.w = proj.w;
-	return screen;
-}
-
 vec4 proj_to_screen(vec4 proj)
 {
 	vec4 screen = proj;
@@ -146,6 +125,6 @@ void main()
     occlusion = 1.0 - occlusion;
     //occlusion = clamp(occlusion, 0.0, 1.0);
     //occlusion = 1 - 1.2 + (1.2 * occlusion);
-	//v_outColor = vec4(occlusion);
-    v_outColor = vec4(color*occlusion, 1.0);
+	v_outColor = vec4(occlusion);
+    //v_outColor = vec4(color*occlusion, 1.0);
 }

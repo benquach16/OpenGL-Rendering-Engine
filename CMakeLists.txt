@@ -20,6 +20,7 @@ set(SOURCES
     ./src/opengldriver/job/skyboxjob.cpp
     ./src/opengldriver/job/framebufferjob.cpp
     ./src/opengldriver/job/ambientocclusionjob.cpp
+    ./src/opengldriver/job/blurjob.cpp
     ./src/renderer/renderer.cpp
     ./src/renderer/mesh.cpp
     ./src/renderer/camera.cpp
