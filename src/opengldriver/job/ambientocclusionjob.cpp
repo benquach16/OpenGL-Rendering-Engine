@@ -1,5 +1,5 @@
 #include "ambientocclusionjob.h"
-#include "../../util/debug.h"
+#include "util/debug.h"
 #include "directlightingjob.h"
 
 #include <iostream>
