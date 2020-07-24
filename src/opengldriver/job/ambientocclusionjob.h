@@ -9,7 +9,7 @@ public:
     AmbientOcclusionJob();
     ~AmbientOcclusionJob();
 
-    void run(ResolveFBO* inFbo, GBufferFBO* normalInput, BlitFBO* outFbo);
+    void run(GBufferFBO* inFbo, BlitFBO* outFbo);
     void setProj(glm::mat4 projection) { m_proj = projection; }
     void setViewInv(glm::mat4 viewInv) { m_viewInv = m_viewInv; }
 

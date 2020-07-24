@@ -8,7 +8,7 @@ class FramebufferJob : public Job {
 public:
     FramebufferJob();
 
-    void run(BlitFBO* fbo);
+    void run(ResolveFBO* fbo);
 
     eRenderPasses getJobType() override { return eRenderPasses::Framebuffer; }
 };

@@ -3,6 +3,7 @@
 uniform sampler2D uPosition;
 uniform sampler2D uAlbedo;
 uniform sampler2D uNormals;
+uniform sampler2D uOcclusion;
 uniform samplerCube uCubemap;
 uniform vec3 uCameraPosition;
 uniform mat4 uMVP;
@@ -97,17 +98,23 @@ void main()
 	
 	vec3 Rs = G * F * D * PI * NdotL;
 	//albedo = albedo * NdotL + vec3(1.0) * NdotL * (roughness + Rs * (1.0 - roughness));
-	//vec3 indirect = vec3(0.01, 0.01, 0.01);
-	//indirect * 0.05;
-	vec3 indirect = texture(uCubemap, R).xyz;
+	vec3 indirect = vec3(0.2);
+	indirect * 0.05;
+	//vec3 indirect = texture(uCubemap, R).xyz;
 
-	Rs += (indirect * F) * 0.05;
+	Rs += (indirect * F) * 0.1;
 
 	//Rs += F;
-	vec3 diffuse = albedo * NdotL * 1.0/PI;
-	albedo = diffuse + Rs;
 
+	vec3 diffuse = albedo * NdotL * 1.0/PI;
+
+	albedo = diffuse + Rs;
 	//albedo = albedo * 2.0 * NdotL;
+
 	albedo = toLinearSpace(albedo);
+	vec3 occlusion = texture(uOcclusion, v_texCoord).xyz;
+	occlusion = 1 - 1.2 + (occlusion * 1.2);
+	albedo = albedo * occlusion;
+
 	v_outColor = albedo;
 }

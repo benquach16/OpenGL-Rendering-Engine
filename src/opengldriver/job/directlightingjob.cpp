@@ -16,7 +16,7 @@ DirectLightingJob::~DirectLightingJob()
 {
 }
 
-void DirectLightingJob::run(GBufferFBO* inFbo, ResolveFBO* outFbo)
+void DirectLightingJob::run(GBufferFBO* inFbo, BlitFBO* blurFbo, ResolveFBO* outFbo)
 {
     outFbo->bind();
     glViewport(0, 0, outFbo->getWidth(), outFbo->getHeight());
@@ -24,7 +24,8 @@ void DirectLightingJob::run(GBufferFBO* inFbo, ResolveFBO* outFbo)
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uPosition", 0);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uAlbedo", 1);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uNormals", 2);
-    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uCubemap", 3);
+    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uOcclusion", 3);
+    //m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uCubemap", 4);
 
     glDepthMask(GL_FALSE);
     glActiveTexture(GL_TEXTURE0);
@@ -37,6 +38,9 @@ void DirectLightingJob::run(GBufferFBO* inFbo, ResolveFBO* outFbo)
     glBindTexture(GL_TEXTURE_2D, inFbo->getNormal());
     GET_GL_ERROR("Error setting normal render target for direct lighting pass");
     glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, blurFbo->getAlbedo());
+    GET_GL_ERROR("Error setting ao render target for direct lighting pass");
+    glActiveTexture(GL_TEXTURE4);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubemap);
     GET_GL_ERROR("Error setting cubemap for direct lighting pass");
 

@@ -85,5 +85,5 @@ void GBufferJob::setMVP(const glm::mat4& MVP)
 
 void GBufferJob::setView(const glm::mat4& view)
 {
-    m_pipeline->setUniform(GLProgram::eShaderType::Vertex, "view", view);
+    //m_pipeline->setUniform(GLProgram::eShaderType::Vertex, "view", view);
 }

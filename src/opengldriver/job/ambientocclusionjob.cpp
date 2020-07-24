@@ -1,6 +1,6 @@
 #include "ambientocclusionjob.h"
-#include "util/debug.h"
 #include "directlightingjob.h"
+#include "util/debug.h"
 
 #include <iostream>
 #include <random>
@@ -19,27 +19,25 @@ AmbientOcclusionJob::~AmbientOcclusionJob()
 {
 }
 
-void AmbientOcclusionJob::run(ResolveFBO* inFbo, GBufferFBO* normalInput, BlitFBO* outFbo)
+void AmbientOcclusionJob::run(GBufferFBO* inFbo, BlitFBO* outFbo)
 {
     outFbo->bind();
     m_pipeline->bindPipeline();
     //using own framebuffer as input and output, so we get weird artifacts
     //m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexture", 0);
-    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uDepth", 1);
-    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uNormal", 2);
-    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexNoise", 3);
+    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uDepth", 0);
+    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uNormal", 1);
+    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexNoise", 2);
     for (int i = 0; i < 64; ++i) {
         m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "samples[" + to_string(i) + "]", m_ssaoKernel[i]);
     }
 
     GET_GL_ERROR("Error setting uniforms");
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, inFbo->getAlbedo());
-    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, inFbo->getDepth());
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, inFbo->getNormal());
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, normalInput->getNormal());
-    glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, m_noiseTexture);
     GET_GL_ERROR("Error setting uniforms");
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "projection", m_proj);

@@ -12,15 +12,6 @@ in vec2 v_texCoord;
 
 out vec4 v_outColor;
 
-vec4 proj_to_screen(vec4 proj)
-{
-	vec4 screen = proj;
-	screen.x = (proj.x + proj.w);
-	screen.y = (proj.w - proj.y);
-	screen.xy *= 0.5;
-	return screen;
-}
-
 vec3 posFromDepth(in vec2 Tex, in float d){ // get eye coordinate from depth
     vec3 pos = vec3(Tex, d); 
 
@@ -46,9 +37,8 @@ void main()
     mat3 TBN       = mat3(tangent, bitangent, normal); 
         
     float occlusion = 0.0;
-    float radius = 5.0;
+    float radius = 0.5;
     //float scale = radius / position.z;
-    float scale =0.05;
     float falloff = 1.0/(radius * radius);
     int cSamples = 64;
     //vec3 samplePosView = position + ((arr[0] + normal) * scale);
@@ -65,17 +55,9 @@ void main()
         
         vec3 sample = posFromDepth(v_texCoord, texture(uDepth, samplePosScreen.xy).x);
         //vec3 sample = texture(uDepth, samplePosScreen.xy).xyz;
-        vec3 V = sample - position;
-        float VdotV = dot(V, V);
-        float VdotN = dot(V, normal);
-
-		float occ_coeff = clamp(1.0 - falloff * VdotV, 0.0, 1.0);
-        occ_coeff *= clamp(VdotN * inversesqrt(VdotV), 0.0, 1.0);
-        occ_coeff = clamp(occ_coeff, 0.0, 1.0);
-        //occlusion += occ_coeff;
         
         float rangeCheck = smoothstep(0.0, 1.0, radius / abs(position.z - sample.z));
-        occlusion       += (sample.z >= position.z + 0.025 ? 1.0 : 0.0) * rangeCheck;   
+        occlusion += step(position.z + 0.025, sample.z) * rangeCheck;
     } 
     
     occlusion = (occlusion/cSamples);
