@@ -69,6 +69,12 @@ void GLPipeline::setUniform(GLProgram::eShaderType type, const std::string& unif
     m_programs[type]->setUniform(uniform, val);
 }
 
+void GLPipeline::setUniform(GLProgram::eShaderType type, const std::string& uniform, glm::vec2 val)
+{
+    ASSERT(m_programs.find(type) != m_programs.end(), "shader program for this type has not yet been set");
+    m_programs[type]->setUniform(uniform, val);
+}
+
 GLuint GLPipeline::getShaderBit(GLProgram::eShaderType type)
 {
     switch (type) {

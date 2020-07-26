@@ -78,6 +78,12 @@ void GLProgram::setUniform(const std::string& uniform, glm::vec3& val)
     GET_GL_ERROR("GLProgram: Uniform Error when assigning to " + uniform + " in shader " + m_path);
     glProgramUniform3f(m_program, location, GLfloat(val.x), GLfloat(val.y), GLfloat(val.z));
 }
+void GLProgram::setUniform(const std::string& uniform, glm::vec2& val)
+{
+    auto location = glGetUniformLocation(m_program, uniform.c_str());
+    GET_GL_ERROR("GLProgram: Uniform Error when assigning to " + uniform + " in shader " + m_path);
+    glProgramUniform2f(m_program, location, GLfloat(val.x), GLfloat(val.y));
+}
 
 //create our own glCreateShaderProgram function because we want our own logging
 int GLProgram::createShaderProgram(GLenum type, const char** str)

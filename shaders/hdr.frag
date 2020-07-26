@@ -10,10 +10,15 @@ void main()
 {
     const float exposure = 1.5;
     const float gamma = 2.2;
-    vec3 hdrColor = texture(uTexture, v_texCoord).xyz;
+    vec3 color = texture(uTexture, v_texCoord).xyz;
     vec3 bloom = texture(uBloom, v_texCoord).xyz;
-    hdrColor += bloom * 0.5;
-    //hdrColor = vec3(1.0) - exp(-hdrColor * exposure);
-    //hdrColor = pow(hdrColor, vec3(1.0/gamma));
-    v_outColor = vec4(hdrColor, 1.0);
+    
+    color = pow(color, vec3(gamma));
+    color += bloom * 0.5;
+	float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
+	float toneMappedLuma = luma / (1. + luma);
+	color *= toneMappedLuma / luma;
+	color = pow(color, vec3(1. / gamma));
+
+    v_outColor = vec4(color, 1.0);
 }

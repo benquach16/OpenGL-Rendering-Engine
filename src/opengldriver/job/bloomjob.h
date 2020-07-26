@@ -4,8 +4,7 @@
 #include "opengl/blitfbo.h"
 #include "opengl/resolvefbo.h"
 
-class BloomJob : public Job
-{
+class BloomJob : public Job {
 public:
     BloomJob();
     ~BloomJob();

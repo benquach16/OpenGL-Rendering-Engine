@@ -2,13 +2,14 @@
 #include "../../util/debug.h"
 #include "../3rdparty/stb_image.h"
 #include "job/ambientocclusionjob.h"
+#include "job/bloomjob.h"
 #include "job/blurjob.h"
 #include "job/directlightingjob.h"
 #include "job/framebufferjob.h"
+#include "job/gaussblurjob.h"
 #include "job/gbufferjob.h"
 #include "job/hdrjob.h"
 #include "job/skyboxjob.h"
-#include "job/bloomjob.h"
 
 using namespace std;
 
@@ -93,6 +94,9 @@ void RenderManager::initRenderPipelines()
     BloomJob* bloomJob = new BloomJob;
     m_renderJobs[eRenderPasses::Bloom] = bloomJob;
 
+    GaussBlurJob* gaussBlurJob = new GaussBlurJob;
+    m_renderJobs[eRenderPasses::Blur] = gaussBlurJob;
+
     Job* framebufferJob = new FramebufferJob;
     m_renderJobs[eRenderPasses::Framebuffer] = framebufferJob;
 
@@ -155,15 +159,16 @@ void RenderManager::render()
 {
     static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->run(m_gbufferFBO);
     static_cast<AmbientOcclusionJob*>(m_renderJobs[eRenderPasses::AmbientOcclusion])->run(m_gbufferFBO, m_aoFBO);
-    static_cast<BlurJob*>(m_renderJobs[eRenderPasses::AOBlur])->run(m_aoFBO, m_blurFBO);
-
-    static_cast<DirectLightingJob*>(m_renderJobs[eRenderPasses::DirectLighting])->run(m_gbufferFBO, m_blurFBO, m_resolveFBO);
+    //static_cast<BlurJob*>(m_renderJobs[eRenderPasses::AOBlur])->run(m_aoFBO, m_blurFBO);
+    static_cast<GaussBlurJob*>(m_renderJobs[eRenderPasses::Blur])->run(m_aoFBO, m_blurFBO, 0.75);
+    static_cast<DirectLightingJob*>(m_renderJobs[eRenderPasses::DirectLighting])->run(m_gbufferFBO, m_aoFBO, m_resolveFBO);
 
     static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->run(m_resolveFBO);
 
     static_cast<BloomJob*>(m_renderJobs[eRenderPasses::Bloom])->run(m_resolveFBO, m_bloomFBO);
-    static_cast<BlurJob*>(m_renderJobs[eRenderPasses::AOBlur])->run(m_bloomFBO, m_blurFBO);
-    static_cast<HDRJob*>(m_renderJobs[eRenderPasses::HDR])->run(m_resolveFBO, m_blurFBO, m_framebufferFBO);
+    static_cast<GaussBlurJob*>(m_renderJobs[eRenderPasses::Blur])->run(m_bloomFBO, m_blurFBO, 0.75);
+    static_cast<GaussBlurJob*>(m_renderJobs[eRenderPasses::Blur])->run(m_bloomFBO, m_blurFBO, 1.25);
+    static_cast<HDRJob*>(m_renderJobs[eRenderPasses::HDR])->run(m_resolveFBO, m_bloomFBO, m_framebufferFBO);
     static_cast<FramebufferJob*>(m_renderJobs[eRenderPasses::Framebuffer])->run(m_framebufferFBO);
 }
 

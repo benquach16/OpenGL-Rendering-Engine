@@ -55,6 +55,7 @@ public:
     void setUniform(const std::string& uniform, float val);
     void setUniform(const std::string& uniform, glm::mat4& val);
     void setUniform(const std::string& uniform, glm::vec3& val);
+    void setUniform(const std::string& uniform, glm::vec2& val);
     eShaderType getProgramType();
 
 protected:

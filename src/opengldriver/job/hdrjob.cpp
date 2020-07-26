@@ -12,7 +12,7 @@ HDRJob::~HDRJob()
 {
 }
 
-void HDRJob::run(ResolveFBO* inFbo, BlitFBO* bloomFbo,  BlitFBO* outFbo)
+void HDRJob::run(ResolveFBO* inFbo, BlitFBO* bloomFbo, BlitFBO* outFbo)
 {
     outFbo->bind();
     m_pipeline->bindPipeline();

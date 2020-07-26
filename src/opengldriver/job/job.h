@@ -20,9 +20,11 @@ enum class eRenderPasses : unsigned {
     AOBlur = 5,
     Skybox = 6,
     Transparent = 7,
-    HDR = 8,
-    Bloom = 9,
-    Framebuffer = 10,
+    Bloom = 8,
+    HDR = 9,
+    Blur = 10,
+
+    Framebuffer = 11,
 };
 
 //0: vertex pos
