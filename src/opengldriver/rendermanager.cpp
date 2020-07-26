@@ -54,6 +54,11 @@ RenderManager::~RenderManager()
         m_blurFBO = nullptr;
     }
 
+    if (m_bloomFBO != nullptr) {
+        delete m_blurFBO;
+        m_blurFBO = nullptr;
+    }
+
     if (m_framebufferFBO != nullptr) {
         delete m_framebufferFBO;
         m_framebufferFBO = nullptr;
@@ -62,6 +67,11 @@ RenderManager::~RenderManager()
 
 void RenderManager::initRenderPipelines()
 {
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_BLEND);
+
     m_gbufferFBO = new GBufferFBO;
     m_resolveFBO = new ResolveFBO(m_gbufferFBO);
     m_aoFBO = new BlitFBO;
@@ -140,10 +150,6 @@ void RenderManager::loadSkybox()
 
 void RenderManager::resize(int screenWidth, int screenHeight)
 {
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_MULTISAMPLE);
-    glEnable(GL_BLEND);
 
     m_screenWidth = screenWidth;
     m_screenHeight = screenHeight;
@@ -188,7 +194,7 @@ void RenderManager::setCameraPerspective(const glm::mat4& view, const glm::mat4&
     glm::mat4 skyboxMVP = projection * viewNoPos;
     glm::mat4 MVP = projection * view;
     static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->setMVP(MVP);
-    static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->setView(view);
+    //static_cast<GBufferJob*>(m_renderJobs[eRenderPasses::GBuffer])->setView(view);
     static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->setMVP(skyboxMVP);
 
     glm::mat4 projectionInv = glm::inverse(projection);

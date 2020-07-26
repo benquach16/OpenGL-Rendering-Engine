@@ -11,7 +11,8 @@ public:
     GLuint getAlbedo() const { return m_albedo; }
     GLuint getNormal() const { return m_normals; }
 
-private:
+protected:
+    void createMultisampleBuffer(int width, int height) override;
     GLuint m_position;
     GLuint m_depth;
     GLuint m_albedo;

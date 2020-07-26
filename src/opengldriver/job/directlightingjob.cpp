@@ -25,7 +25,7 @@ void DirectLightingJob::run(GBufferFBO* inFbo, BlitFBO* blurFbo, ResolveFBO* out
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uAlbedo", 1);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uNormals", 2);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uOcclusion", 3);
-    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uCubemap", 4);
+    //m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uCubemap", 4);
 
     glDepthMask(GL_FALSE);
     glActiveTexture(GL_TEXTURE0);
@@ -45,26 +45,7 @@ void DirectLightingJob::run(GBufferFBO* inFbo, BlitFBO* blurFbo, ResolveFBO* out
     GET_GL_ERROR("Error setting cubemap for direct lighting pass");
 
     // todo : defer this so we dont alloc memory every frame
-    GLuint vertarray;
-    glGenVertexArrays(1, &vertarray);
-    glBindVertexArray(vertarray);
-    GLuint vertices;
-    glGenBuffers(1, &vertices);
-    glBindBuffer(GL_ARRAY_BUFFER, vertices);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, BUFFER_OFFSET(0));
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, BUFFER_OFFSET(12));
-
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
-
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDisableVertexAttribArray(0);
-
-    glDeleteBuffers(1, &vertices);
-    glDeleteBuffers(1, &vertarray);
+    renderQuad();
 
     glDepthMask(GL_TRUE);
 }

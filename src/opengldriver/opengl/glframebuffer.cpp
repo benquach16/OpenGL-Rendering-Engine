@@ -6,6 +6,7 @@ GLFramebuffer::GLFramebuffer()
     : m_framebuffer(0)
     , m_width(0)
     , m_height(0)
+    , m_multisampleFramebuffer(0)
 {
 }
 
@@ -28,10 +29,31 @@ void GLFramebuffer::bind()
     GET_GL_ERROR("Error on binding FBO");
 }
 
+void GLFramebuffer::resolve()
+{
+    ASSERT(m_multisampleFramebuffer != 0, "Multisample fbo not initialized");
+    ASSERT(m_framebuffer != 0, "Framebuffer class not intialized");
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, m_multisampleFramebuffer);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_framebuffer);
+
+    glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+}
+
 void GLFramebuffer::clean()
 {
     if (m_framebuffer != 0) {
         glDeleteFramebuffers(1, &m_framebuffer);
         m_framebuffer = 0;
     }
+    if (m_multisampleFramebuffer != 0) {
+        glDeleteFramebuffers(1, &m_multisampleFramebuffer);
+        m_multisampleFramebuffer = 0;
+    }
+}
+
+void GLFramebuffer::createMultisampleBuffer(int width, int height)
+{
+    ASSERT(m_multisampleFramebuffer == 0, "Multisample FBO is already initialized");
+    glGenFramebuffers(1, &m_multisampleFramebuffer);
+    GET_GL_ERROR("Error on creating multisample fbo");
 }
