@@ -1,23 +1,23 @@
-#include "blurjob.h"
+#include "bloomjob.h"
 #include "util/debug.h"
 
-BlurJob::BlurJob()
+BloomJob::BloomJob()
     : Job()
 {
     setVertexShader("shaders/framebuffer.vert");
-    setFragmentShader("shaders/blur.frag");
+    setFragmentShader("shaders/bloom.frag");
 }
 
-BlurJob::~BlurJob()
+BloomJob::~BloomJob()
 {
 }
 
-void BlurJob::run(BlitFBO* inFbo, BlitFBO* outFbo)
+void BloomJob::run(ResolveFBO* inFbo, BlitFBO* outFbo)
 {
     outFbo->bind();
     m_pipeline->bindPipeline();
 
-    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uOcclusion", 0);
+    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uTexture", 0);
     GET_GL_ERROR("Error setting uniforms");
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, inFbo->getAlbedo());

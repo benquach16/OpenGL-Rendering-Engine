@@ -41,11 +41,9 @@ void main()
     //float scale = radius / position.z;
     float falloff = 1.0/(radius * radius);
     int cSamples = 64;
-    //vec3 samplePosView = position + ((arr[0] + normal) * scale);
     
     for(int i = 0; i < cSamples; ++i)
     {
-		//vec3 samplePosView = position + ((arr[i] + normal) * scale);
         vec3 samplePosView = TBN * samples[i];
         samplePosView = position + samplePosView * radius;
 		vec4 samplePosScreen = projection * vec4(samplePosView, 1.0);

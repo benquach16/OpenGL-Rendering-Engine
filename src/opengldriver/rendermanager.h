@@ -58,6 +58,8 @@ private:
     ResolveFBO* m_resolveFBO;
     BlitFBO* m_aoFBO;
     BlitFBO* m_blurFBO;
+    BlitFBO* m_bloomFBO;
+    BlitFBO* m_framebufferFBO;
 
     GLuint m_skyboxTexture;
 

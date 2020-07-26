@@ -21,6 +21,8 @@ set(SOURCES
     ./src/opengldriver/job/framebufferjob.cpp
     ./src/opengldriver/job/ambientocclusionjob.cpp
     ./src/opengldriver/job/blurjob.cpp
+    ./src/opengldriver/job/hdrjob.cpp
+    ./src/opengldriver/job/bloomjob.cpp
     ./src/renderer/renderer.cpp
     ./src/renderer/mesh.cpp
     ./src/renderer/camera.cpp

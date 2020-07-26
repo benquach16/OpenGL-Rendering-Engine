@@ -20,7 +20,9 @@ enum class eRenderPasses : unsigned {
     AOBlur = 5,
     Skybox = 6,
     Transparent = 7,
-    Framebuffer = 8,
+    HDR = 8,
+    Bloom = 9,
+    Framebuffer = 10,
 };
 
 //0: vertex pos
@@ -62,6 +64,7 @@ public:
     void push(VertexBuffer* buf) { m_queue.push(buf); }
 
 protected:
+    void renderQuad();
     int m_width;
     int m_height;
 

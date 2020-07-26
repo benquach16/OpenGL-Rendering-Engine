@@ -98,9 +98,9 @@ void main()
 	
 	vec3 Rs = G * F * D * PI * NdotL;
 	//albedo = albedo * NdotL + vec3(1.0) * NdotL * (roughness + Rs * (1.0 - roughness));
-	vec3 indirect = vec3(0.2);
-	indirect * 0.05;
-	//vec3 indirect = texture(uCubemap, R).xyz;
+	//vec3 indirect = vec3(0.2);
+	//indirect * 0.05;
+	vec3 indirect = texture(uCubemap, R).xyz;
 
 	Rs += (indirect * F) * 0.1;
 

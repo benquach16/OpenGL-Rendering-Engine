@@ -6,7 +6,9 @@
 #include "job/directlightingjob.h"
 #include "job/framebufferjob.h"
 #include "job/gbufferjob.h"
+#include "job/hdrjob.h"
 #include "job/skyboxjob.h"
+#include "job/bloomjob.h"
 
 using namespace std;
 
@@ -40,6 +42,21 @@ RenderManager::~RenderManager()
         delete m_resolveFBO;
         m_resolveFBO = nullptr;
     }
+
+    if (m_aoFBO != nullptr) {
+        delete m_aoFBO;
+        m_aoFBO = nullptr;
+    }
+
+    if (m_blurFBO != nullptr) {
+        delete m_blurFBO;
+        m_blurFBO = nullptr;
+    }
+
+    if (m_framebufferFBO != nullptr) {
+        delete m_framebufferFBO;
+        m_framebufferFBO = nullptr;
+    }
 }
 
 void RenderManager::initRenderPipelines()
@@ -48,6 +65,8 @@ void RenderManager::initRenderPipelines()
     m_resolveFBO = new ResolveFBO(m_gbufferFBO);
     m_aoFBO = new BlitFBO;
     m_blurFBO = new BlitFBO;
+    m_framebufferFBO = new BlitFBO;
+    m_bloomFBO = new BlitFBO;
     loadSkybox();
     //m_renderJobs[eRenderPasses::Shadows] = new Job;
     Job* gbufferJob = new GBufferJob;
@@ -67,6 +86,12 @@ void RenderManager::initRenderPipelines()
     SkyboxJob* skyboxJob = new SkyboxJob;
     skyboxJob->setSkyboxTexture(m_skyboxTexture);
     m_renderJobs[eRenderPasses::Skybox] = skyboxJob;
+
+    HDRJob* hdrJob = new HDRJob;
+    m_renderJobs[eRenderPasses::HDR] = hdrJob;
+
+    BloomJob* bloomJob = new BloomJob;
+    m_renderJobs[eRenderPasses::Bloom] = bloomJob;
 
     Job* framebufferJob = new FramebufferJob;
     m_renderJobs[eRenderPasses::Framebuffer] = framebufferJob;
@@ -122,6 +147,8 @@ void RenderManager::resize(int screenWidth, int screenHeight)
     m_resolveFBO->resize(m_screenWidth, m_screenHeight);
     m_aoFBO->resize(m_screenWidth, m_screenHeight);
     m_blurFBO->resize(m_screenWidth, m_screenHeight);
+    m_bloomFBO->resize(m_screenWidth, m_screenHeight);
+    m_framebufferFBO->resize(m_screenWidth, m_screenHeight);
 }
 
 void RenderManager::render()
@@ -134,7 +161,10 @@ void RenderManager::render()
 
     static_cast<SkyboxJob*>(m_renderJobs[eRenderPasses::Skybox])->run(m_resolveFBO);
 
-    static_cast<FramebufferJob*>(m_renderJobs[eRenderPasses::Framebuffer])->run(m_resolveFBO);
+    static_cast<BloomJob*>(m_renderJobs[eRenderPasses::Bloom])->run(m_resolveFBO, m_bloomFBO);
+    static_cast<BlurJob*>(m_renderJobs[eRenderPasses::AOBlur])->run(m_bloomFBO, m_blurFBO);
+    static_cast<HDRJob*>(m_renderJobs[eRenderPasses::HDR])->run(m_resolveFBO, m_blurFBO, m_framebufferFBO);
+    static_cast<FramebufferJob*>(m_renderJobs[eRenderPasses::Framebuffer])->run(m_framebufferFBO);
 }
 
 void RenderManager::push(VertexBuffer* buf, eRenderPasses renderPass)

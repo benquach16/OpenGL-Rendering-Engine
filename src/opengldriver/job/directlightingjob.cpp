@@ -25,7 +25,7 @@ void DirectLightingJob::run(GBufferFBO* inFbo, BlitFBO* blurFbo, ResolveFBO* out
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uAlbedo", 1);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uNormals", 2);
     m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uOcclusion", 3);
-    //m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uCubemap", 4);
+    m_pipeline->setUniform(GLProgram::eShaderType::Fragment, "uCubemap", 4);
 
     glDepthMask(GL_FALSE);
     glActiveTexture(GL_TEXTURE0);
