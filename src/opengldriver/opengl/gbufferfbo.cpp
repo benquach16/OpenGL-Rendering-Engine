@@ -8,7 +8,7 @@ using namespace std;
 void GBufferFBO::resize(int width, int height)
 {
     GLFramebuffer::resize(width, height);
-
+    
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
     glGenTextures(1, &m_depth);
     glBindTexture(GL_TEXTURE_2D, m_depth);
@@ -45,24 +45,13 @@ void GBufferFBO::resize(int width, int height)
     GLenum DrawBuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
     glDrawBuffers(3, DrawBuffers); // 3 is the size of DrawBuffers
 
-    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    if (status != GL_FRAMEBUFFER_COMPLETE) {
-        if (status == GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT) {
-            cerr << "GL_FRAMEBUFFER: incomplete attachment error" << endl;
-        }
-        if (status == GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT) {
-            cerr << "GL_FRAMEBUFFER: incomplete missing attachment" << endl;
-        }
-        cerr << "framebuffer error" << endl;
-    } else {
-        cerr << "framebuffer success" << endl;
-    }
+    checkStatus();
 }
 
 void GBufferFBO::createMultisampleBuffer(int width, int height)
 {
     GLFramebuffer::createMultisampleBuffer(width, height);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_multisampleFramebuffer);
 
     glGenTextures(1, &m_depth);
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_depth);
@@ -94,4 +83,10 @@ void GBufferFBO::createMultisampleBuffer(int width, int height)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_position, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D_MULTISAMPLE, m_albedo, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D_MULTISAMPLE, m_normals, 0);
+
+    // Set the list of draw buffers.
+    GLenum DrawBuffers[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+    glDrawBuffers(3, DrawBuffers); // 3 is the size of DrawBuffers
+
+    checkStatus();
 }

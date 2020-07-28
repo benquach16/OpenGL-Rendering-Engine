@@ -22,19 +22,5 @@ void BlitFBO::resize(int width, int height)
     GLenum DrawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
     glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
 
-    //need to get depth from gbufferjob
-
-    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-
-    if (status != GL_FRAMEBUFFER_COMPLETE) {
-        if (status == GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT) {
-            cerr << "GL_FRAMEBUFFER: incomplete attachment error" << endl;
-        }
-        if (status == GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT) {
-            cerr << "GL_FRAMEBUFFER: incomplete missing attachment" << endl;
-        }
-        cerr << "framebuffer error" << endl;
-    } else {
-        cerr << "framebuffer success" << endl;
-    }
+    checkStatus();
 }

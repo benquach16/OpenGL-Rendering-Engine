@@ -14,6 +14,7 @@ public:
     GLuint getDepth() const { return m_gbufferFBO->getDepth(); }
 
 protected:
+
     GLuint m_albedo;
     const GBufferFBO* m_gbufferFBO;
 };

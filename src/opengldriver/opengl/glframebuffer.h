@@ -20,6 +20,7 @@ public:
 
 protected:
     virtual void createMultisampleBuffer(int width, int height);
+    void checkStatus();
     void clean();
     int m_width;
     int m_height;

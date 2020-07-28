@@ -4,6 +4,7 @@
 #include "job/ambientocclusionjob.h"
 #include "job/bloomjob.h"
 #include "job/blurjob.h"
+#include "job/fxaajob.h"
 #include "job/directlightingjob.h"
 #include "job/framebufferjob.h"
 #include "job/gaussblurjob.h"
@@ -107,6 +108,9 @@ void RenderManager::initRenderPipelines()
     GaussBlurJob* gaussBlurJob = new GaussBlurJob;
     m_renderJobs[eRenderPasses::Blur] = gaussBlurJob;
 
+    FXAAJob* fxaaJob = new FXAAJob;
+    m_renderJobs[eRenderPasses::FXAA] = fxaaJob;
+
     Job* framebufferJob = new FramebufferJob;
     m_renderJobs[eRenderPasses::Framebuffer] = framebufferJob;
 
@@ -175,7 +179,9 @@ void RenderManager::render()
     static_cast<GaussBlurJob*>(m_renderJobs[eRenderPasses::Blur])->run(m_bloomFBO, m_blurFBO, 0.75);
     static_cast<GaussBlurJob*>(m_renderJobs[eRenderPasses::Blur])->run(m_bloomFBO, m_blurFBO, 1.25);
     static_cast<HDRJob*>(m_renderJobs[eRenderPasses::HDR])->run(m_resolveFBO, m_bloomFBO, m_framebufferFBO);
-    static_cast<FramebufferJob*>(m_renderJobs[eRenderPasses::Framebuffer])->run(m_framebufferFBO);
+
+    static_cast<FXAAJob*>(m_renderJobs[eRenderPasses::FXAA])->run(m_framebufferFBO, m_blurFBO);
+    static_cast<FramebufferJob*>(m_renderJobs[eRenderPasses::Framebuffer])->run(m_blurFBO);
 }
 
 void RenderManager::push(VertexBuffer* buf, eRenderPasses renderPass)

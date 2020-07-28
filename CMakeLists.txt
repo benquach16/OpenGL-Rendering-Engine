@@ -21,6 +21,7 @@ set(SOURCES
     ./src/opengldriver/job/framebufferjob.cpp
     ./src/opengldriver/job/ambientocclusionjob.cpp
     ./src/opengldriver/job/blurjob.cpp
+    ./src/opengldriver/job/fxaajob.cpp
     ./src/opengldriver/job/gaussblurjob.cpp
     ./src/opengldriver/job/hdrjob.cpp
     ./src/opengldriver/job/bloomjob.cpp

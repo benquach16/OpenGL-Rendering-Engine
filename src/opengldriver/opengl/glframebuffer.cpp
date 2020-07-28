@@ -1,6 +1,9 @@
 #include "glframebuffer.h"
 #include "util/debug.h"
 #include "util/util.h"
+#include <iostream>
+
+using namespace std;
 
 GLFramebuffer::GLFramebuffer()
     : m_framebuffer(0)
@@ -28,7 +31,6 @@ void GLFramebuffer::bind()
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
     GET_GL_ERROR("Error on binding FBO");
 }
-
 void GLFramebuffer::resolve()
 {
     ASSERT(m_multisampleFramebuffer != 0, "Multisample fbo not initialized");
@@ -49,6 +51,22 @@ void GLFramebuffer::clean()
         glDeleteFramebuffers(1, &m_multisampleFramebuffer);
         m_multisampleFramebuffer = 0;
     }
+}
+
+void GLFramebuffer::checkStatus()
+{
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE) {
+        if (status == GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT) {
+            cerr << "GL_FRAMEBUFFER: incomplete attachment error" << endl;
+        }
+        if (status == GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT) {
+            cerr << "GL_FRAMEBUFFER: incomplete missing attachment" << endl;
+        }
+        cerr << "framebuffer error" << endl;
+    } else {
+        cerr << "framebuffer success" << endl;
+    }   
 }
 
 void GLFramebuffer::createMultisampleBuffer(int width, int height)
