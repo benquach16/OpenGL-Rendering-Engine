@@ -23,7 +23,7 @@ enum class eRenderPasses : unsigned {
     Bloom = 8,
     HDR = 9,
     Blur = 10,
-    FXAA=11,
+    FXAA = 11,
     Framebuffer = 12,
 };
 

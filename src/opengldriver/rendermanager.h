@@ -27,6 +27,7 @@ public:
     RenderManager();
     ~RenderManager();
     void initRenderPipelines();
+    void initializePass();
     void loadSkybox();
     void renderLightVolume();
     void render();
@@ -62,6 +63,8 @@ private:
     BlitFBO* m_framebufferFBO;
 
     GLuint m_skyboxTexture;
+    GLuint m_irradianceCubemap;
+    GLuint m_filteredCubemap;
 
     int m_screenWidth;
     int m_screenHeight;

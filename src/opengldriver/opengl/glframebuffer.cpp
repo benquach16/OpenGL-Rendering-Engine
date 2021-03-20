@@ -66,7 +66,7 @@ void GLFramebuffer::checkStatus()
         cerr << "framebuffer error" << endl;
     } else {
         cerr << "framebuffer success" << endl;
-    }   
+    }
 }
 
 void GLFramebuffer::createMultisampleBuffer(int width, int height)

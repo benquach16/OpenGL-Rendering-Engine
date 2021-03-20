@@ -4,9 +4,9 @@
 #include "job/ambientocclusionjob.h"
 #include "job/bloomjob.h"
 #include "job/blurjob.h"
-#include "job/fxaajob.h"
 #include "job/directlightingjob.h"
 #include "job/framebufferjob.h"
+#include "job/fxaajob.h"
 #include "job/gaussblurjob.h"
 #include "job/gbufferjob.h"
 #include "job/hdrjob.h"
@@ -18,6 +18,8 @@ using namespace std;
 
 RenderManager::RenderManager()
     : m_skyboxTexture(0)
+    , m_irradianceCubemap(0)
+    , m_filteredCubemap(0)
     , m_gbufferFBO(nullptr)
     , m_resolveFBO(nullptr)
 {
@@ -63,6 +65,11 @@ RenderManager::~RenderManager()
     if (m_framebufferFBO != nullptr) {
         delete m_framebufferFBO;
         m_framebufferFBO = nullptr;
+    }
+
+    if(m_skyboxTexture != 0) {
+        glDeleteTextures(1, &m_skyboxTexture);
+        m_skyboxTexture = 0;
     }
 }
 
@@ -117,11 +124,18 @@ void RenderManager::initRenderPipelines()
     m_currentPipeline = 0;
 }
 
+void RenderManager::initializePass()
+{
+    glGenTextures(1, &m_irradianceCubemap);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_irradianceCubemap);
+
+    
+}
+
 void RenderManager::loadSkybox()
 {
     GLuint textureId = 0;
     glGenTextures(1, &m_skyboxTexture);
-    //funny thing, if you keep this bound it causes the skybox job to work even though the cubemap uniform hasn't been set correctly
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
 
     vector<std::string> faces = {
